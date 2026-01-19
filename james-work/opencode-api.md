@@ -1,6 +1,9 @@
-## [运行opencode](opencode-start.md)
+## Python 代码
 
-## 通过 api 调用 opencode 中的 models
+[app_opn_call_by_http.py](https://gitee.com/james-hadoop/python-app/blob/main-macos/app/open_code/app_opn_call_by_http.py)
+
+
+## API 调试过程
 
 ### prompt
 
@@ -85,3 +88,4 @@ curl http://localhost:4096/session/ses_42c8718b2ffe4VDu9XKu1JDQwE/message
 - 服务器默认运行在 http://localhost:4096
 
 ```
+
