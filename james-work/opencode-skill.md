@@ -202,6 +202,64 @@ else:
 
 ```
 
+#### 重命名图片文件 [<sub>返回目录</sub>](#目录)
+
+**prompt**
+
+```
+
+将以下指定目录下的图片文件名包含中文字符的图片文件，根据中文含义重命名成只包含英文字符的文件名，文件名的规则保持：主题--公司名称-图片内容摘要 这一规则 。
+
+注意：避免重命名成相同名称的图片文件之后，出现图片覆盖的情况而导致图片丢失。要保证重命名后的图片文件名称是唯一的。
+
+/Users/james/Downloads/images/
+
+```
+
+```
+
+将以下指定目录下的图片文件名称进行重命名。重命名之后的文件名称的格式为：主题--公司名称-图片内容摘要.图片格式，如：governance--kuaishou-data_asset.jpeg、business--nobody-management_system_2.jpeg、lakehouse--nobody-warehouse_layer.jpeg 等。其中，当无法判断是哪一家公司时，公司名称用 nobody 代替。
+
+主题的名称的枚举值包含在 /Users/Shared/_AllDocMap/02_Project/gitee/james-KNote/README.md 文件的中的主题分类。
+
+注意：避免重命名成相同名称的图片文件之后，出现图片覆盖的情况而导致图片丢失。要保证重命名后的图片文件名称是唯一的。
+
+/Users/james/Downloads/images/
+
+```
+
+```
+
+找到以下指定目录中所有的图片文件，文件名的命名格式遵循：主题--公司名称-图片内容摘要 这个规则。将目录中的图片内容摘要信息无法提现出内容含义的图片进行重命名，图片内容摘要的描述不超过30个字符
+
+/Users/james/Downloads/images/
+
+```
+
+**action**
+
+```
+
+cd "/Users/james/Downloads/images" && find . -name "*--*" -type f | grep -E "^[^-]+--[a-zA-Z0-9_-]+" | grep -E "(image|photo|screenshot|07_|08_|09_|12_|1_|screen|pic|img|jpg_|jpeg_|png_)" | wc -l
+
+```
+
+```
+
+- analysis--nobody-analysis_architecture.png → 数据分析架构图
+- portrait--jd-user_profiling_system.png → 用户画像系统
+- governance--kuaishou-data_governance_platform.jpeg → 数据治理平台
+- metrics--meituan-data_metrics.png → 数据指标
+- business--sensors-business_intelligence.png → 商业智能
+- lakehouse--nobody-lakehouse_architecture.jpg → 湖仓架构
+- olap--vipshop-clickhouse_optimization.jpg → Clickhouse优化
+- platform--xiaomi-realtime_data_platform.jpg → 实时数据平台
+- scheduler--alibaba-job_scheduling.png → 作业调度
+- ai--nobody-ai_integration.png → AI集成
+
+```
+
+
 ### markdown 文件操作 [<sub>返回目录</sub>](#目录)
 
 #### 为 markdown 文件的指定标题添加目录导航 [<sub>返回目录</sub>](#目录)
