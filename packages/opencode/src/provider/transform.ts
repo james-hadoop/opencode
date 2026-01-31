@@ -1,5 +1,5 @@
 import type { APICallError, ModelMessage } from "ai"
-import { unique } from "remeda"
+import { mergeDeep, unique } from "remeda"
 import type { JSONSchema } from "zod/v4/core"
 import type { Provider } from "./provider"
 import type { ModelsDev } from "./models"
@@ -20,12 +20,14 @@ export namespace ProviderTransform {
   function sdkKey(npm: string): string | undefined {
     switch (npm) {
       case "@ai-sdk/github-copilot":
+        return "copilot"
       case "@ai-sdk/openai":
       case "@ai-sdk/azure":
         return "openai"
       case "@ai-sdk/amazon-bedrock":
         return "bedrock"
       case "@ai-sdk/anthropic":
+      case "@ai-sdk/google-vertex/anthropic":
         return "anthropic"
       case "@ai-sdk/google-vertex":
       case "@ai-sdk/google":
@@ -81,7 +83,11 @@ export namespace ProviderTransform {
         return msg
       })
     }
-    if (model.providerID === "mistral" || model.api.id.toLowerCase().includes("mistral")) {
+    if (
+      model.providerID === "mistral" ||
+      model.api.id.toLowerCase().includes("mistral") ||
+      model.api.id.toLocaleLowerCase().includes("devstral")
+    ) {
       const result: ModelMessage[] = []
       for (let i = 0; i < msgs.length; i++) {
         const msg = msgs[i]
@@ -178,6 +184,9 @@ export namespace ProviderTransform {
       openaiCompatible: {
         cache_control: { type: "ephemeral" },
       },
+      copilot: {
+        copilot_cache_control: { type: "ephemeral" },
+      },
     }
 
     for (const msg of unique([...system, ...final])) {
@@ -186,18 +195,12 @@ export namespace ProviderTransform {
       if (shouldUseContentOptions) {
         const lastContent = msg.content[msg.content.length - 1]
         if (lastContent && typeof lastContent === "object") {
-          lastContent.providerOptions = {
-            ...lastContent.providerOptions,
-            ...providerOptions,
-          }
+          lastContent.providerOptions = mergeDeep(lastContent.providerOptions ?? {}, providerOptions)
           continue
         }
       }
 
-      msg.providerOptions = {
-        ...msg.providerOptions,
-        ...providerOptions,
-      }
+      msg.providerOptions = mergeDeep(msg.providerOptions ?? {}, providerOptions)
     }
 
     return msgs
@@ -248,6 +251,8 @@ export namespace ProviderTransform {
       model.providerID === "anthropic" ||
       model.api.id.includes("anthropic") ||
       model.api.id.includes("claude") ||
+      model.id.includes("anthropic") ||
+      model.id.includes("claude") ||
       model.api.npm === "@ai-sdk/anthropic"
     ) {
       msgs = applyCaching(msgs, model.providerID)
@@ -287,7 +292,10 @@ export namespace ProviderTransform {
     if (id.includes("glm-4.7")) return 1.0
     if (id.includes("minimax-m2")) return 1.0
     if (id.includes("kimi-k2")) {
-      if (id.includes("thinking")) return 1.0
+      // kimi-k2-thinking & kimi-k2.5 && kimi-k2p5
+      if (id.includes("thinking") || id.includes("k2.") || id.includes("k2p")) {
+        return 1.0
+      }
       return 0.6
     }
     return undefined
@@ -296,10 +304,9 @@ export namespace ProviderTransform {
   export function topP(model: Provider.Model) {
     const id = model.id.toLowerCase()
     if (id.includes("qwen")) return 1
-    if (id.includes("minimax-m2")) {
+    if (id.includes("minimax-m2") || id.includes("kimi-k2.5") || id.includes("kimi-k2p5") || id.includes("gemini")) {
       return 0.95
     }
-    if (id.includes("gemini")) return 0.95
     return undefined
   }
 
@@ -320,7 +327,14 @@ export namespace ProviderTransform {
     if (!model.capabilities.reasoning) return {}
 
     const id = model.id.toLowerCase()
-    if (id.includes("deepseek") || id.includes("minimax") || id.includes("glm") || id.includes("mistral")) return {}
+    if (
+      id.includes("deepseek") ||
+      id.includes("minimax") ||
+      id.includes("glm") ||
+      id.includes("mistral") ||
+      id.includes("kimi")
+    )
+      return {}
 
     // see: https://docs.x.ai/docs/guides/reasoning#control-how-hard-the-model-thinks
     if (id.includes("grok") && id.includes("grok-3-mini")) {
@@ -347,8 +361,21 @@ export namespace ProviderTransform {
         return Object.fromEntries(OPENAI_EFFORTS.map((effort) => [effort, { reasoningEffort: effort }]))
 
       case "@ai-sdk/github-copilot":
+        if (model.id.includes("gemini")) {
+          // currently github copilot only returns thinking
+          return {}
+        }
+        if (model.id.includes("claude")) {
+          return {
+            thinking: { thinking_budget: 4000 },
+          }
+        }
+        const copilotEfforts = iife(() => {
+          if (id.includes("5.1-codex-max") || id.includes("5.2")) return [...WIDELY_SUPPORTED_EFFORTS, "xhigh"]
+          return WIDELY_SUPPORTED_EFFORTS
+        })
         return Object.fromEntries(
-          WIDELY_SUPPORTED_EFFORTS.map((effort) => [
+          copilotEfforts.map((effort) => [
             effort,
             {
               reasoningEffort: effort,
@@ -367,6 +394,31 @@ export namespace ProviderTransform {
       case "@ai-sdk/deepinfra":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/deepinfra
       case "@ai-sdk/openai-compatible":
+        // When using openai-compatible SDK with Claude/Anthropic models,
+        // we must use snake_case (budget_tokens) as the SDK doesn't convert parameter names
+        // and the OpenAI-compatible API spec uses snake_case
+        if (
+          model.providerID === "anthropic" ||
+          model.api.id.includes("anthropic") ||
+          model.api.id.includes("claude") ||
+          model.id.includes("anthropic") ||
+          model.id.includes("claude")
+        ) {
+          return {
+            high: {
+              thinking: {
+                type: "enabled",
+                budget_tokens: 16000,
+              },
+            },
+            max: {
+              thinking: {
+                type: "enabled",
+                budget_tokens: 31999,
+              },
+            },
+          }
+        }
         return Object.fromEntries(WIDELY_SUPPORTED_EFFORTS.map((effort) => [effort, { reasoningEffort: effort }]))
 
       case "@ai-sdk/azure":
@@ -418,18 +470,20 @@ export namespace ProviderTransform {
         )
 
       case "@ai-sdk/anthropic":
-        // https://v5.ai-sdk.dev/providers/ai-sdk-providers/anthropic
+      // https://v5.ai-sdk.dev/providers/ai-sdk-providers/anthropic
+      case "@ai-sdk/google-vertex/anthropic":
+        // https://v5.ai-sdk.dev/providers/ai-sdk-providers/google-vertex#anthropic-provider
         return {
           high: {
             thinking: {
               type: "enabled",
-              budgetTokens: 16000,
+              budgetTokens: Math.min(16_000, Math.floor(model.limit.output / 2 - 1)),
             },
           },
           max: {
             thinking: {
               type: "enabled",
-              budgetTokens: 31999,
+              budgetTokens: Math.min(31_999, model.limit.output - 1),
             },
           },
         }
@@ -578,15 +632,18 @@ export namespace ProviderTransform {
     }
 
     if (input.model.api.id.includes("gpt-5") && !input.model.api.id.includes("gpt-5-chat")) {
-      if (input.model.providerID.includes("codex")) {
-        result["store"] = false
-      }
-
-      if (!input.model.api.id.includes("codex") && !input.model.api.id.includes("gpt-5-pro")) {
+      if (!input.model.api.id.includes("gpt-5-pro")) {
         result["reasoningEffort"] = "medium"
       }
 
-      if (input.model.api.id.endsWith("gpt-5.") && input.model.providerID !== "azure") {
+      // Only set textVerbosity for non-chat gpt-5.x models
+      // Chat models (e.g. gpt-5.2-chat-latest) only support "medium" verbosity
+      if (
+        input.model.api.id.includes("gpt-5.") &&
+        !input.model.api.id.includes("codex") &&
+        !input.model.api.id.includes("-chat") &&
+        input.model.providerID !== "azure"
+      ) {
         result["textVerbosity"] = "low"
       }
 
@@ -596,6 +653,11 @@ export namespace ProviderTransform {
         result["reasoningSummary"] = "auto"
       }
     }
+
+    if (input.model.providerID === "venice") {
+      result["promptCacheKey"] = input.sessionID
+    }
+
     return result
   }
 
@@ -636,9 +698,21 @@ export namespace ProviderTransform {
     const modelCap = modelLimit || globalLimit
     const standardLimit = Math.min(modelCap, globalLimit)
 
-    if (npm === "@ai-sdk/anthropic") {
+    // Handle thinking mode for @ai-sdk/anthropic, @ai-sdk/google-vertex/anthropic (budgetTokens)
+    // and @ai-sdk/openai-compatible with Claude (budget_tokens)
+    if (
+      npm === "@ai-sdk/anthropic" ||
+      npm === "@ai-sdk/google-vertex/anthropic" ||
+      npm === "@ai-sdk/openai-compatible"
+    ) {
       const thinking = options?.["thinking"]
-      const budgetTokens = typeof thinking?.["budgetTokens"] === "number" ? thinking["budgetTokens"] : 0
+      // Support both camelCase (for @ai-sdk/anthropic) and snake_case (for openai-compatible)
+      const budgetTokens =
+        typeof thinking?.["budgetTokens"] === "number"
+          ? thinking["budgetTokens"]
+          : typeof thinking?.["budget_tokens"] === "number"
+            ? thinking["budget_tokens"]
+            : 0
       const enabled = thinking?.["type"] === "enabled"
       if (enabled && budgetTokens > 0) {
         // Return text tokens so that text + thinking <= model cap, preferring 32k text when possible.
