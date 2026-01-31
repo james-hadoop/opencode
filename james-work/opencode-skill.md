@@ -372,3 +372,40 @@ if __name__ == "__main__":
 # 如果不指定文件路径，默认处理 opencode-skill.md
 
 ```
+
+
+### 制作 PPT
+
+#### 使用 kimi-k2.5-free 制作 PPT [<sub>返回目录</sub>](#目录)
+
+**prompt**
+
+```
+
+你是一名资深大数据架构师，精通大数据技术、指标体系和大模型应用，将 /Users/james/Downloads/ws4opencode/_LGTM_数据指标_大应--NoETL自动化指标平台打造分析自由_Aloudata大应科技 的内容整理成20页以内的 PPT
+
+如果涉及到使用 python 运行环境，使用 /Users/Shared/\_AllDocMap/02_Project/gitee/james-python/.conda/bin/python 这个 python 环境
+
+PPT 的格式是 pptx，制作完成后，将PPT 保存到 /Users/james/Downloads/ws4opencode/ppt 目录下
+
+```
+
+**action**
+
+```
+
+ls -la "/Users/james/Downloads/ws4opencode/"
+
+```
+
+```
+
+find "/Users/james/Downloads/ws4opencode/_LGTM_数据指标_大应--NoETL自动化指标平台打造分析自由_Aloudata大应科技" -type f 2>/dev/null | head -20
+
+```
+
+```
+
+cd /Users/james/Downloads/ws4opencode/ppt && /Users/Shared/_AllDocMap/02_Project/gitee/james-python/.conda/bin/python generate_ppt.py
+
+```
