@@ -1,15 +1,19 @@
 import { createStore } from "solid-js/store"
-import { createEffect, onCleanup } from "solid-js"
+import { createEffect, createMemo, onCleanup } from "solid-js"
+import { useParams } from "@solidjs/router"
 import { createSimpleContext } from "@opencode-ai/ui/context"
 import { useGlobalSDK } from "./global-sdk"
 import { useGlobalSync } from "./global-sync"
 import { usePlatform } from "@/context/platform"
+import { useLanguage } from "@/context/language"
 import { useSettings } from "@/context/settings"
 import { Binary } from "@opencode-ai/util/binary"
 import { base64Encode } from "@opencode-ai/util/encode"
+import { decode64 } from "@/utils/base64"
 import { EventSessionError } from "@opencode-ai/sdk/v2"
 import { Persist, persisted } from "@/utils/persist"
 import { playSound, soundSrc } from "@/utils/sound"
+import { buildNotificationIndex } from "./notification-index"
 
 type NotificationBase = {
   directory?: string
@@ -43,10 +47,20 @@ function pruneNotifications(list: Notification[]) {
 export const { use: useNotification, provider: NotificationProvider } = createSimpleContext({
   name: "Notification",
   init: () => {
+    const params = useParams()
     const globalSDK = useGlobalSDK()
     const globalSync = useGlobalSync()
     const platform = usePlatform()
     const settings = useSettings()
+    const language = useLanguage()
+
+    const empty: Notification[] = []
+
+    const currentDirectory = createMemo(() => {
+      return decode64(params.dir)
+    })
+
+    const currentSession = createMemo(() => params.id)
 
     const [store, setStore, _, ready] = persisted(
       Persist.global("notification", ["notification.v1"]),
@@ -68,18 +82,27 @@ export const { use: useNotification, provider: NotificationProvider } = createSi
       setStore("list", (list) => pruneNotifications([...list, notification]))
     }
 
+    const index = createMemo(() => buildNotificationIndex(store.list))
+
     const unsub = globalSDK.event.listen((e) => {
-      const directory = e.name
       const event = e.details
-      const base = {
-        directory,
-        time: Date.now(),
-        viewed: false,
+      if (event.type !== "session.idle" && event.type !== "session.error") return
+
+      const directory = e.name
+      const time = Date.now()
+      const viewed = (sessionID?: string) => {
+        const activeDirectory = currentDirectory()
+        const activeSession = currentSession()
+        if (!activeDirectory) return false
+        if (!activeSession) return false
+        if (!sessionID) return false
+        if (directory !== activeDirectory) return false
+        return sessionID === activeSession
       }
       switch (event.type) {
         case "session.idle": {
           const sessionID = event.properties.sessionID
-          const [syncStore] = globalSync.child(directory)
+          const [syncStore] = globalSync.child(directory, { bootstrap: false })
           const match = Binary.search(syncStore.session, sessionID, (s) => s.id)
           const session = match.found ? syncStore.session[match.index] : undefined
           if (session?.parentID) break
@@ -87,21 +110,26 @@ export const { use: useNotification, provider: NotificationProvider } = createSi
           playSound(soundSrc(settings.sounds.agent()))
 
           append({
-            ...base,
+            directory,
+            time,
+            viewed: viewed(sessionID),
             type: "turn-complete",
             session: sessionID,
           })
 
           const href = `/${base64Encode(directory)}/session/${sessionID}`
           if (settings.notifications.agent()) {
-            void platform.notify("Response ready", session?.title ?? sessionID, href)
+            void platform.notify(
+              language.t("notification.session.responseReady.title"),
+              session?.title ?? sessionID,
+              href,
+            )
           }
-
           break
         }
         case "session.error": {
           const sessionID = event.properties.sessionID
-          const [syncStore] = globalSync.child(directory)
+          const [syncStore] = globalSync.child(directory, { bootstrap: false })
           const match = sessionID ? Binary.search(syncStore.session, sessionID, (s) => s.id) : undefined
           const session = sessionID && match?.found ? syncStore.session[match.index] : undefined
           if (session?.parentID) break
@@ -110,18 +138,20 @@ export const { use: useNotification, provider: NotificationProvider } = createSi
 
           const error = "error" in event.properties ? event.properties.error : undefined
           append({
-            ...base,
+            directory,
+            time,
+            viewed: viewed(sessionID),
             type: "error",
             session: sessionID ?? "global",
             error,
           })
-
-          const description = session?.title ?? (typeof error === "string" ? error : "An error occurred")
+          const description =
+            session?.title ??
+            (typeof error === "string" ? error : language.t("notification.session.error.fallbackDescription"))
           const href = sessionID ? `/${base64Encode(directory)}/session/${sessionID}` : `/${base64Encode(directory)}`
           if (settings.notifications.errors()) {
-            void platform.notify("Session error", description, href)
+            void platform.notify(language.t("notification.session.error.title"), description, href)
           }
-
           break
         }
       }
@@ -132,10 +162,16 @@ export const { use: useNotification, provider: NotificationProvider } = createSi
       ready,
       session: {
         all(session: string) {
-          return store.list.filter((n) => n.session === session)
+          return index().session.all.get(session) ?? empty
         },
         unseen(session: string) {
-          return store.list.filter((n) => n.session === session && !n.viewed)
+          return index().session.unseen.get(session) ?? empty
+        },
+        unseenCount(session: string) {
+          return index().session.unseenCount.get(session) ?? 0
+        },
+        unseenHasError(session: string) {
+          return index().session.unseenHasError.get(session) ?? false
         },
         markViewed(session: string) {
           setStore("list", (n) => n.session === session, "viewed", true)
@@ -143,10 +179,16 @@ export const { use: useNotification, provider: NotificationProvider } = createSi
       },
       project: {
         all(directory: string) {
-          return store.list.filter((n) => n.directory === directory)
+          return index().project.all.get(directory) ?? empty
         },
         unseen(directory: string) {
-          return store.list.filter((n) => n.directory === directory && !n.viewed)
+          return index().project.unseen.get(directory) ?? empty
+        },
+        unseenCount(directory: string) {
+          return index().project.unseenCount.get(directory) ?? 0
+        },
+        unseenHasError(directory: string) {
+          return index().project.unseenHasError.get(directory) ?? false
         },
         markViewed(directory: string) {
           setStore("list", (n) => n.directory === directory, "viewed", true)

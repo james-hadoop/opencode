@@ -1,6 +1,6 @@
 import { createStore, produce } from "solid-js/store"
 import { createSimpleContext } from "@opencode-ai/ui/context"
-import { batch, createMemo, createRoot, onCleanup } from "solid-js"
+import { batch, createEffect, createMemo, createRoot, onCleanup } from "solid-js"
 import { useParams } from "@solidjs/router"
 import { useSDK } from "./sdk"
 import { Persist, persisted } from "@/utils/persist"
@@ -13,20 +13,38 @@ export type LocalPTY = {
   cols?: number
   buffer?: string
   scrollY?: number
+  tail?: string
 }
 
 const WORKSPACE_KEY = "__workspace__"
 const MAX_TERMINAL_SESSIONS = 20
 
-type TerminalSession = ReturnType<typeof createTerminalSession>
+export function getWorkspaceTerminalCacheKey(dir: string) {
+  return `${dir}:${WORKSPACE_KEY}`
+}
+
+export function getLegacyTerminalStorageKeys(dir: string, legacySessionID?: string) {
+  if (!legacySessionID) return [`${dir}/terminal.v1`]
+  return [`${dir}/terminal/${legacySessionID}.v1`, `${dir}/terminal.v1`]
+}
+
+type TerminalSession = ReturnType<typeof createWorkspaceTerminalSession>
 
 type TerminalCacheEntry = {
   value: TerminalSession
   dispose: VoidFunction
 }
 
-function createTerminalSession(sdk: ReturnType<typeof useSDK>, dir: string, session?: string) {
-  const legacy = session ? [`${dir}/terminal/${session}.v1`, `${dir}/terminal.v1`] : [`${dir}/terminal.v1`]
+function createWorkspaceTerminalSession(sdk: ReturnType<typeof useSDK>, dir: string, legacySessionID?: string) {
+  const legacy = getLegacyTerminalStorageKeys(dir, legacySessionID)
+
+  const numberFromTitle = (title: string) => {
+    const match = title.match(/^Terminal (\d+)$/)
+    if (!match) return
+    const value = Number(match[1])
+    if (!Number.isFinite(value) || value <= 0) return
+    return value
+  }
 
   const [store, setStore, _, ready] = persisted(
     Persist.workspace(dir, "terminal", legacy),
@@ -54,24 +72,36 @@ function createTerminalSession(sdk: ReturnType<typeof useSDK>, dir: string, sess
   })
   onCleanup(unsub)
 
+  const meta = { migrated: false }
+
+  createEffect(() => {
+    if (!ready()) return
+    if (meta.migrated) return
+    meta.migrated = true
+
+    setStore("all", (all) => {
+      const next = all.map((pty) => {
+        const direct = Number.isFinite(pty.titleNumber) && pty.titleNumber > 0 ? pty.titleNumber : undefined
+        if (direct !== undefined) return pty
+        const parsed = numberFromTitle(pty.title)
+        if (parsed === undefined) return pty
+        return { ...pty, titleNumber: parsed }
+      })
+      if (next.every((pty, index) => pty === all[index])) return all
+      return next
+    })
+  })
+
   return {
     ready,
     all: createMemo(() => Object.values(store.all)),
     active: createMemo(() => store.active),
     new() {
-      const parse = (title: string) => {
-        const match = title.match(/^Terminal (\d+)$/)
-        if (!match) return
-        const value = Number(match[1])
-        if (!Number.isFinite(value) || value <= 0) return
-        return value
-      }
-
       const existingTitleNumbers = new Set(
         store.all.flatMap((pty) => {
           const direct = Number.isFinite(pty.titleNumber) && pty.titleNumber > 0 ? pty.titleNumber : undefined
           if (direct !== undefined) return [direct]
-          const parsed = parse(pty.title)
+          const parsed = numberFromTitle(pty.title)
           if (parsed === undefined) return []
           return [parsed]
         }),
@@ -87,14 +117,15 @@ function createTerminalSession(sdk: ReturnType<typeof useSDK>, dir: string, sess
         .then((pty) => {
           const id = pty.data?.id
           if (!id) return
-          setStore("all", [
-            ...store.all,
-            {
-              id,
-              title: pty.data?.title ?? "Terminal",
-              titleNumber: nextNumber,
-            },
-          ])
+          const newTerminal = {
+            id,
+            title: pty.data?.title ?? "Terminal",
+            titleNumber: nextNumber,
+          }
+          setStore("all", (all) => {
+            const newAll = [...all, newTerminal]
+            return newAll
+          })
           setStore("active", id)
         })
         .catch((e) => {
@@ -102,7 +133,10 @@ function createTerminalSession(sdk: ReturnType<typeof useSDK>, dir: string, sess
         })
     },
     update(pty: Partial<LocalPTY> & { id: string }) {
-      setStore("all", (x) => x.map((x) => (x.id === pty.id ? { ...x, ...pty } : x)))
+      const index = store.all.findIndex((x) => x.id === pty.id)
+      if (index !== -1) {
+        setStore("all", index, (existing) => ({ ...existing, ...pty }))
+      }
       sdk.client.pty
         .update({
           ptyID: pty.id,
@@ -126,29 +160,46 @@ function createTerminalSession(sdk: ReturnType<typeof useSDK>, dir: string, sess
           return undefined
         })
       if (!clone?.data) return
-      setStore("all", index, {
-        ...pty,
-        ...clone.data,
+
+      const active = store.active === pty.id
+
+      batch(() => {
+        setStore("all", index, {
+          id: clone.data.id,
+          title: clone.data.title ?? pty.title,
+          titleNumber: pty.titleNumber,
+        })
+        if (active) {
+          setStore("active", clone.data.id)
+        }
       })
-      if (store.active === pty.id) {
-        setStore("active", clone.data.id)
-      }
     },
     open(id: string) {
       setStore("active", id)
     },
+    next() {
+      const index = store.all.findIndex((x) => x.id === store.active)
+      if (index === -1) return
+      const nextIndex = (index + 1) % store.all.length
+      setStore("active", store.all[nextIndex]?.id)
+    },
+    previous() {
+      const index = store.all.findIndex((x) => x.id === store.active)
+      if (index === -1) return
+      const prevIndex = index === 0 ? store.all.length - 1 : index - 1
+      setStore("active", store.all[prevIndex]?.id)
+    },
     async close(id: string) {
       batch(() => {
-        setStore(
-          "all",
-          store.all.filter((x) => x.id !== id),
-        )
+        const filtered = store.all.filter((x) => x.id !== id)
         if (store.active === id) {
           const index = store.all.findIndex((f) => f.id === id)
-          const previous = store.all[Math.max(0, index - 1)]
-          setStore("active", previous?.id)
+          const next = index > 0 ? index - 1 : 0
+          setStore("active", filtered[next]?.id)
         }
+        setStore("all", filtered)
       })
+
       await sdk.client.pty.remove({ ptyID: id }).catch((e) => {
         console.error("Failed to close terminal", e)
       })
@@ -193,8 +244,9 @@ export const { use: useTerminal, provider: TerminalProvider } = createSimpleCont
       }
     }
 
-    const load = (dir: string, session?: string) => {
-      const key = `${dir}:${WORKSPACE_KEY}`
+    const loadWorkspace = (dir: string, legacySessionID?: string) => {
+      // Terminals are workspace-scoped so tabs persist while switching sessions in the same directory.
+      const key = getWorkspaceTerminalCacheKey(dir)
       const existing = cache.get(key)
       if (existing) {
         cache.delete(key)
@@ -203,7 +255,7 @@ export const { use: useTerminal, provider: TerminalProvider } = createSimpleCont
       }
 
       const entry = createRoot((dispose) => ({
-        value: createTerminalSession(sdk, dir, session),
+        value: createWorkspaceTerminalSession(sdk, dir, legacySessionID),
         dispose,
       }))
 
@@ -212,7 +264,7 @@ export const { use: useTerminal, provider: TerminalProvider } = createSimpleCont
       return entry.value
     }
 
-    const workspace = createMemo(() => load(params.dir!, params.id))
+    const workspace = createMemo(() => loadWorkspace(params.dir!, params.id))
 
     return {
       ready: () => workspace().ready(),
@@ -224,6 +276,8 @@ export const { use: useTerminal, provider: TerminalProvider } = createSimpleCont
       open: (id: string) => workspace().open(id),
       close: (id: string) => workspace().close(id),
       move: (id: string, to: number) => workspace().move(id, to),
+      next: () => workspace().next(),
+      previous: () => workspace().previous(),
     }
   },
 })
