@@ -409,3 +409,194 @@ find "/Users/james/Downloads/ws4opencode/_LGTM_数据指标_大应--NoETL自动�
 cd /Users/james/Downloads/ws4opencode/ppt && /Users/Shared/_AllDocMap/02_Project/gitee/james-python/.conda/bin/python generate_ppt.py
 
 ```
+
+
+### 猪肉价格
+
+
+#### dd
+
+**prompt**
+
+```
+
+查询全国近3年每天的猪肉价格和猪肉成交量，存储成 csv 文件。其中，日期的格式为 yyyy-MM-dd 字符串
+
+注意：
+
+1. 如果涉及到使用 python 运行环境，使用 /Users/Shared/\_AllDocMap/02_Project/gitee/james-python/.conda/bin/python 这个 python 环境
+
+```
+
+### 股票分析
+
+#### 分析股票买卖建议
+
+**prompt**
+
+```
+
+根据历史股票价格数据，分析出买卖建议，并存储到 mysql 数据表 app.t_app_stock_trade_suggest_inc_d 中
+
+注意：
+
+分析的建议包括：
+1. 分别分析 day_of_week ,day_of_month 这两个维度的买入时机
+2. 买入时机与前3天成交量的相关性
+
+
+如果涉及到使用 python 运行环境，使用 /Users/Shared/\_AllDocMap/02_Project/gitee/james-python/.conda/bin/python 这个 python 环境
+
+数据库连接信息：
+  mysql:
+    charset: utf8mb4
+    driver: mysql+pymysql  
+    host: localhost
+    port: 3306
+    user: dev
+    password: "dEv#1234"
+    database: app
+    table: t_app_stock_business_inc_d
+
+mysql 查询语句：
+
+
+SELECT  ts_name
+       ,data_date
+       ,data_month
+       ,data_year
+       ,ts_code
+       ,ts_code AS formatted_ts_code
+       ,shou_pan
+       ,zhang_die_fu
+       ,cheng_jiao_liang
+       ,huan_shou_lv
+       ,day_of_week
+       ,day_of_month
+FROM dwd.dwd_stock_daily_data_with_name_and_date_attr_acc_d
+WHERE dt = '2026-01-31'
+AND ts_name = '农业银行'
+;
+
+```
+
+```
+
+分别计算2025年成交量和收盘价的10分位数、20分位数、30分位数、40分位数、50分位数、60分位数、70分位数、80分位数、90分位数、100分位数
+
+```
+
+**action**
+
+```python
+
+import pymysql
+import pandas as pd
+import numpy as np
+from scipy import stats
+conn = pymysql.connect(
+    host='localhost',
+    port=3306,
+    user='dev',
+    password='dEv#1234',
+    charset='utf8mb4'
+)
+df = pd.read_sql("""
+SELECT data_date, cheng_jiao_liang, shou_pan
+FROM dwd.dwd_stock_daily_data_with_name_and_date_attr_acc_d
+WHERE ts_name = '农业银行'
+AND data_date >= '2025-01-01'
+AND data_date <= '2025-12-31'
+ORDER BY data_date
+""", conn)
+df['volume'] = df['cheng_jiao_liang']
+df['price'] = df['shou_pan']
+print("=" * 60)
+print("农业银行 2025年 时间序列相关性分析")
+print("=" * 60)
+# 1. Pearson相关系数
+pearson_corr, pearson_p = stats.pearsonr(df['volume'], df['price'])
+print(f"\n1. Pearson相关系数 (衡量线性相关性)")
+print(f"   相关系数: {pearson_corr:.4f}")
+print(f"   P值: {pearson_p:.4e}")
+# 2. Spearman相关系数 (衡量单调相关性)
+spearman_corr, spearman_p = stats.spearmanr(df['volume'], df['price'])
+print(f"\n2. Spearman秩相关系数 (衡量单调相关性)")
+print(f"   相关系数: {spearman_corr:.4f}")
+print(f"   P值: {spearman_p:.4e}")
+# 3. 成交量变化率与价格变化率的相关性
+df['volume_pct'] = df['volume'].pct_change()
+df['price_pct'] = df['price'].pct_change()
+df_clean = df.dropna()
+pearson_change, _ = stats.pearsonr(df_clean['volume_pct'], df_clean['price_pct'])
+spearman_change, _ = stats.spearmanr(df_clean['volume_pct'], df_clean['price_pct'])
+print(f"\n3. 变化率相关性 (日环比)")
+print(f"   Pearson: {pearson_change:.4f}")
+print(f"   Spearman: {spearman_change:.4f}")
+# 4. 价格滞后相关性 (成交量领先/滞后)
+print(f"\n4. 价格滞后相关性分析")
+lags = range(-5, 6)
+lag_corrs = []
+for lag in lags:
+    if lag < 0:
+        corr = df['volume'].iloc[:lag].corr(df['price'].iloc[-lag:])
+    elif lag > 0:
+        corr = df['volume'].iloc[lag:].corr(df['price'].iloc[:-lag])
+    else:
+        corr = df['volume'].corr(df['price'])
+    lag_corrs.append(corr)
+    print(f"   滞后{lag:+d}天: {corr:.4f}")
+# 5. 滚动相关性
+print(f"\n5. 滚动相关性 (20日窗口)")
+df['rolling_corr'] = df['volume'].rolling(window=20).corr(df['price'])
+print(f"   平均滚动相关性: {df['rolling_corr'].mean():.4f}")
+print(f"   滚动相关性范围: [{df['rolling_corr'].min():.4f}, {df['rolling_corr'].max():.4f}]")
+# 6. 格兰杰因果检验 (简化版)
+print(f"\n6. 简要分析结论")
+if abs(pearson_corr) < 0.3:
+    strength = "弱"
+elif abs(pearson_corr) < 0.6:
+    strength = "中等"
+else:
+    strength = "强"
+    
+direction = "正相关" if pearson_corr > 0 else "负相关"
+print(f"   相关性强度: {strength}")
+print(f"   相关方向: {direction}")
+print("\n" + "=" * 60)
+conn.close()
+
+```
+
+#### 分析股票的主营业务
+
+**prompt**
+
+```
+
+根据以下数据库连接信息和股票查询语句，分析出每个股票的主营业务，并存储到 mysql 数据表 app.t_app_stock_business_inc_d 中
+
+注意：
+
+1. 如果涉及到使用 python 运行环境，使用 /Users/Shared/\_AllDocMap/02_Project/gitee/james-python/.conda/bin/python 这个 python 环境
+
+数据库连接信息：
+  mysql:
+    charset: utf8mb4
+    driver: mysql+pymysql  
+    host: localhost
+    port: 3306
+    user: dev
+    password: "dEv#1234"
+    database: app
+    table: t_app_stock_business_inc_d
+
+mysql 查询语句：
+
+SELECT ts_code, symbol, name, area, industry, cnspell, market, list_date, act_name, act_ent_type
+FROM app.t_app_stock_list_acc;
+
+
+
+```
+
