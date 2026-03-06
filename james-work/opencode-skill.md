@@ -600,3 +600,51 @@ FROM app.t_app_stock_list_acc;
 
 ```
 
+### 数据库操作
+
+#### 根据已有的数据表，新建数据表
+
+**prompt**
+
+```
+
+根据 本机 mysql 数据库中  app.t_app_pdf_meta_acc definition 的 建表语句，创建数据表：app.t_app_toutiao_article_acc，其中 [Pasted ~4 lines]  是必选字`created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `created_by` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '创建人员',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `updated_by` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '更新人员',配置文件：/Users/Shared/_AllDocMap/02_Project/gitee/python-app/app_local/article/config/app_article_config.yaml
+
+```
+
+**action**
+
+```
+
+$ mysql -h localhost -u dev -p'dEv#1234' app -e "SHOW CREATE TABLE app.t_app_pdf_meta_acc\G" 2>&1
+mysql: [Warning] Using a password on the command line interface can be insecure.
+*************************** 1. row ***************************
+       Table: t_app_pdf_meta_acc
+Create Table: CREATE TABLE `t_app_pdf_meta_acc` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `file_name` varchar(200) NOT NULL COMMENT '文件名',
+  `file_path` varchar(300) NOT NULL COMMENT '文件绝对路径',
+  `file_size_bytes` bigint DEFAULT NULL COMMENT '文件大小，单位字节',
+  `is_corrupted` tinyint(1) DEFAULT NULL COMMENT '是否损坏，0：正常，1：损坏',
+  `page_count` bigint DEFAULT NULL COMMENT '页数',
+  `error_type` varchar(500) DEFAULT NULL COMMENT '错误类型',
+  `validation_details_header_valid` tinyint(1) DEFAULT NULL,
+  `validation_details_footer_valid` tinyint(1) DEFAULT NULL,
+  `validation_details_page_content_valid` tinyint(1) DEFAULT NULL,
+  `validation_details_metadata_consistent` tinyint(1) DEFAULT NULL,
+  `validation_details_structure_intact` tinyint(1) DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `created_by` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '创建人员',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `updated_by` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '更新人员',
+  PRIMARY KEY (`id`),
+  KEY `idx_updated_at` (`updated_at`),
+  KEY `idx_file_name` (`file_name`),
+  KEY `idx_file_size_bytes` (`file_size_bytes`),
+  KEY `idx_page_count` (`page_count`)
+) ENGINE=InnoDB AUTO_INCREMENT=2290 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+```

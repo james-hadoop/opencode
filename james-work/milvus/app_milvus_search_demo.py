@@ -24,7 +24,7 @@ print(f"✓ 集合 {collection_name} 存在")
 
 def get_embedding(text):
     result = subprocess.run(
-        ['/Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/get_embedding.sh', text],
+        ['/Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/milvus/get_embedding.sh', text],
         capture_output=True,
         text=True,
         timeout=60
