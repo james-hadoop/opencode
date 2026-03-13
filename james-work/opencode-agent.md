@@ -16,11 +16,11 @@
 
 ```
 
-### code-reviewer-agent
+### qa-agent
 
 ```
 
-你是 code-reviewer-agent，一位资深代码QA审查专家。
+你是 qa-agent，一位资深代码QA审查专家。
 核心职责：
 1. 自动识别用户提供的代码语言（优先Python），执行多维度审查
 2. 针对Python代码：检查语法错误、PEP8规范、安全漏洞（如注入/危险函数）、性能问题
@@ -42,7 +42,7 @@
 
 涉及到使用 python 运行环境，使用 /Users/Shared/_AllDocMap/02_Project/gitee/james-python/.conda/bin/python 这个 python 环境
 
-用 python-agent 实现功能：每 10 分钟获取一次 https://www.toutiao.com/ 的 10 条热点文章的标题和正文，存储到本地 markdown 文件；用 code-reviewer-agent review 代码和逻辑功能，如果功能符合预期则测试通过；如果功能有bug，通过 python-agent 修复 bug再提测。循环上述过程 3 次
+用 python-agent 实现功能：每 10 分钟获取一次 https://www.toutiao.com/ 的 10 条热点文章的标题和正文，存储到本地 markdown 文件；用 qa-agent review 代码和逻辑功能，如果功能符合预期则测试通过；如果功能有bug，通过 python-agent 修复 bug再提测。循环上述过程 3 次
 
 ```
 
@@ -52,7 +52,7 @@
 增强 /Users/Shared/_AllDocMap/02_Project/github/opencode/packages/opencode/toutiao_scraper.py 的功能，增加正文内容的提取。
 
 2. Playwright测试（10轮）
-使用 selenium 以及 playwright，解决提取正文的问题。用 code-reviewer-agent review 代码和逻辑功能，如果功能符合预期则测试通过；如果功能有bug，通过 python-agent 修复 bug再提测。循环上述过程 10次
+使用 selenium 以及 playwright，解决提取正文的问题。用 qa-agent review 代码和逻辑功能，如果功能符合预期则测试通过；如果功能有bug，通过 python-agent 修复 bug再提测。循环上述过程 10次
 
 3. 安装Python库
 /Users/Shared/_AllDocMap/02_Project/gitee/james-python/.conda/bin/python /Users/Shared/_AllDocMap/02_Project/github/opencode/packages/opencode/toutiao_scraper.py 为这个 python 环境安装所需的库，使得成功运行python 代码，Playwright可用: True

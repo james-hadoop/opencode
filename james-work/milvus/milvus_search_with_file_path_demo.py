@@ -13,14 +13,14 @@ os.environ['GLOG_logtostderr'] = '0'
 warnings.filterwarnings('ignore')
 
 milvus_uri = "http://localhost:19530"
-collection_name = "qixiang_md_demo"
+collection_name = "XiXiang_DiMian_2"
 
 def get_embedding(text):
     result = subprocess.run(
         ['/Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/milvus/get_embedding.sh', text],
         capture_output=True,
         text=True,
-        timeout=60
+        timeout=600
     )
     return json.loads(result.stdout.strip())
 
@@ -86,7 +86,7 @@ def read_content_from_content_list_file(content_list_file_list: str) -> str:
     texts = [item["text"] for item in content_list if item.get("type") == "text"]
     return " ".join(texts)
 
-def chunk_content_by_size(content: str, chunk_size: int = 8192) -> list[str]:
+def chunk_content_by_size(content: str, chunk_size: int = 1024) -> list[str]:
     """Split content into chunks of specified size.
     
     Args:
@@ -106,7 +106,7 @@ def insert_data_with_file_path(file_md_list: list, file_path_list: list, content
     for content_list_file, file_path in zip(content_list_file_list, file_path_list):
         # 将 content_list 先合并，再按照 chunk_size 分块
         content = read_content_from_content_list_file(content_list_file).encode('utf-8').decode('utf-8', errors='ignore')
-        content_list = chunk_content_by_size(content)
+        content_list = chunk_content_by_size(content=content, chunk_size=1024)
 
         # # 使用 MinerU 的提取结果进行分块
         # content_list = read_content_list_from_content_list_file(content_list_file)
@@ -177,13 +177,14 @@ SELECT  id
        ,updated_at
        ,updated_by
 FROM app.t_app_extract_md_from_article
-WHERE id BETWEEN 1772 AND 1900
--- WHERE id BETWEEN 1790 AND 1800
+WHERE 1 = 1
+AND id BETWEEN 2185 AND 2209
 -- AND id = 1793
 -- AND file_name LIKE '%中国气象局气象观测质量管理体系质量手册%'
 AND file_md is not null
 AND LENGTH(file_md) > 10
 ORDER BY id DESC
+LIMIT 30
 ;
 """
 

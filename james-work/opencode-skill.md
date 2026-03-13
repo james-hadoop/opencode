@@ -1,6 +1,5 @@
 ### 目录
 
-- [目录](#目录)
 - [下载B站视频](#下载b站视频)
   - [下载单个B站视频](#下载单个b站视频)
   - [下载B站视频列表](#下载b站视频列表)
@@ -9,9 +8,18 @@
 - [精简文件名](#精简文件名)
   - [精简指定目录下的文件名](#精简指定目录下的文件名)
   - [根据文件名称，找到缺失的文件](#根据文件名称找到缺失的文件)
+  - [重命名图片文件](#重命名图片文件)
 - [markdown 文件操作](#markdown-文件操作)
   - [为 markdown 文件的指定标题添加目录导航](#为-markdown-文件的指定标题添加目录导航)
   - [markdown 目录自动更新](#markdown-目录自动更新)
+- [制作 PPT](#制作-ppt)
+  - [使用 kimi-k2.5-free 制作 PPT](#使用-kimi-k25-free-制作-ppt)
+- [猪肉价格](#猪肉价格)
+- [股票分析](#股票分析)
+  - [分析股票买卖建议](#分析股票买卖建议)
+  - [分析股票的主营业务](#分析股票的主营业务)
+- [数据库操作](#数据库操作)
+  - [根据已有的数据表，新建数据表](#根据已有的数据表新建数据表)
 
 ---
 
@@ -259,7 +267,6 @@ cd "/Users/james/Downloads/images" && find . -name "*--*" -type f | grep -E "^[^
 
 ```
 
-
 ### markdown 文件操作 [<sub>返回目录</sub>](#目录)
 
 #### 为 markdown 文件的指定标题添加目录导航 [<sub>返回目录</sub>](#目录)
@@ -373,7 +380,6 @@ if __name__ == "__main__":
 
 ```
 
-
 ### 制作 PPT
 
 #### 使用 kimi-k2.5-free 制作 PPT [<sub>返回目录</sub>](#目录)
@@ -410,9 +416,7 @@ cd /Users/james/Downloads/ws4opencode/ppt && /Users/Shared/_AllDocMap/02_Project
 
 ```
 
-
 ### 猪肉价格
-
 
 #### dd
 
@@ -450,7 +454,7 @@ cd /Users/james/Downloads/ws4opencode/ppt && /Users/Shared/_AllDocMap/02_Project
 数据库连接信息：
   mysql:
     charset: utf8mb4
-    driver: mysql+pymysql  
+    driver: mysql+pymysql
     host: localhost
     port: 3306
     user: dev
@@ -559,7 +563,7 @@ elif abs(pearson_corr) < 0.6:
     strength = "中等"
 else:
     strength = "强"
-    
+
 direction = "正相关" if pearson_corr > 0 else "负相关"
 print(f"   相关性强度: {strength}")
 print(f"   相关方向: {direction}")
@@ -583,7 +587,7 @@ conn.close()
 数据库连接信息：
   mysql:
     charset: utf8mb4
-    driver: mysql+pymysql  
+    driver: mysql+pymysql
     host: localhost
     port: 3306
     user: dev
