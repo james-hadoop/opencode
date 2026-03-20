@@ -53,14 +53,15 @@ class ChatType(str, Enum):
 
 
 class FeishuConfig(BaseModel):
-    app_id: str
-    app_secret: str
+    app_id: str = "cli_a92e7a228b38dcd4"
+    app_secret: str = "hpIQx2hMoNO2XT5NmvNU7bPIyaDtGVZl"
     encrypt_key: Optional[str] = None
     verification_token: Optional[str] = None
     domain: FeishuDomain = FeishuDomain.FEISHU
     connection_mode: ConnectionMode = ConnectionMode.WEBHOOK
     webhook_port: int = 8000
     webhook_path: str = "/webhook"
+    auto_approve_users: bool = True  # Auto-approve all users for easy testing
 
 
 class FeishuMessageEvent(BaseModel):
@@ -363,6 +364,11 @@ class FeishuChannelService:
         self._msg_queue: queue.Queue = queue.Queue()
         self._received_messages: list[dict] = []
         self._opencode_api_url: str = "http://localhost:18000"
+        self._auto_approve_users: bool = config.auto_approve_users
+        
+        # Auto-approve all users if configured
+        if self._auto_approve_users:
+            logger.info("Auto-approve users mode enabled")
     
     def set_opencode_api_url(self, url: str):
         """设置 OpenCode API 地址"""
@@ -779,9 +785,6 @@ class FeishuChannelService:
                 logger.warning(f"No response from OpenCode API")
         except Exception as e:
             logger.error(f"Failed to call OpenCode API: {e}")
-        
-        # 分发消息
-        await self._dispatch_message(context)
     
     async def _dispatch_message(self, context: FeishuMessageContext):
         """分发消息到注册的回调"""
@@ -790,8 +793,8 @@ class FeishuChannelService:
         if len(self._received_messages) > 100:
             self._received_messages = self._received_messages[-100:]
         
-        # 未配对用户直接返回，不处理消息
-        if context.chat_type == ChatType.P2P:
+        # 未配对用户直接返回，不处理消息 (如果未开启自动批准)
+        if not self._auto_approve_users and context.chat_type == ChatType.P2P:
             sender_id = getattr(context, 'sender_open_id', '') or getattr(context, 'sender_id', '')
             if sender_id and not self.pairing_store.is_approved(sender_id):
                 return
@@ -1248,7 +1251,12 @@ async def webhook(
             logger.info(f"Duplicate message ignored: {context.message_id}")
             return {"code": 0, "msg": "duplicate ignored"}
         
+        # 分发消息到回调
         await state.service._dispatch_message(context)
+        
+        # 处理用户消息并转发到 OpenCode 服务
+        sender_id = context.sender_open_id or context.sender_id
+        await state.service._process_user_message(context, sender_id)
     
     return {"code": 0, "msg": "success"}
 
@@ -1624,8 +1632,8 @@ async def internal_message(req: dict):
             await state.service._handle_command(context, sender_id)
             return {"code": 0}
         
-        # 检查配对
-        if context.chat_type == ChatType.P2P and sender_id:
+        # 检查配对 (如果未开启自动批准)
+        if not state.service._auto_approve_users and context.chat_type == ChatType.P2P and sender_id:
             if not state.service.pairing_store.is_approved(sender_id):
                 code, is_new = state.service.pairing_store.create_pairing_request(sender_id, "")
                 logger.info(f"Pairing request created for {sender_id}: code={code}")
@@ -1646,13 +1654,49 @@ async def internal_message(req: dict):
     return {"code": 0}
 
 
+# 默认配置 - 使用提供的飞书机器人凭证
+DEFAULT_APP_ID = "cli_a92e7a228b38dcd4"
+DEFAULT_APP_SECRET = "hpIQx2hMoNO2XT5NmvNU7bPIyaDtGVZl"
+
+
 def create_app() -> FastAPI:
     """创建 FastAPI 应用"""
     
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         logger.info("Feishu Channel API starting...")
+        
+        # 自动初始化服务配置
+        if not state.service:
+            config = FeishuConfig(
+                app_id=DEFAULT_APP_ID,
+                app_secret=DEFAULT_APP_SECRET,
+                domain=FeishuDomain.FEISHU,
+                connection_mode=ConnectionMode.WEBHOOK,
+                webhook_port=8000,
+                webhook_path="/webhook",
+                auto_approve_users=True,  # Auto-approve users for easy testing
+            )
+            
+            state.config = config
+            state.service = FeishuChannelService(config)
+            
+            # 获取机器人信息
+            try:
+                bot_info = await state.service.get_bot_info()
+                if bot_info:
+                    bot_data = bot_info.get("bot", {})
+                    state.service._bot_open_id = bot_data.get("open_id")
+                    logger.info(f"Bot open_id: {state.service._bot_open_id}")
+            except Exception as e:
+                logger.warning(f"Failed to get bot info: {e}")
+            
+            # 默认使用 Webhook 模式
+            logger.info(f"Feishu channel service initialized with config: domain={config.domain}, mode={config.connection_mode}")
+            logger.info(f"App ID: {DEFAULT_APP_ID[:8]}****")
+        
         yield
+        
         if state.service:
             await state.service.api.close()
         logger.info("Feishu Channel API shutting down...")

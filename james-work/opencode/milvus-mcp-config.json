@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "milvus-search": {
+      "type": "local",
+      "command": "/Users/Shared/_AllDocMap/02_Project/gitee/james-python/.conda/bin/python",
+      "args": ["/Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/opencode/app_milvus_mcp.py"],
+      "env": {}
+    }
+  }
+}

@@ -48,6 +48,7 @@ export namespace Skill {
   const EXTERNAL_SKILL_PATTERN = "skills/**/SKILL.md"
   const OPENCODE_SKILL_PATTERN = "{skill,skills}/**/SKILL.md"
   const SKILL_PATTERN = "**/SKILL.md"
+  const OPENCODE_CONFIG_SKILL_PATTERN = "skills/**/SKILL.md"
 
   export const state = Instance.state(async () => {
     const skills: Record<string, Info> = {}
@@ -123,6 +124,20 @@ export namespace Skill {
     for (const dir of await Config.directories()) {
       const matches = await Glob.scan(OPENCODE_SKILL_PATTERN, {
         cwd: dir,
+        absolute: true,
+        include: "file",
+        symlink: true,
+      })
+      for (const match of matches) {
+        await addSkill(match)
+      }
+    }
+
+    // Scan ~/.config/opencode/skills/ for oh-my-openagent compatibility
+    const opencodeConfigDir = path.join(Global.Path.config, "opencode", "skills")
+    if (await Filesystem.isDir(opencodeConfigDir)) {
+      const matches = await Glob.scan(OPENCODE_CONFIG_SKILL_PATTERN, {
+        cwd: opencodeConfigDir,
         absolute: true,
         include: "file",
         symlink: true,

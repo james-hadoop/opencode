@@ -82,6 +82,36 @@ Thinking: 用户想要下载从第1集到第198集的所有视频。我需要使
 
 ```
 
+### 下载飞书视频
+
+#### 下载单个飞书视频
+
+**prompt**
+
+```
+
+使用和增强 python 代码：/Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/opencode/app_video_feishu_video_downloader.py 下载今日头条视频。
+
+待下载的视频页面：https://www.toutiao.com/video/7613942451837780490/?app=news_article&category_new=tt_video_immerse&module_name=Android_tt_others&share_did=MS4wLjACAAAAi_3K-Bdl8FxAtlKsQg3ZUlNX5x0E-d6L-7jrTpSdNG8&share_uid=MS4wLjABAAAAKW63wJ9i-ORmR-N82xWxGChfXj21ZgMfuUztQ7WSN9MaNMYGLBiSm-2vWLjgi_b0&timestamp=1773484634&tt_from=feishu&upstream_biz=Android_others&utm_campaign=client_share&utm_medium=toutiao_android&utm_source=feishu&share_token=c4ce0908-c252-4d15-a122-2ea4c040fbea&source=m_redirect
+
+视频文件下载到：/Volumes/james1t/proj_opencode/video/  目录下，下载完毕后，打印出完整的视频路径，每一个视频文件对应的音频要一并下载，并合并成一个视频文件
+
+Python 运行环境：/Users/Shared/_AllDocMap/02_Project/gitee/james-python/.conda/bin/python
+
+```
+
+
+**action**
+
+```
+
+
+
+```
+
+
+
+
 ### 下载 youtube 视频 [<sub>返回目录</sub>](#目录)
 
 #### 下载单个 youtube 视频 [<sub>返回目录</sub>](#目录)

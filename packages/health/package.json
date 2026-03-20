@@ -1,0 +1,31 @@
+{
+  "name": "@opencode-ai/health",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "dev:api": "bun --bun src/api/server.ts",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solidjs/router": "catalog:",
+    "solid-js": "catalog:",
+    "hono": "catalog:",
+    "zod": "catalog:",
+    "drizzle-orm": "catalog:",
+    "drizzle-kit": "catalog:"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "catalog:",
+    "@tsconfig/bun": "1.0.9",
+    "@types/bun": "catalog:",
+    "@types/node": "catalog:",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plugin-solid": "catalog:"
+  }
+}

@@ -1,5 +1,6 @@
 import { BusEvent } from "@/bus/bus-event"
 import z from "zod"
+import path from "path"
 import { Config } from "../config/config"
 import { Instance } from "../project/instance"
 import { Identifier } from "../id/id"
@@ -7,6 +8,10 @@ import PROMPT_INITIALIZE from "./template/initialize.txt"
 import PROMPT_REVIEW from "./template/review.txt"
 import { MCP } from "../mcp"
 import { Skill } from "../skill"
+import { Global } from "@/global"
+import { Filesystem } from "@/util/filesystem"
+import { Glob } from "../util/glob"
+import { ConfigMarkdown } from "../config/markdown"
 
 export namespace Command {
   export const Event = {
@@ -134,6 +139,34 @@ export namespace Command {
           return skill.content
         },
         hints: [],
+      }
+    }
+
+    // Scan ~/.config/opencode/commands/ for oh-my-openagent compatibility
+    const opencodeConfigCommandDir = path.join(Global.Path.config, "opencode", "command")
+    if (await Filesystem.isDir(opencodeConfigCommandDir)) {
+      const commandMatches = await Glob.scan("*.md", {
+        cwd: opencodeConfigCommandDir,
+        absolute: true,
+        include: "file",
+        symlink: true,
+      })
+      for (const match of commandMatches) {
+        const name = path.basename(match, ".md")
+        if (result[name]) continue
+
+        const md = await ConfigMarkdown.parse(match).catch(() => undefined)
+        if (!md) continue
+
+        result[name] = {
+          name,
+          description: md.data.description as string | undefined,
+          source: "command",
+          get template() {
+            return md.content
+          },
+          hints: hints(md.content),
+        }
       }
     }
 
