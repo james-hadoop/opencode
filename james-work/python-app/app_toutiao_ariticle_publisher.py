@@ -1,17 +1,29 @@
 #!/usr/bin/env python3
 """
-今日头条文章发布器 v2.0
+今日头条文章发布器 v3.2
 将本地 markdown 文件中的文字和图片发布到今日头条
 支持 Playwright 浏览器自动化发布
+
+增强功能:
+    - 智能元素定位 (Playwright 高级定位器)
+    - 自动重试机制 (失败自动重试)
+    - 改进的图片上传流程
+    - 发布确认弹窗自动处理
+    - 截图调试功能
+    - 更稳定的发布流程
+    - React 兼容的事件派发 (修复表单状态检测)
+    - 分类键盘导航选择 (解决点击无法选择问题)
 
 使用方法:
     python app_toutiao_ariticle_publisher.py -f <markdown文件路径>
     python app_toutiao_ariticle_publisher.py --debug  # 开启调试模式
-    python app_toutiao_ariticle_publisher.py --multi -f <多文章文件> -n 5  # 多文章模式
+    python app_toutiao_ariticle_publisher.py --screenshot  # 保存调试截图
+    python app_toutiao_ariticle_publisher.py --retry 3  # 失败重试次数
 """
 
 from __future__ import annotations
 import argparse
+import functools
 import gzip
 import json
 import os
@@ -24,15 +36,68 @@ import urllib.error
 import urllib.parse
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, List, Tuple, Dict, Any
+from typing import Optional, List, Tuple, Dict, Any, Callable
+from dataclasses import dataclass
 
 DEBUG_MODE = False
+SCREENSHOT_MODE = False
 PUBLISH_TIMEOUT = 30000
+MAX_RETRIES = 3
+
+@dataclass
+class RetryConfig:
+    max_attempts: int = 3
+    delay: float = 1.0
+    backoff: float = 2.0
+    exceptions: tuple = (Exception,)
 
 def log(msg: str) -> None:
     """调试日志"""
     if DEBUG_MODE:
         print(f"[DEBUG] {datetime.now().strftime('%H:%M:%S')} {msg}")
+
+def screenshot_on_error(func: Callable) -> Callable:
+    """失败时自动截图的装饰器"""
+    @functools.wraps(func)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except Exception as e:
+            if SCREENSHOT_MODE and hasattr(self, 'page'):
+                try:
+                    ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+                    self.page.screenshot(path=f"debug_error_{ts}.png", full_page=True)
+                    log(f"错误截图已保存: debug_error_{ts}.png")
+                except:
+                    pass
+            raise
+    return wrapper
+
+def retry_on_failure(config: RetryConfig = RetryConfig()):
+    if config is None:
+        config = RetryConfig()
+    
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            last_exception = None
+            delay = config.delay
+            
+            for attempt in range(1, config.max_attempts + 1):
+                try:
+                    return func(*args, **kwargs)
+                except config.exceptions as e:
+                    last_exception = e
+                    if attempt < config.max_attempts:
+                        log(f"第 {attempt} 次尝试失败: {e}, {delay}s 后重试...")
+                        time.sleep(delay)
+                        delay *= config.backoff
+                    else:
+                        log(f"已达到最大重试次数 ({config.max_attempts})")
+            
+            raise last_exception
+        return wrapper
+    return decorator
 
 def print_step(step: str, msg: str) -> None:
     """打印步骤信息"""
@@ -309,7 +374,6 @@ def parse_toutiao_articles_markdown(file_path: str) -> List[Tuple[str, str, List
 
 
 class ToutiaoPublisher:
-    """今日头条发布器"""
     
     def __init__(self, headless: bool = False):
         self.headless = headless
@@ -319,6 +383,25 @@ class ToutiaoPublisher:
         self.cookies = self._load_cookies()
         self.playwright = None
         self.status = PublishStatus()
+        self._screenshot_dir = DATA_DIR / "screenshots"
+    
+    def _ensure_screenshot_dir(self) -> None:
+        if SCREENSHOT_MODE:
+            os.makedirs(self._screenshot_dir, exist_ok=True)
+    
+    def _take_debug_screenshot(self, name: str) -> Optional[str]:
+        if not SCREENSHOT_MODE:
+            return None
+        try:
+            self._ensure_screenshot_dir()
+            ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+            path = self._screenshot_dir / f"{name}_{ts}.png"
+            self.page.screenshot(path=str(path), full_page=True)
+            log(f"截图已保存: {path}")
+            return str(path)
+        except Exception as e:
+            log(f"截图失败: {e}")
+            return None
     
     def _load_cookies(self) -> list:
         if COOKIE_FILE.exists():
@@ -393,27 +476,48 @@ class ToutiaoPublisher:
             return False
     
     def _close_popups(self) -> None:
-        """关闭弹窗"""
         log("关闭弹窗")
         
         self.page.keyboard.press("Escape")
         self.page.wait_for_timeout(300)
         
+        close_patterns = [
+            '关闭',
+            '稍后',
+            '下次再说',
+            '我知道了',
+            '知道了',
+        ]
+        
+        for pattern in close_patterns:
+            try:
+                close_btn = self.page.locator('text=' + pattern).first
+                if close_btn.is_visible(timeout=500):
+                    close_btn.click()
+                    log(f"关闭弹窗: {pattern}")
+                    self.page.wait_for_timeout(300)
+            except Exception:
+                pass
+        
         try:
             close_selectors = [
-                '.byte-drawer-mask',
-                '[class*="mask"]',
-                '[class*="modal"] [class*="close"]',
                 '[aria-label="关闭"]',
-                'button[class*="close"]'
+                '[aria-label="close"]',
+                'button[class*="close"]',
+                'span[class*="close"]',
+                '.byte-drawer-mask',
+                '[class*="drawer"] [class*="close"]',
             ]
             
             for selector in close_selectors:
                 try:
                     overlays = self.page.locator(selector)
-                    for i in range(overlays.count()):
+                    for i in range(min(overlays.count(), 5)):
                         try:
-                            overlays.nth(i).click(timeout=500)
+                            if overlays.nth(i).is_visible(timeout=300):
+                                overlays.nth(i).click(timeout=500)
+                                log(f"关闭弹窗: {selector}")
+                                self.page.wait_for_timeout(200)
                         except Exception:
                             pass
                 except Exception:
@@ -423,87 +527,378 @@ class ToutiaoPublisher:
         
         self.page.wait_for_timeout(300)
     
+    def _check_form_state(self) -> Dict[str, bool]:
+        log("检查表单状态")
+        try:
+            result = self.page.evaluate("""
+                (function() {
+                    var title = document.querySelector('input[placeholder*="标题"]');
+                    if (!title) title = document.querySelector('textarea');
+                    if (!title) {
+                        var inputs = document.querySelectorAll('input, textarea');
+                        for (var i = 0; i < inputs.length; i++) {
+                            if (inputs[i].offsetParent !== null && inputs[i].value && inputs[i].value.length > 2) {
+                                title = inputs[i];
+                                break;
+                            }
+                        }
+                    }
+                    
+                    var editor = document.querySelector('.ProseMirror');
+                    if (!editor) {
+                        var editors = document.querySelectorAll('[contenteditable="true"]');
+                        for (var i = 0; i < editors.length; i++) {
+                            if (editors[i].offsetParent !== null) {
+                                editor = editors[i];
+                                break;
+                            }
+                        }
+                    }
+                    
+                    var cover = document.querySelector('[class*="cover"] img, [class*="cover-image"]');
+                    
+                    return {
+                        titleValue: title ? title.value : '',
+                        titleLength: title ? title.value.length : 0,
+                        editorText: editor ? editor.innerText : '',
+                        editorLength: editor ? editor.innerText.length : 0,
+                        coverExists: !!cover
+                    };
+                })()
+            """)
+            log(f"表单状态: {result}")
+            return result
+        except Exception as e:
+            log(f"检查表单状态失败: {e}")
+            return {}
+    
+    def _trigger_react_input_events(self) -> None:
+        log("触发 React 输入事件")
+        self.page.evaluate("""
+            (function() {
+                var title = document.querySelector('input[placeholder*="标题"]');
+                if (!title) title = document.querySelector('textarea');
+                if (title && title.value) {
+                    title.dispatchEvent(new Event('input', {bubbles: true}));
+                    title.dispatchEvent(new Event('change', {bubbles: true}));
+                    title.dispatchEvent(new Event('blur', {bubbles: true}));
+                }
+                
+                var editor = document.querySelector('.ProseMirror');
+                if (!editor) {
+                    var editors = document.querySelectorAll('[contenteditable="true"]');
+                    for (var i = 0; i < editors.length; i++) {
+                        if (editors[i].innerText && editors[i].innerText.length > 10) {
+                            editor = editors[i];
+                            break;
+                        }
+                    }
+                }
+                if (editor && editor.innerText) {
+                    editor.dispatchEvent(new Event('input', {bubbles: true}));
+                    editor.dispatchEvent(new Event('change', {bubbles: true}));
+                }
+            })()
+        """)
+    
+    def _fill_input_react(self, selector: str, value: str) -> bool:
+        """使用 React 兼容的方式填写输入框"""
+        escaped_value = value.replace("\\", "\\\\").replace("'", "\\'").replace("\n", "\\n")
+        js_script = f"""
+            (function() {{
+                var el = document.querySelector('{selector}');
+                if (!el) return 'not_found';
+                
+                // Focus the element
+                el.focus();
+                
+                // Clear existing value
+                el.select && el.select();
+                
+                // Set value directly (React controlled component pattern)
+                var nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                    window.HTMLInputElement.prototype, 'value'
+                )?.set || Object.getOwnPropertyDescriptor(
+                    window.HTMLTextAreaElement.prototype, 'value'
+                )?.set;
+                
+                if (nativeInputValueSetter) {{
+                    nativeInputValueSetter.call(el, '{escaped_value}');
+                }} else {{
+                    el.value = '{escaped_value}';
+                }}
+                
+                // Dispatch React-compatible events
+                var inputEvent = new Event('input', {{ bubbles: true, cancelable: true }});
+                var changeEvent = new Event('change', {{ bubbles: true, cancelable: true }});
+                var blurEvent = new Event('blur', {{ bubbles: true, cancelable: true }});
+                
+                el.dispatchEvent(inputEvent);
+                el.dispatchEvent(changeEvent);
+                
+                // Also try React's synthetic event
+                var reactHandler = el._valueTracker;
+                if (reactHandler) {{
+                    reactHandler.setValue('');
+                }}
+                el.dispatchEvent(inputEvent);
+                
+                setTimeout(function() {{
+                    el.dispatchEvent(blurEvent);
+                }}, 50);
+                
+                return el.value;
+            }})()
+        """
+        try:
+            result = self.page.evaluate(js_script)
+            log(f"React input fill result: '{str(result)[:50]}...'")
+            return result and len(str(result)) > 0
+        except Exception as e:
+            log(f"React input fill failed: {e}")
+            return False
+    
     def _find_and_fill_title(self, title: str) -> bool:
-        """填写标题"""
         log(f"填写标题: {title[:20]}...")
         
+        # Try React-compatible fill first
         title_selectors = [
-            'textarea[placeholder*="标题"]',
             'input[placeholder*="标题"]',
-            'input:not([type="radio"]):not([type="checkbox"]):not([type="file"])'
+            'input[placeholder*="title" i]',
+            'textarea',
+            'input[class*="title"]',
+            'input[class*="Title"]',
         ]
         
         for selector in title_selectors:
             try:
-                inputs = self.page.locator(selector)
-                count = inputs.count()
+                count = self.page.locator(selector).count()
                 log(f"标题选择器 '{selector}' 找到 {count} 个")
                 
                 for i in range(min(count, 10)):
-                    inp = inputs.nth(i)
                     try:
-                        if inp.is_visible(timeout=500):
+                        inp = self.page.locator(selector).nth(i)
+                        if inp.is_visible(timeout=1000):
                             bbox = inp.bounding_box()
-                            if bbox and bbox['width'] > 100 and bbox['height'] > 20:
-                                inp.click(timeout=1000)
+                            if bbox and bbox['width'] > 50 and bbox['height'] > 10:
+                                log(f"尝试 React 方式填写: {selector} [{i}]")
+                                
+                                # Use React-compatible fill
+                                selector_escaped = selector.replace("'", "\\'")
+                                if self._fill_input_react(selector_escaped, title):
+                                    self.page.wait_for_timeout(300)
+                                    self._take_debug_screenshot("title_filled")
+                                    log("标题填写成功")
+                                    return True
+                                
+                                # Fallback to click + type
+                                inp.click(timeout=500)
+                                self.page.wait_for_timeout(200)
                                 inp.fill(title)
-                                log("标题填写成功")
-                                return True
-                    except Exception:
+                                self.page.wait_for_timeout(200)
+                                
+                                # Trigger React events
+                                self.page.evaluate(f"""
+                                    (function() {{
+                                        var el = document.querySelector('{selector_escaped}');
+                                        if (el) {{
+                                            el.dispatchEvent(new Event('input', {{bubbles: true}}));
+                                            el.dispatchEvent(new Event('change', {{bubbles: true}}));
+                                        }}
+                                    }})()
+                                """)
+                                
+                                self.page.wait_for_timeout(200)
+                                self.page.keyboard.press("Tab")
+                                self.page.wait_for_timeout(200)
+                                
+                                # Verify
+                                result = self.page.evaluate("""
+                                    (function() {
+                                        var inputs = document.querySelectorAll('input, textarea');
+                                        for (var i = 0; i < inputs.length; i++) {
+                                            if (inputs[i].value && inputs[i].value.length > 2) {
+                                                return inputs[i].value;
+                                            }
+                                        }
+                                        return '';
+                                    })()
+                                """)
+                                log(f"标题值: '{result[:30]}...'")
+                                
+                                if len(result) > 2:
+                                    self._take_debug_screenshot("title_filled")
+                                    log("标题填写成功")
+                                    return True
+                    except Exception as e:
+                        log(f"标题输入失败: {e}")
                         continue
-            except Exception:
+            except Exception as e:
+                log(f"标题选择器失败: {e}")
                 continue
         
-        log("标题填写失败，使用 Tab")
+        log("使用备用方式填写标题 (keyboard)")
         self.page.keyboard.press("Tab")
         self.page.keyboard.type(title, delay=30)
+        self.page.wait_for_timeout(300)
         return True
     
     def _fill_editor(self, content: str) -> bool:
-        """填写编辑器内容"""
         log(f"填写内容，长度: {len(content)} 字符")
         
-        editor_selectors = [
-            '.ProseMirror',
-            '[contenteditable="true"]',
-            'div[contenteditable="true"]'
-        ]
+        editor_selectors = ['.ProseMirror', '[contenteditable="true"]', 'div[role="textbox"]']
         
+        editor = None
+        editor_selector = None
         for selector in editor_selectors:
             try:
                 candidates = self.page.locator(selector)
                 count = candidates.count()
                 log(f"编辑器选择器 '{selector}' 找到 {count} 个")
                 
-                if count > 0:
-                    for i in range(min(count, 3)):
-                        editor = candidates.nth(i)
-                        try:
-                            if editor.is_visible(timeout=500):
-                                bbox = editor.bounding_box()
-                                if bbox and bbox['width'] > 200 and bbox['height'] > 100:
-                                    editor.click(timeout=1000)
-                                    log("编辑器已点击")
-                                    break
-                        except Exception:
-                            continue
-            except Exception:
+                for i in range(min(count, 5)):
+                    candidate = candidates.nth(i)
+                    if candidate.is_visible(timeout=1000):
+                        bbox = candidate.bounding_box()
+                        if bbox and bbox['width'] > 100 and bbox['height'] > 50:
+                            editor = candidate
+                            editor_selector = selector
+                            log(f"找到编辑器: {selector} [{i}]")
+                            break
+                
+                if editor:
+                    break
+            except:
                 continue
         
-        paragraphs = [p.strip() for p in content.split('\n\n') if p.strip()]
-        total = len(paragraphs)
+        if editor is None:
+            log("未找到编辑器")
+            return False
         
-        for idx, para in enumerate(paragraphs):
-            log(f"输入段落 {idx+1}/{total}")
-            self.page.keyboard.type(para, delay=10)
-            self.page.keyboard.press("Enter")
-            self.page.wait_for_timeout(30)
+        escaped_content = content.replace("\\", "\\\\").replace("'", "\\'")
+        js_script = f"""
+            (function() {{
+                var editor = document.querySelector('{editor_selector}');
+                if (!editor) return 'not_found';
+                
+                // Focus
+                editor.focus();
+                
+                // Clear existing content using keyboard
+                var selectAll = new KeyboardEvent('keydown', {{
+                    key: 'a',
+                    code: 'KeyA',
+                    ctrlKey: true,
+                    bubbles: true
+                }});
+                document.dispatchEvent(selectAll);
+                
+                var deleteKey = new KeyboardEvent('keydown', {{
+                    key: 'Delete',
+                    code: 'Delete',
+                    bubbles: true
+                }});
+                document.dispatchEvent(deleteKey);
+                
+                // Insert content
+                var lines = '{escaped_content}'.split('\\n');
+                
+                for (var i = 0; i < lines.length; i++) {{
+                    if (lines[i].length > 0) {{
+                        // Insert text
+                        var textNode = document.createTextNode(lines[i]);
+                        editor.appendChild(textNode);
+                    }}
+                    
+                    if (i < lines.length - 1) {{
+                        // Add paragraph break
+                        document.execCommand('insertLineBreak', false, null);
+                        var p = document.createElement('p');
+                        p.innerHTML = '<br>';
+                        editor.appendChild(p);
+                    }}
+                }}
+                
+                // Trigger React input event
+                var inputEvent = new InputEvent('input', {{
+                    bubbles: true,
+                    cancelable: true,
+                    inputType: 'insertText',
+                    data: '{escaped_content[:100]}...'
+                }});
+                editor.dispatchEvent(inputEvent);
+                
+                // Also dispatch custom events that React listens to
+                var eventTypes = ['input', 'change', 'textInput', 'keydown', 'keyup'];
+                eventTypes.forEach(function(type) {{
+                    var evt = new Event(type, {{ bubbles: true, cancelable: true }});
+                    editor.dispatchEvent(evt);
+                }});
+                
+                return editor.innerText;
+            }})()
+        """
         
+        try:
+            result = self.page.evaluate(js_script)
+            log(f"编辑器内容长度 (JS): {len(str(result)) if result else 0}")
+            
+            if result and len(str(result)) > 10:
+                self._take_debug_screenshot("content_filled")
+                log("内容填写完成")
+                return True
+        except Exception as e:
+            log(f"JS 方式失败: {e}")
+        
+        try:
+            editor.click(timeout=1000)
+        except:
+            try:
+                bbox = editor.bounding_box()
+                if bbox:
+                    self.page.mouse.click(bbox['x'] + bbox['width']/2, bbox['y'] + bbox['height']/2)
+            except:
+                pass
+        
+        self.page.wait_for_timeout(500)
+        self.page.keyboard.press("Control+a")
+        self.page.wait_for_timeout(200)
+        self.page.keyboard.press("Delete")
+        self.page.wait_for_timeout(200)
+        self.page.keyboard.type(content, delay=1)
+        self.page.wait_for_timeout(500)
+        
+        self.page.evaluate("""
+            (function() {
+                var editors = document.querySelectorAll('.ProseMirror, [contenteditable="true"]');
+                editors.forEach(function(editor) {
+                    var event = new Event('input', { bubbles: true, cancelable: true });
+                    editor.dispatchEvent(event);
+                });
+            })()
+        """)
+        
+        result = self.page.evaluate("""
+            (function() {
+                var editors = document.querySelectorAll('.ProseMirror, [contenteditable="true"]');
+                for (var i = 0; i < editors.length; i++) {
+                    if (editors[i].innerText && editors[i].innerText.length > 10) {
+                        return editors[i].innerText;
+                    }
+                }
+                return '';
+            })()
+        """)
+        log(f"编辑器内容长度: {len(result)}")
+        
+        editor.click()
+        self.page.wait_for_timeout(300)
+        
+        self._take_debug_screenshot("content_filled")
         log("内容填写完成")
         return True
     
     def _insert_images_to_editor(self, images: List[str]) -> int:
-        """向编辑器插入图片"""
         valid_images = [img for img in images if os.path.exists(img)]
         if not valid_images:
             log("没有有效图片")
@@ -514,169 +909,339 @@ class ToutiaoPublisher:
         inserted = 0
         for i, img_path in enumerate(valid_images[:9]):
             log(f"尝试插入图片 {i+1}/{min(len(valid_images), 9)}")
+            img_inserted = False
+            
+            escaped_path = img_path.replace("\\", "\\\\").replace("'", "\\'")
+            
+            js_script = f"""
+                (function() {{
+                    var imgPath = '{escaped_path}';
+                    
+                    var fileInputs = document.querySelectorAll('input[type="file"]');
+                    for (var i = 0; i < fileInputs.length; i++) {{
+                        var inp = fileInputs[i];
+                        if (inp.accept && inp.accept.includes('image')) {{
+                            inp.style.display = 'block';
+                            inp.style.visibility = 'visible';
+                            inp.style.opacity = '1';
+                            inp.click();
+                            return 'image_input_clicked_' + i;
+                        }}
+                    }}
+                    
+                    var toolbarBtns = document.querySelectorAll('[class*="toolbar"] button, [class*="toolbar"] [role="button"], [class*="editor"] button');
+                    for (var i = 0; i < toolbarBtns.length; i++) {{
+                        var btn = toolbarBtns[i];
+                        var svg = btn.querySelector('svg');
+                        var ariaLabel = btn.getAttribute('aria-label') || '';
+                        var title = btn.getAttribute('title') || '';
+                        var text = btn.textContent || '';
+                        
+                        if (ariaLabel.toLowerCase().includes('image') || 
+                            ariaLabel.includes('图片') ||
+                            title.toLowerCase().includes('image') ||
+                            title.includes('图片') ||
+                            text.includes('图片') ||
+                            (svg && ariaLabel === '' && title === '')) {{
+                            btn.click();
+                            return 'toolbar_btn_' + i + '_' + ariaLabel;
+                        }}
+                    }}
+                    
+                    return 'not_found';
+                }})()
+            """
             
             try:
-                img_buttons = self.page.locator('button:has-text("图片"), [aria-label*="图片"], [aria-label*="image"]')
-                if img_buttons.count() > 0:
-                    for j in range(min(img_buttons.count(), 3)):
-                        btn = img_buttons.nth(j)
-                        if btn.is_visible(timeout=500):
-                            try:
-                                with self.page.expect_file_chooser(timeout=2000) as fc_info:
-                                    btn.click()
-                                fc_info.value.set_files([img_path])
-                                inserted += 1
-                                log(f"图片 {i+1} 插入成功")
-                                self.page.wait_for_timeout(2000)
-                                break
-                            except Exception as e:
-                                log(f"图片 {i+1} 插入失败: {e}")
-                                continue
+                js_result = self.page.evaluate(js_script)
+                log(f"JS 上传结果: {js_result}")
+                
+                self.page.wait_for_timeout(1000)
+                
+                try:
+                    file_inputs = self.page.locator('input[type="file"]')
+                    for j in range(file_inputs.count()):
+                        inp = file_inputs.nth(j)
+                        try:
+                            inp.set_input_files(img_path)
+                            inserted += 1
+                            img_inserted = True
+                            log(f"图片 {i+1} 上传成功 (input #{j})")
+                            self.page.wait_for_timeout(3000)
+                            break
+                        except:
+                            continue
+                except Exception as e:
+                    log(f"文件上传失败: {e}")
             except Exception as e:
-                log(f"插入图片 {i+1} 出错: {e}")
+                log(f"JS 执行失败: {e}")
+            
+            if not img_inserted:
+                self._take_debug_screenshot(f"image_upload_failed_{i+1}")
         
+        self._take_debug_screenshot("images_inserted")
         log(f"图片插入完成: {inserted} 张")
         return inserted
     
     def _select_cover_image(self) -> int:
-        """选择封面图，返回选择的数量"""
         log("选择封面图")
-        
         self.page.wait_for_timeout(1000)
         
-        cover_count = 0
+        self._take_debug_screenshot("cover_step1")
+        
+        cover_strategies = [
+            lambda: self.page.locator('text=封面').first,
+            lambda: self.page.locator('[class*="cover"]').first,
+            lambda: self.page.locator('text=上传封面').first,
+            lambda: self.page.locator('button:has-text("封面")').first,
+        ]
+        
+        cover_clicked = False
+        for strategy in cover_strategies:
+            try:
+                el = strategy()
+                if el.is_visible(timeout=2000):
+                    bbox = el.bounding_box()
+                    if bbox and bbox['width'] > 30:
+                        el.click(timeout=1000)
+                        log("封面区域已点击")
+                        cover_clicked = True
+                        self.page.wait_for_timeout(1500)
+                        break
+            except Exception as e:
+                log(f"封面策略失败: {e}")
+                continue
+        
+        if not cover_clicked:
+            js_open_cover = """
+                (function() {
+                    var btns = document.querySelectorAll('button, [role="button"], a');
+                    for (var i = 0; i < btns.length; i++) {
+                        var btn = btns[i];
+                        var text = btn.textContent || '';
+                        var ariaLabel = btn.getAttribute('aria-label') || '';
+                        if (text.includes('封面') || ariaLabel.includes('封面') || text.includes('上传')) {
+                            btn.click();
+                            return 'opened_' + i;
+                        }
+                    }
+                    return 'not_found';
+                })()
+            """
+            try:
+                result = self.page.evaluate(js_open_cover)
+                log(f"JS 打开封面: {result}")
+                if result != 'not_found':
+                    cover_clicked = True
+                    self.page.wait_for_timeout(1500)
+            except Exception as e:
+                log(f"JS 封面打开失败: {e}")
+        
+        if not cover_clicked:
+            log("未找到封面区域，跳过封面选择")
+            return 0
+        
+        self.page.wait_for_timeout(2000)
+        self._take_debug_screenshot("cover_modal_opened")
+        
         try:
-            cover_selectors = [
-                'div:has-text("封面")',
-                '[class*="cover"]',
-                '[class*="article-cover"]'
+            material_tab = self.page.locator('text=我的素材').first
+            if material_tab.is_visible(timeout=2000):
+                material_tab.click()
+                log("点击'我的素材'标签")
+                self.page.wait_for_timeout(2000)
+                self._take_debug_screenshot("cover_material_tab")
+        except Exception as e:
+            log(f"素材标签点击失败: {e}")
+        
+        selected = 0
+        try:
+            img_selectors = [
+                '[class*="material"] img',
+                '[class*="material"] [class*="img"]',
+                '[class*="image-item"] img',
+                '[class*="image"] [class*="item"] img',
+                '[class*="img-"]',
+                '[class*="thumb"]',
+                '[class*="gallery"] img',
+                'img[class*="thumb"]',
+                '[role="listitem"] img',
             ]
             
-            for selector in cover_selectors:
-                try:
-                    elements = self.page.locator(selector)
-                    count = elements.count()
-                    log(f"封面选择器 '{selector}' 找到 {count} 个")
-                    
-                    if count > 0:
-                        for i in range(min(count, 10)):
-                            el = elements.nth(i)
-                            try:
-                                if el.is_visible(timeout=500):
-                                    bbox = el.bounding_box()
-                                    if bbox and bbox['width'] > 30:
-                                        el.click(timeout=1000)
-                                        log(f"点击封面区域 {i}")
-                                        cover_count += 1
-                                        break
-                            except Exception:
-                                continue
-                except Exception:
-                    continue
-        except Exception as e:
-            log(f"选择封面出错: {e}")
-        
-        if cover_count > 0:
-            self.page.wait_for_timeout(1000)
+            js_select = """
+                (function() {
+                    var allImages = document.querySelectorAll('img');
+                    var selectable = [];
+                    for (var i = 0; i < allImages.length; i++) {
+                        var img = allImages[i];
+                        var w = img.naturalWidth || img.width;
+                        var h = img.naturalHeight || img.height;
+                        if (w > 100 && h > 50 && img.offsetParent !== null) {
+                            selectable.push({idx: i, w: w, h: h});
+                        }
+                    }
+                    return JSON.stringify(selectable.slice(0, 9));
+                })()
+            """
             
             try:
-                tab_selectors = [
-                    'button:has-text("我的素材")',
-                    'span:has-text("我的素材")'
-                ]
+                selectable_imgs = json.loads(self.page.evaluate(js_select))
+                log(f"可选择图片数量: {len(selectable_imgs)}")
                 
-                for selector in tab_selectors:
+                for img_info in selectable_imgs[:9]:
                     try:
-                        tabs = self.page.locator(selector)
-                        if tabs.count() > 0 and tabs.first.is_visible(timeout=500):
-                            tabs.first.click(timeout=1000)
-                            log("点击'我的素材'标签")
-                            self.page.wait_for_timeout(1000)
+                        el = self.page.locator('img').nth(img_info['idx'])
+                        el.click(timeout=1000)
+                        selected += 1
+                        log(f"选择图片 {selected}")
+                        self.page.wait_for_timeout(500)
+                        if selected >= 3:
                             break
                     except Exception:
                         continue
-            except Exception:
-                pass
-            
-            selected = 0
-            try:
-                img_containers = self.page.locator('[class*="material"], [class*="image-item"], [class*="img"]')
-                count = img_containers.count()
-                log(f"找到 {count} 个图片容器")
-                
-                for i in range(min(count, 12)):
-                    try:
-                        el = img_containers.nth(i)
-                        if el.is_visible(timeout=500):
-                            el.click(timeout=1000)
-                            selected += 1
-                            log(f"选择图片 {selected}")
-                            self.page.wait_for_timeout(300)
-                            if selected >= 3:
-                                break
-                    except Exception:
-                        continue
             except Exception as e:
-                log(f"选择图片出错: {e}")
+                log(f"JS 图片选择失败: {e}")
             
-            if selected > 0:
-                self.page.wait_for_timeout(500)
-                
+            for sel in img_selectors:
+                if selected > 0:
+                    break
                 try:
-                    confirm_selectors = [
-                        'button:has-text("完成")',
-                        'button:has-text("确定")',
-                        'span:has-text("完成")',
-                        'div:has-text("完成")'
-                    ]
+                    imgs = self.page.locator(sel)
+                    count = imgs.count()
+                    log(f"选择器 '{sel}' 找到 {count} 个图片")
                     
-                    for selector in confirm_selectors:
+                    for i in range(min(count, 9)):
                         try:
-                            btns = self.page.locator(selector)
-                            if btns.count() > 0:
-                                for i in range(btns.count()):
-                                    btn = btns.nth(i)
-                                    if btn.is_visible(timeout=500):
-                                        btn.click(timeout=1000)
-                                        log("点击完成按钮")
-                                        self.page.wait_for_timeout(2000)
-                                        return selected
+                            el = imgs.nth(i)
+                            if el.is_visible(timeout=500):
+                                el.click(timeout=1000)
+                                selected += 1
+                                log(f"选择图片 {selected}")
+                                self.page.wait_for_timeout(500)
+                                if selected >= 3:
+                                    break
                         except Exception:
                             continue
                 except Exception as e:
-                    log(f"确认选择出错: {e}")
+                    log(f"图片选择出错: {e}")
+        except Exception as e:
+            log(f"选择图片出错: {e}")
         
-        return cover_count
-    
-    def _save_draft(self) -> bool:
-        """保存草稿"""
-        log("保存草稿")
+        self._take_debug_screenshot("cover_images_selected")
         
-        try:
-            draft_selectors = [
-                'button:has-text("保存草稿")',
-                'button:has-text("存为草稿")',
-                'button:has-text("草稿")'
-            ]
+        if selected > 0:
+            self.page.wait_for_timeout(1000)
             
-            for selector in draft_selectors:
+            confirm_patterns = ["确定", "完成", "确认"]
+            for pattern in confirm_patterns:
                 try:
-                    btns = self.page.locator(selector)
-                    if btns.count() > 0:
-                        for i in range(btns.count()):
-                            btn = btns.nth(i)
-                            if btn.is_visible(timeout=500):
+                    all_btns = self.page.locator('button')
+                    for i in range(all_btns.count()):
+                        try:
+                            btn = all_btns.nth(i)
+                            text = (btn.text_content(timeout=500) or "").strip()
+                            if pattern in text and btn.is_visible(timeout=500):
                                 bbox = btn.bounding_box()
-                                if bbox and bbox['width'] > 30:
-                                    btn.click(timeout=2000)
-                                    log("草稿保存成功")
-                                    self.page.wait_for_timeout(2000)
-                                    return True
+                                if bbox and bbox['width'] > 20 and bbox['height'] > 20:
+                                    log(f"找到确认按钮: '{text}', 点击...")
+                                    self.page.mouse.click(
+                                        bbox['x'] + bbox['width'] / 2,
+                                        bbox['y'] + bbox['height'] / 2
+                                    )
+                                    log(f"点击'{pattern}'按钮成功")
+                                    self.page.wait_for_timeout(3000)
+                                    self._take_debug_screenshot("cover_confirmed")
+                                    return selected
+                        except Exception:
+                            continue
                 except Exception:
                     continue
-        except Exception as e:
-            log(f"保存草稿出错: {e}")
         
+        self.page.keyboard.press("Escape")
+        self.page.wait_for_timeout(500)
+        
+        return selected
+    
+    def _select_category(self, category: str = None) -> bool:
+        log("选择分类")
+        self._take_debug_screenshot("category_step1")
+        
+        category_order = ['科技', '数码', '互联网', '创业', '汽车', '情感', '生活', '健康', '教育', '文化', '娱乐', '游戏', '体育', '军事']
+        target_idx = category_order.index(category) if category and category in category_order else 0
+        
+        self.page.wait_for_timeout(500)
+        self._take_debug_screenshot("category_step2")
+        
+        self.page.evaluate("""
+            (function() {
+                var allElements = document.querySelectorAll('*');
+                for (var i = 0; i < allElements.length; i++) {
+                    var el = allElements[i];
+                    var text = (el.textContent || '').trim();
+                    if (text === '请选择分类' || text.includes('选择分类')) {
+                        el.click();
+                        return;
+                    }
+                }
+            })()
+        """)
+        self.page.wait_for_timeout(1000)
+        self._take_debug_screenshot("category_dropdown_opened")
+        
+        for _ in range(target_idx + 1):
+            self.page.keyboard.press("ArrowDown")
+            self.page.wait_for_timeout(80)
+        
+        self.page.wait_for_timeout(200)
+        self.page.keyboard.press("Enter")
+        self.page.wait_for_timeout(1500)
+        
+        self._take_debug_screenshot("category_keyboard_done")
+        
+        category_text = self.page.evaluate("""
+            (function() {
+                var allElements = document.querySelectorAll('*');
+                for (var i = 0; i < allElements.length; i++) {
+                    var el = allElements[i];
+                    var text = (el.textContent || '').trim();
+                    if (text !== '请选择分类' && text.length > 1 && text.length < 8) {
+                        var rect = el.getBoundingClientRect();
+                        if (rect.width > 50 && rect.height > 20 && rect.width < 150) {
+                            return text;
+                        }
+                    }
+                }
+                return '';
+            })()
+        """)
+        log(f"选择的分类文本: '{category_text}'")
+        
+        return len(category_text) > 1
+    
+    def _save_draft(self) -> bool:
+        log("保存草稿")
+        
+        draft_strategies = [
+            lambda: self.page.locator('button:has-text("保存草稿")').first,
+            lambda: self.page.locator('button:has-text("存为草稿")').first,
+            lambda: self.page.locator('span:has-text("保存草稿")').first,
+        ]
+        
+        for idx, strategy in enumerate(draft_strategies):
+            try:
+                btn = strategy()
+                if btn.is_visible(timeout=2000):
+                    bbox = btn.bounding_box()
+                    if bbox and bbox['width'] > 30:
+                        btn.click(timeout=2000)
+                        log("草稿保存成功")
+                        self.page.wait_for_timeout(2000)
+                        return True
+            except Exception as e:
+                log(f"保存草稿策略 {idx + 1} 失败: {e}")
+                continue
+        
+        log("未找到保存草稿按钮，跳过")
         return False
     
     def _click_publish(self) -> bool:
@@ -685,58 +1250,53 @@ class ToutiaoPublisher:
         self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         self.page.wait_for_timeout(500)
         
-        publish_selectors = [
-            'button:has-text("预览并发布")',
-            'button:has-text("发布")',
+        publish_strategies = [
+            lambda: self.page.locator('button:has-text("预览并发布")').first,
+            lambda: self.page.locator('button:has-text("直接发布")').first,
+            lambda: self.page.locator('span:has-text("预览并发布")').first,
         ]
         
-        for selector in publish_selectors:
+        for strategy_idx, strategy in enumerate(publish_strategies):
             try:
-                btns = self.page.locator(selector)
-                count = btns.count()
-                log(f"选择器 '{selector}' 找到 {count} 个")
-                
-                if count > 0:
-                    for i in range(count):
+                btn = strategy()
+                if btn.is_visible(timeout=2000):
+                    bbox = btn.bounding_box()
+                    text = (btn.text_content(timeout=500) or "").strip()
+                    
+                    if bbox and bbox['width'] > 30 and bbox['height'] > 20:
+                        log(f"策略 {strategy_idx + 1}: 尝试点击发布按钮 '{text}'")
+                        
                         try:
-                            btn = btns.nth(i)
-                            bbox = btn.bounding_box()
-                            text = (btn.text_content(timeout=500) or "").strip()
-                            
-                            if bbox and bbox['width'] > 50:
-                                log(f"尝试点击: text='{text}', bbox={bbox}")
-                                
-                                center_x = bbox['x'] + bbox['width'] / 2
-                                center_y = bbox['y'] + bbox['height'] / 2
-                                
-                                try:
-                                    self.page.mouse.click(center_x, center_y)
-                                    log(f"✓ 发布按钮已点击 (mouse): {text}")
-                                    return True
-                                except Exception as e:
-                                    log(f"mouse.click 失败: {e}")
-                                
-                                try:
-                                    btn.click(timeout=1000)
-                                    log(f"✓ 发布按钮已点击: {text}")
-                                    return True
-                                except Exception as e:
-                                    log(f"click 失败: {e}")
-                                
-                                try:
-                                    btn.click(timeout=1000, force=True)
-                                    log(f"✓ 发布按钮已点击 (force): {text}")
-                                    return True
-                                except Exception as e:
-                                    log(f"force click 失败: {e}")
-                                
+                            center_x = bbox['x'] + bbox['width'] / 2
+                            center_y = bbox['y'] + bbox['height'] / 2
+                            self.page.mouse.click(center_x, center_y)
+                            log(f"发布按钮已点击 (mouse): {text}")
+                            self._take_debug_screenshot("publish_clicked")
+                            return True
                         except Exception as e:
-                            log(f"按钮 {i} 处理失败: {e}")
-                            continue
+                            log(f"mouse.click 失败: {e}")
+                        
+                        try:
+                            btn.click(timeout=2000)
+                            log(f"发布按钮已点击: {text}")
+                            self._take_debug_screenshot("publish_clicked")
+                            return True
+                        except Exception as e:
+                            log(f"click 失败: {e}")
+                            
+                        try:
+                            btn.click(timeout=2000, force=True)
+                            log(f"发布按钮已点击 (force): {text}")
+                            self._take_debug_screenshot("publish_clicked")
+                            return True
+                        except Exception as e:
+                            log(f"force click 失败: {e}")
             except Exception as e:
-                log(f"选择器 '{selector}' 出错: {e}")
+                log(f"策略 {strategy_idx + 1} 失败: {e}")
+                continue
         
         log("未找到发布按钮")
+        self._take_debug_screenshot("publish_button_not_found")
         return False
     
     def _wait_for_publish_complete(self) -> bool:
@@ -752,34 +1312,48 @@ class ToutiaoPublisher:
             if waited % 10 == 0:
                 log(f"已等待 {waited} 秒...")
             
+            self._close_popups()
+            
             try:
-                all_buttons = self.page.locator('button')
-                count = all_buttons.count()
-                log(f"当前页面有 {count} 个按钮")
-                
-                confirm_keywords = ["确认发布", "确定", "确认", "发布", "提交", "完成", "关闭"]
-                
-                for i in range(count):
-                    try:
-                        btn = all_buttons.nth(i)
-                        text = (btn.text_content(timeout=200) or "").strip()
+                error_keywords = ["标题不能为空", "正文不能为空", "封面不能为空", "标题太短", "正文太短"]
+                for kw in error_keywords:
+                    if kw in self.page.content():
+                        log(f"检测到验证错误: {kw}")
+                        self._take_debug_screenshot("validation_error")
                         
-                        if any(kw in text for kw in confirm_keywords):
-                            if btn.is_visible(timeout=200):
-                                bbox = btn.bounding_box()
-                                if bbox and bbox['width'] > 30:
-                                    log(f"找到确认按钮: '{text}', 点击...")
-                                    try:
-                                        self.page.mouse.click(bbox['x'] + bbox['width']/2, bbox['y'] + bbox['height']/2)
-                                        self.page.wait_for_timeout(3000)
-                                        log("确认完成")
-                                        return True
-                                    except Exception as e:
-                                        log(f"点击失败: {e}")
-                    except Exception:
-                        continue
-            except Exception as e:
-                log(f"检测按钮出错: {e}")
+                        close_patterns = ["确定", "关闭", "我知道了", "好的", "确认"]
+                        for pattern in close_patterns:
+                            try:
+                                btn = self.page.locator(f'text={pattern}').first
+                                if btn.is_visible(timeout=500):
+                                    btn.click()
+                                    log(f"关闭错误提示: {pattern}")
+                                    self.page.wait_for_timeout(1000)
+                            except Exception:
+                                pass
+                        
+                        self.page.wait_for_timeout(500)
+                        self._take_debug_screenshot("error_dialog_closed")
+                        return False
+            except Exception:
+                pass
+            
+            confirm_patterns = ["确认发布", "确定", "确认", "提交"]
+            for pattern in confirm_patterns:
+                try:
+                    btns = self.page.locator(f'button:has-text("{pattern}")')
+                    for i in range(btns.count()):
+                        btn = btns.nth(i)
+                        if btn.is_visible(timeout=500):
+                            bbox = btn.bounding_box()
+                            if bbox and bbox['width'] > 30:
+                                log(f"找到确认按钮: '{pattern}', 点击...")
+                                btn.click(timeout=2000)
+                                self.page.wait_for_timeout(3000)
+                                self._take_debug_screenshot("confirm_clicked")
+                                return True
+                except Exception:
+                    pass
             
             try:
                 page_text = self.page.content()
@@ -788,6 +1362,7 @@ class ToutiaoPublisher:
                 for keyword in success_keywords:
                     if keyword in page_text:
                         log(f"检测到成功关键字: {keyword}")
+                        self._take_debug_screenshot("publish_success")
                         self.page.wait_for_timeout(2000)
                         return True
             except Exception:
@@ -797,14 +1372,10 @@ class ToutiaoPublisher:
                 current_url = self.page.url
                 log(f"当前URL: {current_url}")
                 
-                if "success" in current_url.lower() or "published" in current_url.lower():
+                if any(x in current_url.lower() for x in ["success", "published"]):
                     log("URL 表明发布成功")
+                    self._take_debug_screenshot("publish_success")
                     return True
-                
-                if "article" in current_url or "content" in current_url:
-                    if "publish" not in current_url:
-                        log("离开发布页面，可能成功")
-                        return True
             except Exception:
                 pass
         
@@ -812,92 +1383,149 @@ class ToutiaoPublisher:
         
         try:
             page_text = self.page.content()
-            if any(kw in page_text for kw in ["审核中", "已发布", "发布成功"]):
+            if any(kw in page_text for kw in ["审核中", "已发布", "发布成功", "发布到"]):
                 log("超时但检测到成功关键字")
+                self._take_debug_screenshot("publish_maybe_success")
                 return True
         except Exception:
             pass
         
+        self._take_debug_screenshot("publish_failed")
         log("返回失败")
         return False
     
     def publish_article(self, title: str, content: str, images: List[str] = None) -> Tuple[bool, str, str]:
-        """发布文章"""
         if not self.page:
             raise Exception("请先调用 setup() 或 login()")
         
         if not title:
             return False, "标题不能为空", None
         
+        title = title.replace('：', ' ').replace(':', ' ').strip()
+        title = ' '.join(title.split())
         title = title[:30]
         if len(title) < 2:
             title = title + " " * (2 - len(title))
         
-        try:
-            print(f"\n发布文章: {title[:20]}...")
-            log("="*50)
-            log("开始发布流程")
-            
-            log("步骤1: 打开发布页面")
-            self.page.goto(PUBLISH_URL, timeout=60000, wait_until="networkidle")
-            self.page.wait_for_timeout(2000)
-            
-            log("步骤2: 关闭弹窗")
-            self._close_popups()
-            
-            log("步骤3: 填写标题")
-            if self._find_and_fill_title(title):
-                print("  ✓ 标题已填写")
-            else:
-                print("  ⚠ 标题填写可能失败")
-            
-            self.page.wait_for_timeout(500)
-            
-            log("步骤4: 填写内容")
-            self._fill_editor(content)
-            print("  ✓ 内容已填写")
-            
-            self.page.wait_for_timeout(1000)
-            self._close_popups()
-            
-            log("步骤5: 插入图片")
-            inserted = 0
-            if images and len(images) > 0:
-                inserted = self._insert_images_to_editor(images)
-            print(f"  ✓ 已嵌入 {inserted} 张图片")
-            
-            log("步骤6: 选择封面图")
-            cover_count = self._select_cover_image()
-            print(f"  ✓ 封面图已选择 ({cover_count}张)")
-            
-            self.page.wait_for_timeout(500)
-            
-            log("步骤7: 保存草稿")
-            if self._save_draft():
-                print("  ✓ 草稿已保存")
-            
-            self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-            self.page.wait_for_timeout(500)
-            
-            log("步骤8: 点击发布")
-            if self._click_publish():
-                print("  ✓ 点击发布按钮成功")
-            else:
-                return False, "未找到发布按钮", None
-            
-            log("步骤9: 等待发布完成")
-            if self._wait_for_publish_complete():
-                print("  ✓ 文章发布成功")
-                log("发布流程完成")
-                return True, "发布成功", None
-            else:
-                return False, "发布等待超时", None
-            
-        except Exception as e:
-            import traceback
-            log(f"发布异常: {e}")
-            log(traceback.format_exc())
-            return False, f"发布失败: {str(e)}", None
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                print(f"\n发布文章: {title[:20]}... (尝试 {attempt}/{MAX_RETRIES})")
+                log("="*50)
+                log("开始发布流程")
+                
+                log("步骤1: 打开发布页面")
+                self.page.goto(PUBLISH_URL, timeout=60000, wait_until="domcontentloaded")
+                self.page.wait_for_timeout(3000)
+                
+                log("步骤2: 关闭弹窗")
+                self._close_popups()
+                self._take_debug_screenshot("step2_popups_closed")
+                
+                log("步骤3: 填写标题")
+                if self._find_and_fill_title(title):
+                    print("  ✓ 标题已填写")
+                else:
+                    print("  ⚠ 标题填写可能失败")
+                
+                self.page.wait_for_timeout(500)
+                
+                log("步骤4: 填写内容")
+                self._fill_editor(content)
+                print("  ✓ 内容已填写")
+                
+                self.page.wait_for_timeout(1500)
+                self._close_popups()
+                
+                log("步骤5: 插入图片")
+                inserted = 0
+                if images and len(images) > 0:
+                    try:
+                        inserted = self._insert_images_to_editor(images)
+                    except Exception as e:
+                        log(f"图片上传异常: {e}")
+                print(f"  ✓ 已嵌入 {inserted} 张图片")
+                
+                log("步骤6: 选择封面图")
+                cover_count = self._select_cover_image()
+                print(f"  ✓ 封面图已选择 ({cover_count}张)")
+                
+                self.page.wait_for_timeout(1500)
+                
+                log("步骤7: 选择分类")
+                category_selected = self._select_category()
+                if category_selected:
+                    print("  ✓ 分类已选择")
+                else:
+                    print("  ⚠ 分类选择可能失败")
+                
+                self._close_popups()
+                
+                form_state = self._check_form_state()
+                log(f"表单状态: {form_state}")
+                
+                if form_state.get('titleLength', 0) < 2:
+                    log("标题未正确填写，重新填写")
+                    self._find_and_fill_title(title)
+                    self.page.wait_for_timeout(500)
+                
+                if form_state.get('editorLength', 0) < 10:
+                    log("正文未正确填写，重新填写")
+                    self._fill_editor(content)
+                    self.page.wait_for_timeout(500)
+                
+                form_state = self._check_form_state()
+                self._take_debug_screenshot("before_publish")
+                
+                if form_state.get('titleLength', 0) < 2 or form_state.get('editorLength', 0) < 10:
+                    log("表单验证失败，内容不足")
+                
+                self.page.wait_for_timeout(1000)
+                
+                self._trigger_react_input_events()
+                self.page.wait_for_timeout(500)
+                
+                log("步骤9: 点击发布")
+                if self._click_publish():
+                    print("  ✓ 点击发布按钮成功")
+                else:
+                    if attempt < MAX_RETRIES:
+                        log(f"未找到发布按钮，重试 ({attempt + 1}/{MAX_RETRIES})")
+                        self._take_debug_screenshot(f"retry_publish_{attempt}")
+                        self.page.wait_for_timeout(3000)
+                        continue
+                    return False, "未找到发布按钮", None
+                
+                log("步骤10: 等待发布完成")
+                if self._wait_for_publish_complete():
+                    print("  ✓ 文章发布成功")
+                    log("发布流程完成")
+                    return True, "发布成功", None
+                else:
+                    if attempt < MAX_RETRIES:
+                        log(f"发布超时，重试 ({attempt + 1}/{MAX_RETRIES})")
+                        self._take_debug_screenshot(f"retry_wait_{attempt}")
+                        self.page.wait_for_timeout(3000)
+                        continue
+                    return False, "发布等待超时", None
+                    
+            except Exception as e:
+                import traceback
+                log(f"发布异常: {e}")
+                log(traceback.format_exc())
+                self._take_debug_screenshot(f"error_attempt_{attempt}")
+                
+                if attempt < MAX_RETRIES:
+                    log(f"异常后重试 ({attempt + 1}/{MAX_RETRIES})")
+                    try:
+                        self.page.goto("about:blank")
+                        self.page.wait_for_timeout(1000)
+                    except:
+                        pass
+                    continue
+                
+                return False, f"发布失败: {str(e)}", None
+        
+        return False, "达到最大重试次数", None
     
     def close(self) -> None:
         if self.browser:
@@ -907,10 +1535,9 @@ class ToutiaoPublisher:
 
 
 def publish_single_file(markdown_path: str, images_dir: str = None, skip_published: bool = True) -> int:
-    """发布单个 markdown 文件"""
-    
     print("="*60)
-    print("今日头条文章发布器 v2.0 - 单文件模式")
+    print("今日头条文章发布器 v3.2 - 单文件模式")
+    print(f"重试次数: {MAX_RETRIES}, 截图模式: {'开启' if SCREENSHOT_MODE else '关闭'}")
     print("="*60)
     print(f"源文件: {markdown_path}")
     print(f"Playwright: {'可用' if PLAYWRIGHT_AVAILABLE else '不可用'}")
@@ -988,10 +1615,9 @@ def publish_single_file(markdown_path: str, images_dir: str = None, skip_publish
 
 
 def publish_multiple_files(file_list: List[str], images_dir: str = None) -> int:
-    """发布多个文件"""
-    
     print("="*60)
-    print("今日头条文章发布器 v2.0 - 多文件模式")
+    print("今日头条文章发布器 v3.2 - 多文件模式")
+    print(f"重试次数: {MAX_RETRIES}, 截图模式: {'开启' if SCREENSHOT_MODE else '关闭'}")
     print("="*60)
     print(f"文件数量: {len(file_list)}")
     print(f"Playwright: {'可用' if PLAYWRIGHT_AVAILABLE else '不可用'}")
@@ -1053,17 +1679,18 @@ def publish_multiple_files(file_list: List[str], images_dir: str = None) -> int:
 
 
 def main():
-    default_file = "/Volumes/james1t/proj_opencode/article/工信部深夜发了一条消息，很多数据团队还没意识到机会 - 今日头条_20260320_052444.md"
+    default_file = "/Volumes/james1t/proj_opencode/article/马斯克亲自点赞，Kimi动了十一年没人敢碰的东西 - 今日头条_20260318_085302.md"
     
     parser = argparse.ArgumentParser(
-        description="今日头条文章发布器 v2.0",
+        description="今日头条文章发布器 v3.2",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
   python app_toutiao_ariticle_publisher.py -f article.md
-  python app_toutiao_ariticle_publisher.py --debug
+  python app_toutiao_ariticle_publisher.py --debug --screenshot
   python app_toutiao_ariticle_publisher.py -l file1.md file2.md file3.md
   python app_toutiao_ariticle_publisher.py --clear-status
+  python app_toutiao_ariticle_publisher.py --retry 5
         """
     )
     
@@ -1079,17 +1706,23 @@ def main():
                         help="强制重新登录")
     parser.add_argument("--debug", action="store_true",
                         help="开启调试模式")
+    parser.add_argument("--screenshot", action="store_true",
+                        help="保存调试截图")
     parser.add_argument("--no-skip", action="store_true",
                         help="不跳过已发布的文件")
     parser.add_argument("--clear-status", action="store_true",
                         help="清除发布状态记录")
     parser.add_argument("--show-status", action="store_true",
                         help="显示发布状态")
+    parser.add_argument("--retry", type=int, default=3,
+                        help="失败重试次数 (默认: 3)")
     
     args = parser.parse_args()
     
-    global DEBUG_MODE
+    global DEBUG_MODE, SCREENSHOT_MODE, MAX_RETRIES
     DEBUG_MODE = args.debug
+    SCREENSHOT_MODE = args.screenshot
+    MAX_RETRIES = args.retry
     
     status = PublishStatus()
     
