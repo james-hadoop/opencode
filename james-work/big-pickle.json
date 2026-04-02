@@ -1,0 +1,29 @@
+{
+  "big-pickle": {
+    "id": "big-pickle",
+    "providerID": "opencode",
+    "name": "Big Pickle",
+    "family": "big-pickle",
+    "api": { "id": "big-pickle", "url": "https://opencode.ai/zen/v1", "npm": "@ai-sdk/openai-compatible" },
+    "status": "active",
+    "headers": {},
+    "options": {},
+    "cost": { "input": 0, "output": 0, "cache": { "read": 0, "write": 0 } },
+    "limit": { "context": 200000, "output": 128000 },
+    "capabilities": {
+      "temperature": true,
+      "reasoning": true,
+      "attachment": false,
+      "toolcall": true,
+      "input": { "text": true, "audio": false, "image": false, "video": false, "pdf": false },
+      "output": { "text": true, "audio": false, "image": false, "video": false, "pdf": false },
+      "interleaved": false
+    },
+    "release_date": "2025-10-17",
+    "variants": {
+      "low": { "reasoningEffort": "low" },
+      "medium": { "reasoningEffort": "medium" },
+      "high": { "reasoningEffort": "high" }
+    }
+  }
+}
