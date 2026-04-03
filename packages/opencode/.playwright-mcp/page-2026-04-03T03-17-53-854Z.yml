@@ -1,0 +1,26 @@
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - link "头条号" [ref=e6] [cursor=pointer]:
+      - /url: /profile_v4/
+    - generic [ref=e7]:
+      - generic [ref=e8]: 头条号发文规范
+      - link "消息" [ref=e11] [cursor=pointer]:
+        - /url: /profile_v4/personal/message
+        - generic [ref=e13]:
+          - img [ref=e14]
+          - text: 消息
+      - link "数据筑梦空间的个人主页" [ref=e18] [cursor=pointer]:
+        - /url: //www.toutiao.com/c/user/1240667596797182/
+  - generic [ref=e24]:
+    - main:
+      - generic:
+        - generic:
+          - img [ref=e25] [cursor=pointer]
+          - generic [ref=e31] [cursor=pointer]:
+            - text: 发布文章
+            - img [ref=e32]
+  - generic [ref=e37]:
+    - link [ref=e38] [cursor=pointer]:
+      - /url: //baike.toutiao.com
+      - img [ref=e39]
+    - img [ref=e43] [cursor=pointer]

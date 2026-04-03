@@ -1,0 +1,154 @@
+- generic [ref=e3]:
+  - generic [ref=e6]:
+    - generic [ref=e7]: 头条号发文规范
+    - link "消息 31" [ref=e10] [cursor=pointer]:
+      - /url: /profile_v4/personal/message
+      - generic [ref=e11]:
+        - generic [ref=e12]:
+          - img [ref=e13]
+          - text: 消息
+        - generic [ref=e15]: "31"
+    - link "数据筑梦空间的个人主页" [ref=e18] [cursor=pointer]:
+      - /url: //www.toutiao.com/c/user/1240667596797182/
+  - main [ref=e26]:
+    - generic:
+      - generic:
+        - img [ref=e27] [cursor=pointer]
+        - generic [ref=e33] [cursor=pointer]:
+          - text: 发布文章
+          - img [ref=e34]
+    - generic [ref=e41]:
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e46]:
+            - button [ref=e49] [cursor=pointer]:
+              - img [ref=e50]
+            - button [ref=e56]:
+              - img [ref=e57]
+            - button [ref=e65]:
+              - img [ref=e66]
+            - button [ref=e72] [cursor=pointer]:
+              - img [ref=e73]
+            - button [ref=e78] [cursor=pointer]:
+              - img [ref=e79]
+            - button [ref=e86] [cursor=pointer]:
+              - img [ref=e87]
+            - button [ref=e92] [cursor=pointer]:
+              - img [ref=e93]
+            - button [ref=e101] [cursor=pointer]:
+              - generic [ref=e102]:
+                - img [ref=e103]
+                - img [ref=e114]
+            - button [ref=e118] [cursor=pointer]:
+              - img [ref=e119]
+            - button [ref=e128] [cursor=pointer]:
+              - img [ref=e129]
+            - button [ref=e134] [cursor=pointer]:
+              - img [ref=e135]
+            - button [ref=e141] [cursor=pointer]:
+              - img [ref=e142]
+            - button [ref=e149] [cursor=pointer]:
+              - img [ref=e150]
+            - button [ref=e156] [cursor=pointer]:
+              - img [ref=e158]
+            - button [ref=e166] [cursor=pointer]:
+              - img [ref=e167]
+            - button [ref=e172] [cursor=pointer]:
+              - img [ref=e175]
+            - button [ref=e180] [cursor=pointer]:
+              - img [ref=e181]
+          - generic [ref=e200]:
+            - textbox "请输入文章标题（2～30个字）" [ref=e202]: 测试文章
+            - generic [ref=e203]: 4 / 30
+          - generic [ref=e206]:
+            - paragraph [ref=e443]:
+              - text: 这是测试正文内容。
+              - text: 这是第二段内容。
+              - text: 这是第三段内容。
+            - paragraph [ref=e444]
+          - generic [ref=e208] [cursor=pointer]:
+            - img [ref=e209]
+            - img [ref=e211]
+        - generic [ref=e215]:
+          - generic [ref=e217]:
+            - text: "*"
+            - generic [ref=e218]: 展示封面
+            - generic [ref=e220]:
+              - generic [ref=e221]:
+                - generic [ref=e223] [cursor=pointer]: 单图
+                - generic [ref=e226] [cursor=pointer]: 三图
+                - generic [ref=e229] [cursor=pointer]: 无封面
+              - generic [ref=e231]:
+                - img [ref=e237] [cursor=pointer]
+                - generic [ref=e242] [cursor=pointer]: 预览
+              - generic [ref=e243]: 优质的封面有利于推荐，格式支持JPEG、PNG
+          - generic [ref=e244]:
+            - generic [ref=e245]: 添加位置
+            - generic [ref=e248]:
+              - generic [ref=e250]: 标记城市，让更多同城用户看到
+              - img [ref=e252]
+          - generic [ref=e254]:
+            - text: "*"
+            - generic [ref=e255]: 投放广告
+            - generic [ref=e257]:
+              - generic [ref=e258]:
+                - generic [ref=e260] [cursor=pointer]: 投放广告赚收益
+                - img [ref=e262]
+              - generic [ref=e265] [cursor=pointer]: 不投放广告
+          - generic [ref=e267]:
+            - generic [ref=e268]: 声明首发
+            - generic [ref=e270]:
+              - generic [ref=e273] [cursor=pointer]: 头条首发
+              - generic [ref=e275]:
+                - img [ref=e276]
+                - generic [ref=e277]:
+                  - text: 符合首发质量标准且72小时内仅在头条发布的内容，可享额外激励分成
+                  - link "详细了解" [ref=e278] [cursor=pointer]:
+                    - /url: https://mp.toutiao.com/gf/exclusive
+          - generic [ref=e279]:
+            - generic [ref=e280]: 合集
+            - generic [ref=e283]:
+              - button "添加至合集" [ref=e284] [cursor=pointer]:
+                - img [ref=e285]
+                - generic [ref=e287]: 添加至合集
+              - img [ref=e288]
+          - generic [ref=e290]:
+            - generic [ref=e291]: 发文特权
+            - generic [ref=e294]:
+              - generic [ref=e296] [cursor=pointer]: 允许赞赏（今日还有3次机会）
+              - img [ref=e298]
+          - generic [ref=e301]:
+            - generic [ref=e302]: 同时发布微头条
+            - generic [ref=e304]:
+              - generic [ref=e306] [cursor=pointer]: 发布得更多收益
+              - img [ref=e308]
+          - generic [ref=e311]:
+            - generic [ref=e312]: 作品声明
+            - generic [ref=e316]:
+              - generic [ref=e318] [cursor=pointer]: 取材网络
+              - generic [ref=e321] [cursor=pointer]: 引用站内
+              - generic [ref=e324] [cursor=pointer]: 个人观点，仅供参考
+              - generic [ref=e326]:
+                - generic [ref=e328] [cursor=pointer]: 引用AI
+                - img [ref=e330]
+              - generic [ref=e332]:
+                - generic [ref=e334] [cursor=pointer]: 虚构演绎，故事经历
+                - img [ref=e336]
+              - generic [ref=e339] [cursor=pointer]: 投资观点，仅供参考
+              - generic [ref=e342] [cursor=pointer]: 健康医疗分享，仅供参考
+        - generic [ref=e345]:
+          - generic [ref=e454]: 草稿保存中...
+          - generic [ref=e349]: 共 25 字
+          - generic [ref=e350] [cursor=pointer]: 回到顶部
+          - button "预览" [ref=e352] [cursor=pointer]
+          - button "定时发布" [ref=e453] [cursor=pointer]
+          - button "预览并发布" [ref=e354] [cursor=pointer]
+      - generic [ref=e438] [cursor=pointer]:
+        - img [ref=e439]
+        - text: 头条创作助手
+        - generic [ref=e447]: "1"
+  - generic [ref=e358]:
+    - link [ref=e359] [cursor=pointer]:
+      - /url: //baike.toutiao.com
+      - img [ref=e360]
+    - img [ref=e364] [cursor=pointer]

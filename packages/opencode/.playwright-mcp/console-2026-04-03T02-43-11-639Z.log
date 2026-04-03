@@ -1,0 +1,15 @@
+[     425ms] [LOG] [options] {commonOptions: Object, captchaOptions: Object, secondVerifyWebOptions: Object} @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/pages/pgc_web_pages/login.16b4cab9.js:368
+[     433ms] [INFO] [default] appid: 1231, userInfo:{"user_unique_id":"1240667596797182","web_id":"7624355752492992042"} @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/pages/pgc_web_pages/login.16b4cab9.js:1
+[     434ms] [INFO] [default] appid: 1231, sdk is ready, version is 5.0.23_3, you can report now !!! @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/pages/pgc_web_pages/login.16b4cab9.js:1
+[     435ms] [LOG] [fpStr] ===> verify_mniaipr3_HuXxfrVE_TxYM_41zG_B7AO_Sv57CZiDESBS @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/pages/pgc_web_pages/login.16b4cab9.js:368
+[    2199ms] [ERROR] TypeError: Cannot read properties of undefined (reading 'network')
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:108619
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105972
+    at Object.next (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:106077)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105014
+    at new Promise (<anonymous>)
+    at r (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:104788)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:108455
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105972
+    at Object.next (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:106077)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105014 @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:157
