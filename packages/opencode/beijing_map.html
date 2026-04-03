@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_3a92c97fd28f90451c7ca3992d9fa232 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+<div style="position: fixed; 
+     top: 10px; left: 50px; width: 300px; 
+     background-color: white; padding: 10px;
+     border: 2px solid #3388ff; border-radius: 10px;
+     z-index: 9999; font-family: Arial;">
+     <h4 style="margin:0; color: #333;">🗺️ 北京示例地图</h4>
+     <p style="margin:5px 0 0 0; font-size: 12px; color: #666;">
+        使用 Folium 生成 (ArcPy 开源替代)
+     </p>
+</div>
+    
+            <div class="folium-map" id="map_3a92c97fd28f90451c7ca3992d9fa232" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_3a92c97fd28f90451c7ca3992d9fa232 = L.map(
+                "map_3a92c97fd28f90451c7ca3992d9fa232",
+                {
+                    center: [39.9042, 116.4074],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 11,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_e688b1e0e7cf174772e38c10bea51a62 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_e688b1e0e7cf174772e38c10bea51a62.addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+            var marker_14fce772791dea67e5e1a808ed0adbf6 = L.marker(
+                [39.9073, 116.3912],
+                {
+}
+            ).addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+            var icon_6d19bfcd285821887ef46fdcc0b87dd8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_17c87f574303edb837f737b4863a9c6c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_c9b3777985b9cb6cef3dca9986e7525f = $(`<div id="html_c9b3777985b9cb6cef3dca9986e7525f" style="width: 100.0%; height: 100.0%;"><b>天安门</b><br>纬度: 39.9073<br>经度: 116.3912</div>`)[0];
+                popup_17c87f574303edb837f737b4863a9c6c.setContent(html_c9b3777985b9cb6cef3dca9986e7525f);
+            
+        
+
+        marker_14fce772791dea67e5e1a808ed0adbf6.bindPopup(popup_17c87f574303edb837f737b4863a9c6c)
+        ;
+
+        
+    
+    
+            marker_14fce772791dea67e5e1a808ed0adbf6.bindTooltip(
+                `<div>
+                     天安门
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_14fce772791dea67e5e1a808ed0adbf6.setIcon(icon_6d19bfcd285821887ef46fdcc0b87dd8);
+            
+    
+            var marker_3bfd096691f3c782eec11d8c04967f8f = L.marker(
+                [39.9163, 116.3972],
+                {
+}
+            ).addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+            var icon_faf9187a60870aadd00f8d4be5c43a47 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "darkred",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7ac0ad855061c9083614816f318b8c7f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_715c3cc81ec305b1a6014244b3646e7a = $(`<div id="html_715c3cc81ec305b1a6014244b3646e7a" style="width: 100.0%; height: 100.0%;"><b>故宫</b><br>纬度: 39.9163<br>经度: 116.3972</div>`)[0];
+                popup_7ac0ad855061c9083614816f318b8c7f.setContent(html_715c3cc81ec305b1a6014244b3646e7a);
+            
+        
+
+        marker_3bfd096691f3c782eec11d8c04967f8f.bindPopup(popup_7ac0ad855061c9083614816f318b8c7f)
+        ;
+
+        
+    
+    
+            marker_3bfd096691f3c782eec11d8c04967f8f.bindTooltip(
+                `<div>
+                     故宫
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_3bfd096691f3c782eec11d8c04967f8f.setIcon(icon_faf9187a60870aadd00f8d4be5c43a47);
+            
+    
+            var marker_917756b8a710d6394273ff71714008b1 = L.marker(
+                [40.4319, 116.5704],
+                {
+}
+            ).addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+            var icon_9348e6a87f9f444e4fcfc98379db7eeb = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_462431378f450016ab19350c668431c6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_3f7c3f190004de1e7d99fee33b4af7fc = $(`<div id="html_3f7c3f190004de1e7d99fee33b4af7fc" style="width: 100.0%; height: 100.0%;"><b>长城-八达岭</b><br>纬度: 40.4319<br>经度: 116.5704</div>`)[0];
+                popup_462431378f450016ab19350c668431c6.setContent(html_3f7c3f190004de1e7d99fee33b4af7fc);
+            
+        
+
+        marker_917756b8a710d6394273ff71714008b1.bindPopup(popup_462431378f450016ab19350c668431c6)
+        ;
+
+        
+    
+    
+            marker_917756b8a710d6394273ff71714008b1.bindTooltip(
+                `<div>
+                     长城-八达岭
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_917756b8a710d6394273ff71714008b1.setIcon(icon_9348e6a87f9f444e4fcfc98379db7eeb);
+            
+    
+            var marker_be12bf3395642c594561d02f39f1ed3d = L.marker(
+                [39.9993, 116.275],
+                {
+}
+            ).addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+            var icon_aec2d5be2f61fb3fc66693ce34b9eae8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "green",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_295fc675d5e654dff406d53d1f5c9b18 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e15ec863e56224bab3c6fae4c36aed20 = $(`<div id="html_e15ec863e56224bab3c6fae4c36aed20" style="width: 100.0%; height: 100.0%;"><b>颐和园</b><br>纬度: 39.9993<br>经度: 116.275</div>`)[0];
+                popup_295fc675d5e654dff406d53d1f5c9b18.setContent(html_e15ec863e56224bab3c6fae4c36aed20);
+            
+        
+
+        marker_be12bf3395642c594561d02f39f1ed3d.bindPopup(popup_295fc675d5e654dff406d53d1f5c9b18)
+        ;
+
+        
+    
+    
+            marker_be12bf3395642c594561d02f39f1ed3d.bindTooltip(
+                `<div>
+                     颐和园
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_be12bf3395642c594561d02f39f1ed3d.setIcon(icon_aec2d5be2f61fb3fc66693ce34b9eae8);
+            
+    
+            var marker_9535998973aa90f764417e8eb54b3cce = L.marker(
+                [39.9903, 116.4055],
+                {
+}
+            ).addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+            var icon_00db03f679ee098d1cf2981ab3423ffb = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_484b81ce33401638aa78b1e8008121c8 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_670ae9734d810e92e861296bf5020b9f = $(`<div id="html_670ae9734d810e92e861296bf5020b9f" style="width: 100.0%; height: 100.0%;"><b>鸟巢</b><br>纬度: 39.9903<br>经度: 116.4055</div>`)[0];
+                popup_484b81ce33401638aa78b1e8008121c8.setContent(html_670ae9734d810e92e861296bf5020b9f);
+            
+        
+
+        marker_9535998973aa90f764417e8eb54b3cce.bindPopup(popup_484b81ce33401638aa78b1e8008121c8)
+        ;
+
+        
+    
+    
+            marker_9535998973aa90f764417e8eb54b3cce.bindTooltip(
+                `<div>
+                     鸟巢
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9535998973aa90f764417e8eb54b3cce.setIcon(icon_00db03f679ee098d1cf2981ab3423ffb);
+            
+    
+            var marker_e2fbf2efd34a0d6a8b56f8760dc27eee = L.marker(
+                [39.985, 116.305],
+                {
+}
+            ).addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+            var icon_c9feb3ada57d543fe6062712b2b7fa1d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "purple",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_61326535de139d5f3fdf048d7d872a15 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f0e5ee035dcd062e9d16a72f7c50c74e = $(`<div id="html_f0e5ee035dcd062e9d16a72f7c50c74e" style="width: 100.0%; height: 100.0%;"><b>中关村</b><br>纬度: 39.985<br>经度: 116.305</div>`)[0];
+                popup_61326535de139d5f3fdf048d7d872a15.setContent(html_f0e5ee035dcd062e9d16a72f7c50c74e);
+            
+        
+
+        marker_e2fbf2efd34a0d6a8b56f8760dc27eee.bindPopup(popup_61326535de139d5f3fdf048d7d872a15)
+        ;
+
+        
+    
+    
+            marker_e2fbf2efd34a0d6a8b56f8760dc27eee.bindTooltip(
+                `<div>
+                     中关村
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e2fbf2efd34a0d6a8b56f8760dc27eee.setIcon(icon_c9feb3ada57d543fe6062712b2b7fa1d);
+            
+    
+            var circle_19e106d62cf1dc42d5e93ffc9dfe29e1 = L.circle(
+                [39.9042, 116.4074],
+                {"bubblingMouseEvents": true, "color": "#3388ff", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "#3388ff", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 5000, "stroke": true, "weight": 3}
+            ).addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+        var popup_3ac6737575b09c2148186203e108d4ab = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_da3ec029d221a6b25203036db0b70e7f = $(`<div id="html_da3ec029d221a6b25203036db0b70e7f" style="width: 100.0%; height: 100.0%;">北京市中心 (5km半径)</div>`)[0];
+                popup_3ac6737575b09c2148186203e108d4ab.setContent(html_da3ec029d221a6b25203036db0b70e7f);
+            
+        
+
+        circle_19e106d62cf1dc42d5e93ffc9dfe29e1.bindPopup(popup_3ac6737575b09c2148186203e108d4ab)
+        ;
+
+        
+    
+    
+            var polygon_221ba7985e25373ed76a42e8cf899c45 = L.polygon(
+                [[39.95, 116.35], [39.95, 116.45], [39.9, 116.45], [39.9, 116.35]],
+                {"bubblingMouseEvents": true, "color": "green", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "green", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 1.0, "smoothFactor": 1.0, "stroke": true, "weight": 3}
+            ).addTo(map_3a92c97fd28f90451c7ca3992d9fa232);
+        
+    
+        var popup_151fd1a52f495cf93cc4a72d65a1ca5e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_35d149dbd9db0c41e5925bc42da59d47 = $(`<div id="html_35d149dbd9db0c41e5925bc42da59d47" style="width: 100.0%; height: 100.0%;">示例区域</div>`)[0];
+                popup_151fd1a52f495cf93cc4a72d65a1ca5e.setContent(html_35d149dbd9db0c41e5925bc42da59d47);
+            
+        
+
+        polygon_221ba7985e25373ed76a42e8cf899c45.bindPopup(popup_151fd1a52f495cf93cc4a72d65a1ca5e)
+        ;
+
+        
+    
+</script>
+</html>

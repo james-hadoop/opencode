@@ -1,0 +1,197 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e6]:
+      - generic [ref=e7]: 头条号发文规范
+      - link "消息 26" [ref=e403] [cursor=pointer]:
+        - /url: /profile_v4/personal/message
+        - generic [ref=e11]:
+          - generic [ref=e12]:
+            - img [ref=e13]
+            - text: 消息
+          - generic [ref=e404]: "26"
+      - link "数据筑梦空间的个人主页" [ref=e17] [cursor=pointer]:
+        - /url: //www.toutiao.com/c/user/1240667596797182/
+    - main [ref=e24]:
+      - generic:
+        - generic:
+          - img [ref=e25] [cursor=pointer]
+          - generic [ref=e31] [cursor=pointer]:
+            - text: 发布文章
+            - img [ref=e32]
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e44]:
+            - button [ref=e47]:
+              - img [ref=e48]
+            - button [ref=e54]:
+              - img [ref=e55]
+            - button [ref=e63]:
+              - img [ref=e64]
+            - button [ref=e70] [cursor=pointer]:
+              - img [ref=e71]
+            - button [ref=e76] [cursor=pointer]:
+              - img [ref=e77]
+            - button [ref=e84] [cursor=pointer]:
+              - img [ref=e85]
+            - button [ref=e90] [cursor=pointer]:
+              - img [ref=e91]
+            - button [ref=e99] [cursor=pointer]:
+              - generic [ref=e100]:
+                - img [ref=e101]
+                - img [ref=e112]
+            - button [ref=e116] [cursor=pointer]:
+              - img [ref=e117]
+            - button [ref=e126] [cursor=pointer]:
+              - img [ref=e127]
+            - button [ref=e132] [cursor=pointer]:
+              - img [ref=e133]
+            - button [ref=e139] [cursor=pointer]:
+              - img [ref=e140]
+            - button [ref=e147] [cursor=pointer]:
+              - img [ref=e148]
+            - button [ref=e154] [cursor=pointer]:
+              - img [ref=e156]
+            - button [ref=e164] [cursor=pointer]:
+              - img [ref=e165]
+            - button [ref=e170] [cursor=pointer]:
+              - img [ref=e173]
+            - button [ref=e178] [cursor=pointer]:
+              - img [ref=e179]
+          - generic [ref=e407] [cursor=pointer]:
+            - generic [ref=e409]:
+              - generic [ref=e410]: 草稿
+              - generic [ref=e411]: 马斯克亲自点赞，Kimi动了十一年没人敢碰的东西 - 今日头
+            - generic [ref=e412]:
+              - button "继续编辑" [ref=e413]
+              - link "更多草稿" [ref=e414]:
+                - /url: /profile_v4/manage/draft?from=creation
+          - generic [ref=e192]:
+            - textbox "请输入文章标题（2～30个字）" [ref=e194]
+            - generic [ref=e195]: 还需输入 2 个字
+          - paragraph [ref=e199]:
+            - generic: 请输入正文
+          - generic [ref=e200] [cursor=pointer]:
+            - img [ref=e201]
+            - img [ref=e203]
+        - generic [ref=e207]:
+          - generic [ref=e209]:
+            - text: "*"
+            - generic [ref=e210]: 展示封面
+            - generic [ref=e212]:
+              - generic [ref=e213]:
+                - generic [ref=e215] [cursor=pointer]: 单图
+                - generic [ref=e218] [cursor=pointer]: 三图
+                - generic [ref=e221] [cursor=pointer]: 无封面
+              - generic [ref=e223]:
+                - img [ref=e229] [cursor=pointer]
+                - generic [ref=e234] [cursor=pointer]: 预览
+              - generic [ref=e235]: 优质的封面有利于推荐，格式支持JPEG、PNG
+          - generic [ref=e236]:
+            - generic [ref=e237]: 添加位置
+            - generic [ref=e240]:
+              - generic [ref=e242]: 标记城市，让更多同城用户看到
+              - img [ref=e244]
+          - generic [ref=e246]:
+            - text: "*"
+            - generic [ref=e247]: 投放广告
+            - generic [ref=e249]:
+              - generic [ref=e250]:
+                - generic [ref=e252] [cursor=pointer]: 投放广告赚收益
+                - img [ref=e254]
+              - generic [ref=e257] [cursor=pointer]: 不投放广告
+          - generic [ref=e416]:
+            - generic [ref=e417]: 声明首发
+            - generic [ref=e419]:
+              - generic [ref=e422] [cursor=pointer]: 头条首发
+              - generic [ref=e424]:
+                - img [ref=e425]
+                - generic [ref=e426]:
+                  - text: 符合首发质量标准且72小时内仅在头条发布的内容，可享额外激励分成
+                  - link "详细了解" [ref=e427] [cursor=pointer]:
+                    - /url: https://mp.toutiao.com/gf/exclusive
+          - generic [ref=e259]:
+            - generic [ref=e260]: 合集
+            - generic [ref=e263]:
+              - button "添加至合集" [ref=e264] [cursor=pointer]:
+                - img [ref=e265]
+                - generic [ref=e267]: 添加至合集
+              - img [ref=e268]
+          - generic [ref=e270]:
+            - generic [ref=e271]: 发文特权
+            - generic [ref=e274]:
+              - generic [ref=e276] [cursor=pointer]: 允许赞赏（今日还有3次机会）
+              - img [ref=e278]
+          - generic [ref=e429]:
+            - generic [ref=e430]: 同时发布微头条
+            - generic [ref=e432]:
+              - generic [ref=e434] [cursor=pointer]: 发布得更多收益
+              - img [ref=e436]
+          - generic [ref=e281]:
+            - generic [ref=e282]: 作品声明
+            - generic [ref=e286]:
+              - generic [ref=e288] [cursor=pointer]: 取材网络
+              - generic [ref=e291] [cursor=pointer]: 引用站内
+              - generic [ref=e294] [cursor=pointer]: 个人观点，仅供参考
+              - generic [ref=e296]:
+                - generic [ref=e298] [cursor=pointer]: 引用AI
+                - img [ref=e300]
+              - generic [ref=e302]:
+                - generic [ref=e304] [cursor=pointer]: 虚构演绎，故事经历
+                - img [ref=e306]
+              - generic [ref=e309] [cursor=pointer]: 投资观点，仅供参考
+              - generic [ref=e312] [cursor=pointer]: 健康医疗分享，仅供参考
+        - generic [ref=e315]:
+          - generic [ref=e438]: 草稿将自动保存
+          - generic [ref=e319]: 共 0 字
+          - generic [ref=e320] [cursor=pointer]: 发文设置
+          - button "预览" [ref=e322] [cursor=pointer]
+          - button "定时发布" [ref=e323] [cursor=pointer]
+          - button "预览并发布" [ref=e324] [cursor=pointer]
+    - generic [ref=e328]:
+      - link [ref=e329] [cursor=pointer]:
+        - /url: //baike.toutiao.com
+        - img [ref=e330]
+      - img [ref=e334] [cursor=pointer]
+  - generic [ref=e342]:
+    - heading "头条创作助手" [level=1] [ref=e343]:
+      - img [ref=e344]
+      - text: 头条创作助手
+      - img [ref=e345] [cursor=pointer]
+    - generic [ref=e348]:
+      - generic [ref=e352]:
+        - generic [ref=e353] [cursor=pointer]: AI 创作
+        - generic [ref=e355] [cursor=pointer]: 内容建议
+      - generic [ref=e358]:
+        - generic [ref=e361]:
+          - generic [ref=e363]:
+            - paragraph [ref=e364]:
+              - generic [ref=e365]: 创作热点推荐
+              - generic [ref=e366] [cursor=pointer]:
+                - img [ref=e367]
+                - text: 换一换
+            - list [ref=e369]:
+              - listitem [ref=e439] [cursor=pointer]:
+                - generic [ref=e440]: 宪法式人工智能的优势是什么
+                - img [ref=e441]
+              - listitem [ref=e443] [cursor=pointer]:
+                - generic [ref=e444]: 赛力斯的品牌优势在哪里
+                - img [ref=e445]
+              - listitem [ref=e447] [cursor=pointer]:
+                - generic [ref=e448]: 15KB引擎的实现原理是什么
+                - img [ref=e449]
+              - listitem [ref=e451] [cursor=pointer]:
+                - generic [ref=e452]: 你觉得AI同事靠谱吗
+                - img [ref=e453]
+              - listitem [ref=e455] [cursor=pointer]:
+                - generic [ref=e456]: 说一句话给自己加油，你会说什么
+                - img [ref=e457]
+          - generic [ref=e390]:
+            - textbox "输入创作主题、观点或大纲，AI 帮你写" [ref=e391]
+            - img [ref=e393]
+        - generic [ref=e399]:
+          - generic [ref=e401]:
+            - text: Hi，我是头条发文助手～可以实时检测内容提出优化建议，帮你提升内容质量。了解
+            - link "详细功能" [ref=e402] [cursor=pointer]:
+              - /url: https://baike.toutiao.com/detail/242/251/0
+          - generic:
+            - paragraph: 检测成功，暂无建议

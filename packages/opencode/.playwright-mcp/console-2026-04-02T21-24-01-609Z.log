@@ -1,0 +1,22 @@
+[     971ms] [ERROR] TypeError: Cannot read properties of undefined (reading 'network')
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:108619
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105972
+    at Object.next (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:106077)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105014
+    at new Promise (<anonymous>)
+    at r (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:104788)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:108455
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105972
+    at Object.next (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:106077)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105014 @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:157
+[    2736ms] InvalidStateError: Failed to execute 'transaction' on 'IDBDatabase': A version change transaction is running.
+    at e.createTransaction (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/graphic/8906.6be07fde9b.js:3:255765)
+    at eval (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/graphic/8906.6be07fde9b.js:3:256675)
+    at e.eval (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/graphic/8906.6be07fde9b.js:3:258495)
+    at eval (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/graphic/index.177115fe5d.js:3:187159)
+    at Object.eval [as next] (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/graphic/index.177115fe5d.js:3:187264)
+    at i (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/graphic/index.177115fe5d.js:3:185982)
+[    2916ms] [ERROR] WebSocket connection to 'wss://mp.toutiao.com/profile_v4/graphic/Create%20WebSocket' failed: Error during WebSocket handshake: Unexpected response code: 200 @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:157
+[  226814ms] [WARNING] [syl-page] content shouldn't be empty string\null\undefined, current is '' @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/mp/preview/static/js/2.7a4e3f39aa.chunk.js:1
+[  226885ms] [INFO] [syl-cards] Waiting for initialLoader finish @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/mp/preview/static/js/2.7a4e3f39aa.chunk.js:1
+[  226885ms] [INFO] [syl-cards] InitialLoader finished @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/mp/preview/static/js/2.7a4e3f39aa.chunk.js:1

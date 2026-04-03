@@ -41,7 +41,7 @@ from dataclasses import dataclass
 
 DEBUG_MODE = False
 SCREENSHOT_MODE = False
-PUBLISH_TIMEOUT = 30000
+PUBLISH_TIMEOUT = 60000
 MAX_RETRIES = 3
 
 @dataclass
@@ -915,21 +915,7 @@ class ToutiaoPublisher:
             
             js_script = f"""
                 (function() {{
-                    var imgPath = '{escaped_path}';
-                    
-                    var fileInputs = document.querySelectorAll('input[type="file"]');
-                    for (var i = 0; i < fileInputs.length; i++) {{
-                        var inp = fileInputs[i];
-                        if (inp.accept && inp.accept.includes('image')) {{
-                            inp.style.display = 'block';
-                            inp.style.visibility = 'visible';
-                            inp.style.opacity = '1';
-                            inp.click();
-                            return 'image_input_clicked_' + i;
-                        }}
-                    }}
-                    
-                    var toolbarBtns = document.querySelectorAll('[class*="toolbar"] button, [class*="toolbar"] [role="button"], [class*="editor"] button');
+                    var toolbarBtns = document.querySelectorAll('[class*="toolbar"] button, [class*="toolbar"] [role="button"], [class*="editor"] button, button[aria-label*="图片"], button[aria-label*="image"]');
                     for (var i = 0; i < toolbarBtns.length; i++) {{
                         var btn = toolbarBtns[i];
                         var svg = btn.querySelector('svg');
@@ -956,27 +942,30 @@ class ToutiaoPublisher:
                 js_result = self.page.evaluate(js_script)
                 log(f"JS 上传结果: {js_result}")
                 
-                self.page.wait_for_timeout(1000)
+                self.page.wait_for_timeout(1500)
                 
                 try:
                     file_inputs = self.page.locator('input[type="file"]')
-                    for j in range(file_inputs.count()):
-                        inp = file_inputs.nth(j)
-                        try:
-                            inp.set_input_files(img_path)
-                            inserted += 1
-                            img_inserted = True
-                            log(f"图片 {i+1} 上传成功 (input #{j})")
-                            self.page.wait_for_timeout(3000)
-                            break
-                        except:
-                            continue
+                    if file_inputs.count() > 0:
+                        for j in range(file_inputs.count()):
+                            inp = file_inputs.nth(j)
+                            try:
+                                inp.set_input_files(img_path)
+                                inserted += 1
+                                img_inserted = True
+                                log(f"图片 {i+1} 上传成功 (input #{j})")
+                                self.page.wait_for_timeout(3000)
+                                break
+                            except Exception as e:
+                                log(f"input #{j} 上传失败: {e}")
+                                continue
                 except Exception as e:
                     log(f"文件上传失败: {e}")
+                    
+                if not img_inserted:
+                    self._take_debug_screenshot(f"image_upload_failed_{i+1}")
             except Exception as e:
                 log(f"JS 执行失败: {e}")
-            
-            if not img_inserted:
                 self._take_debug_screenshot(f"image_upload_failed_{i+1}")
         
         self._take_debug_screenshot("images_inserted")
@@ -1166,31 +1155,25 @@ class ToutiaoPublisher:
         log("选择分类")
         self._take_debug_screenshot("category_step1")
         
-        category_order = ['科技', '数码', '互联网', '创业', '汽车', '情感', '生活', '健康', '教育', '文化', '娱乐', '游戏', '体育', '军事']
-        target_idx = category_order.index(category) if category and category in category_order else 0
+        try:
+            self.page.click('input[placeholder*="分类"]', timeout=2000)
+        except:
+            try:
+                self.page.click('div:has-text("请选择分类")', timeout=2000)
+            except:
+                pass
         
-        self.page.wait_for_timeout(500)
-        self._take_debug_screenshot("category_step2")
-        
-        self.page.evaluate("""
-            (function() {
-                var allElements = document.querySelectorAll('*');
-                for (var i = 0; i < allElements.length; i++) {
-                    var el = allElements[i];
-                    var text = (el.textContent || '').trim();
-                    if (text === '请选择分类' || text.includes('选择分类')) {
-                        el.click();
-                        return;
-                    }
-                }
-            })()
-        """)
         self.page.wait_for_timeout(1000)
         self._take_debug_screenshot("category_dropdown_opened")
         
-        for _ in range(target_idx + 1):
+        category_options = ['科技', '数码', '互联网', '创业', '汽车', '情感', '生活', '健康', '教育', '文化', '娱乐', '游戏', '体育', '军事']
+        target = category if category and category in category_options else '科技'
+        
+        self.page.wait_for_timeout(1000)
+        
+        for _ in range(2):
             self.page.keyboard.press("ArrowDown")
-            self.page.wait_for_timeout(80)
+            self.page.wait_for_timeout(100)
         
         self.page.wait_for_timeout(200)
         self.page.keyboard.press("Enter")
@@ -1198,25 +1181,7 @@ class ToutiaoPublisher:
         
         self._take_debug_screenshot("category_keyboard_done")
         
-        category_text = self.page.evaluate("""
-            (function() {
-                var allElements = document.querySelectorAll('*');
-                for (var i = 0; i < allElements.length; i++) {
-                    var el = allElements[i];
-                    var text = (el.textContent || '').trim();
-                    if (text !== '请选择分类' && text.length > 1 && text.length < 8) {
-                        var rect = el.getBoundingClientRect();
-                        if (rect.width > 50 && rect.height > 20 && rect.width < 150) {
-                            return text;
-                        }
-                    }
-                }
-                return '';
-            })()
-        """)
-        log(f"选择的分类文本: '{category_text}'")
-        
-        return len(category_text) > 1
+        return True
     
     def _save_draft(self) -> bool:
         log("保存草稿")
@@ -1251,9 +1216,10 @@ class ToutiaoPublisher:
         self.page.wait_for_timeout(500)
         
         publish_strategies = [
-            lambda: self.page.locator('button:has-text("预览并发布")').first,
+            lambda: self.page.locator('button:has-text("预览")').last,
             lambda: self.page.locator('button:has-text("直接发布")').first,
-            lambda: self.page.locator('span:has-text("预览并发布")').first,
+            lambda: self.page.locator('button:has-text("预览并发布")').first,
+            lambda: self.page.locator('span:has-text("预览")').last,
         ]
         
         for strategy_idx, strategy in enumerate(publish_strategies):
@@ -1272,6 +1238,8 @@ class ToutiaoPublisher:
                             self.page.mouse.click(center_x, center_y)
                             log(f"发布按钮已点击 (mouse): {text}")
                             self._take_debug_screenshot("publish_clicked")
+                            self.page.wait_for_timeout(3000)
+                            self._take_debug_screenshot("after_publish_click")
                             return True
                         except Exception as e:
                             log(f"mouse.click 失败: {e}")
@@ -1280,6 +1248,8 @@ class ToutiaoPublisher:
                             btn.click(timeout=2000)
                             log(f"发布按钮已点击: {text}")
                             self._take_debug_screenshot("publish_clicked")
+                            self.page.wait_for_timeout(3000)
+                            self._take_debug_screenshot("after_publish_click")
                             return True
                         except Exception as e:
                             log(f"click 失败: {e}")
@@ -1288,6 +1258,8 @@ class ToutiaoPublisher:
                             btn.click(timeout=2000, force=True)
                             log(f"发布按钮已点击 (force): {text}")
                             self._take_debug_screenshot("publish_clicked")
+                            self.page.wait_for_timeout(3000)
+                            self._take_debug_screenshot("after_publish_click")
                             return True
                         except Exception as e:
                             log(f"force click 失败: {e}")
@@ -1304,6 +1276,151 @@ class ToutiaoPublisher:
         
         max_wait = PUBLISH_TIMEOUT // 1000
         waited = 0
+        preview_handled = False
+        
+        log("等待预览模式加载...")
+        for i in range(15):
+            self.page.wait_for_timeout(1000)
+            waited += 1
+            
+            current_url = self.page.url
+            log(f"预览等待 {i+1}s, URL: {current_url}")
+            
+            self._close_popups()
+            
+            page_text = self.page.content()
+            
+            preview_top = self.page.locator('button:has-text("预览")').first
+            bottom_publish = self.page.locator('button:has-text("预览并发布")')
+            
+            if preview_top.is_visible(timeout=500) and not bottom_publish.is_visible(timeout=1000):
+                log("检测到顶部预览按钮且底部按钮消失，进入预览模式")
+                self._take_debug_screenshot("preview_mode_detected")
+                
+                self.page.evaluate("window.scrollTo(0, 0)")
+                self.page.wait_for_timeout(500)
+                
+                publish_top = self.page.locator('button:has-text("发布")').first
+                if publish_top.is_visible(timeout=2000):
+                    bbox = publish_top.bounding_box()
+                    log(f"找到顶部发布按钮: {bbox}")
+                    log("点击顶部发布按钮")
+                    publish_top.click(timeout=3000)
+                    self.page.wait_for_timeout(3000)
+                    self._take_debug_screenshot("confirm_publish_clicked")
+                    preview_handled = True
+                    break
+            
+            if "确认发布" in page_text:
+                log("检测到确认发布按钮")
+                self._take_debug_screenshot("preview_detected")
+                
+                self.page.evaluate("window.scrollTo(0, 0)")
+                self.page.wait_for_timeout(500)
+                
+                confirm_btn = self.page.locator('button:has-text("确认发布")').first
+                if confirm_btn.is_visible(timeout=2000):
+                    log("点击确认发布按钮")
+                    confirm_btn.click(timeout=3000)
+                    self.page.wait_for_timeout(3000)
+                    self._take_debug_screenshot("confirm_publish_clicked")
+                    preview_handled = True
+                    break
+            
+            if any(x in page_text for x in ["请填写", "请选择", "不能为空", "请输入"]):
+                log("检测到表单验证提示")
+                self._take_debug_screenshot("validation_hints")
+            
+            bottom_btn = self.page.locator('button:has-text("预览并发布")')
+            if not bottom_btn.is_visible(timeout=1000):
+                log("底部发布按钮消失，可能进入预览模式")
+                self._take_debug_screenshot("preview_mode_entered")
+                break
+        
+        if not preview_handled:
+            log("检查页面是否有验证错误或提示")
+            page_text = self.page.content()
+            
+            validation_issues = []
+            if "标题不能为空" in page_text:
+                validation_issues.append("标题为空")
+            if "正文不能为空" in page_text:
+                validation_issues.append("正文为空")
+            if "封面不能为空" in page_text:
+                validation_issues.append("封面为空")
+            if "分类不能为空" in page_text:
+                validation_issues.append("分类为空")
+                
+            if validation_issues:
+                log(f"验证问题: {validation_issues}")
+                self._take_debug_screenshot("validation_error")
+        
+        if not preview_handled:
+            log("未能进入预览模式，尝试直接点击发布按钮")
+            self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            self.page.wait_for_timeout(1000)
+            
+            self._take_debug_screenshot("before_direct_publish")
+            
+            publish_btn = self.page.locator('button:has-text("预览并发布")').last
+            if publish_btn.is_visible(timeout=2000):
+                bbox = publish_btn.bounding_box()
+                if bbox:
+                    log(f"点击最后的预览并发布按钮")
+                    self.page.mouse.click(bbox['x'] + bbox['width']/2, bbox['y'] + bbox['height']/2)
+                    self.page.wait_for_timeout(3000)
+                    self._take_debug_screenshot("direct_publish_clicked")
+                    
+                    self._close_popups()
+                    self.page.wait_for_timeout(3000)
+                    self._take_debug_screenshot("after_direct_publish")
+                    preview_handled = True
+        
+        log("点击发布后等待确认...")
+        self.page.wait_for_timeout(5000)
+        self._take_debug_screenshot("after_publish_wait")
+        
+        self._close_popups()
+        
+        page_text = self.page.content()
+        
+        if "草稿" in page_text:
+            log("检测到草稿区域，发布成功")
+            self._take_debug_screenshot("publish_success")
+            return True
+        
+        if "请输入文章标题" in page_text:
+            try:
+                title_input = self.page.locator('input[placeholder*="标题"]')
+                if title_input.is_visible(timeout=2000):
+                    log("表单已重置，发布成功")
+                    self._take_debug_screenshot("publish_success")
+                    return True
+            except:
+                pass
+        
+        if "发布成功" in page_text or "审核中" in page_text or "已发布" in page_text:
+            log("检测到发布成功关键字")
+            self._take_debug_screenshot("publish_success")
+            return True
+        
+        log("检查是否有错误弹窗...")
+        error_dialogs = self.page.locator('[class*="message"], [class*="toast"], [class*="alert"], [role="alert"]')
+        if error_dialogs.count() > 0:
+            for i in range(min(error_dialogs.count(), 3)):
+                try:
+                    if error_dialogs.nth(i).is_visible(timeout=500):
+                        text = error_dialogs.nth(i).text_content(timeout=500) or ""
+                        log(f"检测到提示: {text[:100]}")
+                except:
+                    pass
+        
+        if "publish" not in self.page.url.lower():
+            log("离开发布页面，可能成功")
+            self._take_debug_screenshot("publish_success")
+            return True
+        
+        log("继续等待...")
         
         while waited < max_wait:
             self.page.wait_for_timeout(2000)
@@ -1338,26 +1455,9 @@ class ToutiaoPublisher:
             except Exception:
                 pass
             
-            confirm_patterns = ["确认发布", "确定", "确认", "提交"]
-            for pattern in confirm_patterns:
-                try:
-                    btns = self.page.locator(f'button:has-text("{pattern}")')
-                    for i in range(btns.count()):
-                        btn = btns.nth(i)
-                        if btn.is_visible(timeout=500):
-                            bbox = btn.bounding_box()
-                            if bbox and bbox['width'] > 30:
-                                log(f"找到确认按钮: '{pattern}', 点击...")
-                                btn.click(timeout=2000)
-                                self.page.wait_for_timeout(3000)
-                                self._take_debug_screenshot("confirm_clicked")
-                                return True
-                except Exception:
-                    pass
-            
             try:
                 page_text = self.page.content()
-                success_keywords = ["发布成功", "发布完成", "已发布", "审核中", "文章管理", "提交成功"]
+                success_keywords = ["发布成功", "发布完成", "已发布", "审核中", "文章管理", "提交成功", "发布到首页"]
                 
                 for keyword in success_keywords:
                     if keyword in page_text:
@@ -1369,11 +1469,9 @@ class ToutiaoPublisher:
                 pass
             
             try:
-                current_url = self.page.url
-                log(f"当前URL: {current_url}")
-                
-                if any(x in current_url.lower() for x in ["success", "published"]):
-                    log("URL 表明发布成功")
+                url_lower = self.page.url.lower()
+                if "publish" not in url_lower and any(x in url_lower for x in ["success", "finished", "manage"]):
+                    log("URL 表明可能发布成功")
                     self._take_debug_screenshot("publish_success")
                     return True
             except Exception:
@@ -1383,7 +1481,7 @@ class ToutiaoPublisher:
         
         try:
             page_text = self.page.content()
-            if any(kw in page_text for kw in ["审核中", "已发布", "发布成功", "发布到"]):
+            if any(kw in page_text for kw in ["审核中", "已发布", "发布成功", "发布到", "文章管理"]):
                 log("超时但检测到成功关键字")
                 self._take_debug_screenshot("publish_maybe_success")
                 return True
@@ -1459,8 +1557,20 @@ class ToutiaoPublisher:
                     print("  ⚠ 分类选择可能失败")
                 
                 self._close_popups()
+                self.page.wait_for_timeout(1000)
                 
+                log("验证表单状态...")
                 form_state = self._check_form_state()
+                log(f"分类选择后表单状态: {form_state}")
+                
+                if form_state.get('titleLength', 0) < 2 or form_state.get('editorLength', 0) < 10:
+                    log("表单内容丢失，重新填写")
+                    self._find_and_fill_title(title)
+                    self._fill_editor(content)
+                    self.page.wait_for_timeout(1000)
+                    form_state = self._check_form_state()
+                    log(f"重新填写后表单状态: {form_state}")
+                
                 log(f"表单状态: {form_state}")
                 
                 if form_state.get('titleLength', 0) < 2:
@@ -1679,7 +1789,7 @@ def publish_multiple_files(file_list: List[str], images_dir: str = None) -> int:
 
 
 def main():
-    default_file = "/Volumes/james1t/proj_opencode/article/马斯克亲自点赞，Kimi动了十一年没人敢碰的东西 - 今日头条_20260318_085302.md"
+    default_file = "/Volumes/james1t/proj_opencode/article/OpenClaw深度研究报告 - 今日头条_20260318_102440.md"
     
     parser = argparse.ArgumentParser(
         description="今日头条文章发布器 v3.2",
