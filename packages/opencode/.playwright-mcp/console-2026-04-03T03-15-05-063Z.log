@@ -1,0 +1,12 @@
+[     774ms] [ERROR] TypeError: Cannot read properties of undefined (reading 'network')
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:108619
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105972
+    at Object.next (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:106077)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105014
+    at new Promise (<anonymous>)
+    at r (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:104788)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:108455
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105972
+    at Object.next (https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:106077)
+    at https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:158:105014 @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:157
+[   36788ms] [ERROR] WebSocket connection to 'wss://mp.toutiao.com/profile_v4/graphic/Create%20WebSocket' failed: Error during WebSocket handshake: Unexpected response code: 200 @ https://lf-content-ecology.toutiaostatic.com/obj/tt-content-ecology-fe/pgcfe/mp/web/resource/vendors~a20d0b72_19ada1a5abf4bc0e.js:157

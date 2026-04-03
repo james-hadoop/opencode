@@ -1,0 +1,16 @@
+- generic [ref=e3]:
+  - link "头条号" [ref=e6] [cursor=pointer]:
+    - /url: /profile_v4/
+  - main [ref=e10]:
+    - generic:
+      - generic:
+        - img [ref=e11] [cursor=pointer]
+        - generic [ref=e17] [cursor=pointer]:
+          - text: 发布文章
+          - img [ref=e18]
+    - img [ref=e29]
+  - generic [ref=e34]:
+    - link [ref=e35] [cursor=pointer]:
+      - /url: //baike.toutiao.com
+      - img [ref=e36]
+    - img [ref=e40] [cursor=pointer]
