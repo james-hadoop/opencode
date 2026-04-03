@@ -88,6 +88,8 @@
     "@opencode-ai/plugin": "workspace:*",
     "@opencode-ai/script": "workspace:*",
     "@opencode-ai/sdk": "workspace:*",
+    "@opentui/core": "0.1.95",
+    "@opentui/solid": "0.1.95",
     "oh-my-opencode": "3.11.2",
     "typescript": "catalog:"
   },
