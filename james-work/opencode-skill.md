@@ -3,6 +3,8 @@
 - [下载B站视频](#下载b站视频)
   - [下载单个B站视频](#下载单个b站视频)
   - [下载B站视频列表](#下载b站视频列表)
+- [下载飞书视频](#下载飞书视频)
+  - [下载单个飞书视频](#下载单个飞书视频)
 - [下载 youtube 视频](#下载-youtube-视频)
   - [下载单个 youtube 视频](#下载单个-youtube-视频)
 - [精简文件名](#精简文件名)
@@ -12,20 +14,28 @@
 - [markdown 文件操作](#markdown-文件操作)
   - [为 markdown 文件的指定标题添加目录导航](#为-markdown-文件的指定标题添加目录导航)
   - [markdown 目录自动更新](#markdown-目录自动更新)
+  - [markdown 文件转成 pdf](#markdown-文件转成-pdf)
 - [制作 PPT](#制作-ppt)
   - [使用 kimi-k2.5-free 制作 PPT](#使用-kimi-k25-free-制作-ppt)
 - [猪肉价格](#猪肉价格)
+  - [dd](#dd)
 - [股票分析](#股票分析)
   - [分析股票买卖建议](#分析股票买卖建议)
   - [分析股票的主营业务](#分析股票的主营业务)
 - [数据库操作](#数据库操作)
   - [根据已有的数据表，新建数据表](#根据已有的数据表新建数据表)
+- [fastapi开发](#fastapi开发)
+  - [开发热文卡片网页](#开发热文卡片网页)
 
 ---
 
-### 下载B站视频 [<sub>返回目录</sub>](#目录)
+### 下载B站视频
 
-#### 下载单个B站视频 [<sub>返回目录</sub>](#目录)
+[<sub>返回目录</sub>](#目录)
+
+#### 下载单个B站视频
+
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
@@ -49,7 +59,9 @@ https://www.bilibili.com/video/BV1sKiyB9Eac?spm_id_from=333.788.videopod.episode
 
 ```
 
-#### 下载B站视频列表 [<sub>返回目录</sub>](#目录)
+#### 下载B站视频列表
+
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
@@ -100,7 +112,6 @@ Python 运行环境：/Users/Shared/_AllDocMap/02_Project/gitee/james-python/.co
 
 ```
 
-
 **action**
 
 ```
@@ -109,12 +120,13 @@ Python 运行环境：/Users/Shared/_AllDocMap/02_Project/gitee/james-python/.co
 
 ```
 
+### 下载 youtube 视频
 
+[<sub>返回目录</sub>](#目录)
 
+#### 下载单个 youtube 视频
 
-### 下载 youtube 视频 [<sub>返回目录</sub>](#目录)
-
-#### 下载单个 youtube 视频 [<sub>返回目录</sub>](#目录)
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
@@ -132,9 +144,13 @@ https://www.bilibili.com/video/BV1RhyaB4E2x?spm_id_from=333.788.recommend_more_v
 
 ```
 
-### 精简文件名 [<sub>返回目录</sub>](#目录)
+### 精简文件名
 
-#### 精简指定目录下的文件名 [<sub>返回目录</sub>](#目录)
+[<sub>返回目录</sub>](#目录)
+
+#### 精简指定目录下的文件名
+
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
@@ -201,7 +217,9 @@ print(f'Total files renamed: {renamed_count}')
 
 ```
 
-#### 根据文件名称，找到缺失的文件 [<sub>返回目录</sub>](#目录)
+#### 根据文件名称，找到缺失的文件
+
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
@@ -240,7 +258,9 @@ else:
 
 ```
 
-#### 重命名图片文件 [<sub>返回目录</sub>](#目录)
+#### 重命名图片文件
+
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
@@ -297,21 +317,27 @@ cd "/Users/james/Downloads/images" && find . -name "*--*" -type f | grep -E "^[^
 
 ```
 
-### markdown 文件操作 [<sub>返回目录</sub>](#目录)
+### markdown 文件操作
 
-#### 为 markdown 文件的指定标题添加目录导航 [<sub>返回目录</sub>](#目录)
+[<sub>返回目录</sub>](#目录)
+
+#### 为 markdown 文件的指定标题添加目录导航
+
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
 ```
 
-为以下指定 markdown 文件的三级标题和四级标题增加字符串""" [<sub>返回目录</sub>](#目录) """，用快速返回到该页面顶部的目录导航，如果标题所在行已经包含了该字符串，则忽略添加。
+为以下指定 markdown 文件的三级标题和四级标题，在标题的下一行增加字符串 """[<sub>返回目录</sub>](#目录)"""，用于快速返回到该页面顶部的目录导航。如果标题下一行已经包含了该字符串，则忽略添加。不要把该字符串追加到标题同一行，否则会破坏 markdown 锚点导航。
 
 /Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/opencode-skill.md
 
 ```
 
-#### markdown 目录自动更新 [<sub>返回目录</sub>](#目录)
+#### markdown 目录自动更新
+
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
@@ -347,17 +373,19 @@ def update_markdown_toc(file_path):
 
     for line in lines:
         # 匹配三级标题 (### 标题)
-        h3_match = re.match(r'^###\s+(.+?)(?:\s*\[<sub>返回目录</sub>\]\(#目录\))?$', line)
+        h3_match = re.match(r'^###\s+(.+)$', line)
         if h3_match:
-            title = h3_match.group(1).strip()
+            title = clean_title(h3_match.group(1))
+            if title == '目录':
+                continue
             anchor = generate_anchor(title)
             h3_titles.append((title, anchor))
             toc_lines.append(f"- [{title}](#{anchor})")
 
         # 匹配四级标题 (#### 标题)
-        h4_match = re.match(r'^####\s+(.+?)(?:\s*\[<sub>返回目录</sub>\]\(#目录\))?$', line)
+        h4_match = re.match(r'^####\s+(.+)$', line)
         if h4_match and h3_titles:
-            title = h4_match.group(1).strip()
+            title = clean_title(h4_match.group(1))
             anchor = generate_anchor(title)
             toc_lines.append(f"  - [{title}](#{anchor})")
 
@@ -386,12 +414,16 @@ def generate_anchor(title):
     """
     生成markdown锚点链接
     """
+    title = clean_title(title)
     # 移除特殊字符，保留中文、英文、数字
     anchor = re.sub(r'[^\w\u4e00-\u9fff\s-]', '', title)
     # 替换空格为短横线
     anchor = re.sub(r'\s+', '-', anchor.strip())
     # 转换为小写
     return anchor.lower()
+
+def clean_title(title):
+    return re.sub(r'\s*\[<sub>返回目录</sub>\]\(#目录\)\s*$', '', title).strip()
 
 # 使用示例
 if __name__ == "__main__":
@@ -410,9 +442,23 @@ if __name__ == "__main__":
 
 ```
 
+#### markdown 文件转成 pdf
+
+[<sub>返回目录</sub>](#目录)
+
+**prompt**
+
+```
+ulw 使用 /Users/Shared/\_AllDocMap/02_Project/gitee/james-python/.conda/bin/python 这个 python 环境，在 /Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/python-app/app_article_markdown_to_pdf.py 代码文件中完成以下功能：
+
+/Volumes/james1t/proj_opencode/article/刚刚，宇树科技大消息！人形机器人，下周直接要启动了？（附股） - 今日头条_20260413_042338.md 这个 markdown 文件包含了正文内容和引用的图片。实现功能根据该文档中的正文和引用的图片，生成一个 pdf 文件。生成的 pdf 文件要能够正常浏览正文和引用的图片。
+```
+
 ### 制作 PPT
 
-#### 使用 kimi-k2.5-free 制作 PPT [<sub>返回目录</sub>](#目录)
+#### 使用 kimi-k2.5-free 制作 PPT
+
+[<sub>返回目录</sub>](#目录)
 
 **prompt**
 
@@ -680,5 +726,17 @@ Create Table: CREATE TABLE `t_app_pdf_meta_acc` (
   KEY `idx_file_size_bytes` (`file_size_bytes`),
   KEY `idx_page_count` (`page_count`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2290 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+```
+
+### FastAPI开发
+
+#### 开发热文卡片网页
+
+**prompt**
+
+```
+
+参考 /Users/Shared/_AllDocMap/02_Project/gitee/python-app/app_local/video/app_video_toutiao_video_downloader.py 的代码风格，在 /Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/python-app/app_article_toutiao_hot_article_service.py 代码文件中实现，可视化热文的网页。网页的显示形式是4列多行的卡片，每个卡片显示一篇文章的标题、摘要。用户点击卡片时，跳转到文章的详情页面。热文的数据来源是 /Users/Shared/_AllDocMap/02_Project/github/opencode/james-work/python-app/config/app_article_toutiao_hot_article_service.yaml 中的 SQL 语句检索出来的数据。
 
 ```

@@ -1,5 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "plugin": ["file:///Users/Shared/_AllDocMap/02_Project/github/superpowers"],
   "provider": {
     "opencode": {
       "options": {},

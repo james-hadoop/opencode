@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/Users/Shared/_AllDocMap/02_Project/gitee/james-python/.conda/bin/python
 """
 今日头条文章发布器 v3.2
 将本地 markdown 文件中的文字和图片发布到今日头条
@@ -110,7 +110,7 @@ except ImportError:
     PLAYWRIGHT_AVAILABLE = False
     sync_playwright = None
 
-APP_DIR = Path("/home/jiangqian/Documents/_AllDocMap/02_Project/github/opencode/james-work/python-app")
+APP_DIR = Path(__file__).parent.resolve()
 DATA_DIR = APP_DIR / "data"
 COOKIE_FILE = DATA_DIR / "toutiao_cookies.json"
 STATUS_FILE = DATA_DIR / "publish_status.json"
@@ -285,9 +285,15 @@ def parse_single_markdown(file_path: str) -> Tuple[str, str, List[str]]:
                 body_lines.append(line)
         elif line.startswith('## '):
             body_lines.append(f"**{line[3:].strip()}**")
+        elif line.startswith('### '):
+            body_lines.append(f"*{line[4:].strip()}*")
         elif line.startswith('> '):
             body_lines.append(f"*{line[2:].strip()}*")
-        elif re.match(r'!\[[^\]]*\]\(([^)]+)\)', line):
+        elif line.startswith('#'):
+            if title is None and len(line) > 1:
+                title = line[1:].strip()
+            else:
+                body_lines.append(line)
             img_match = re.search(r'!\[[^\]]*\]\(([^)]+)\)', line)
             if img_match:
                 img_path = img_match.group(1)
@@ -296,6 +302,14 @@ def parse_single_markdown(file_path: str) -> Tuple[str, str, List[str]]:
                     image_paths.append(img_path)
                 elif img_path.startswith('/'):
                     image_paths.append(img_path)
+                elif img_path.startswith('images/') or img_path.startswith('./images/'):
+                    full_path = str(base_dir / img_path.replace('./', ''))
+                    if os.path.exists(full_path):
+                        image_paths.append(full_path)
+                    else:
+                        alt_path = str(base_dir / img_path)
+                        if os.path.exists(alt_path):
+                            image_paths.append(alt_path)
                 else:
                     full_path = str(base_dir / img_path)
                     if os.path.exists(full_path):
@@ -700,19 +714,68 @@ class ToutiaoPublisher:
     def _fill_editor(self, content: str) -> bool:
         log(f"填写内容，长度: {len(content)} 字符")
         
-        escaped_content = content.replace('\\', '\\\\').replace('`', '\\`').replace('$', '\\$')
-        self.page.evaluate(f'''() => {{
-            const ed = document.querySelector('.ProseMirror');
-            if (!ed) return false;
-            ed.focus();
-            ed.innerText = `{escaped_content}`;
-            ed.dispatchEvent(new Event('input', {{ bubbles: true }}));
-            return true;
-        }}''')
-        
-        self.page.wait_for_timeout(1000)
-        log("内容填写完成")
-        return True
+        try:
+            self.page.evaluate("window.scrollTo(0, 300)")
+            self.page.wait_for_timeout(1000)
+            
+            for attempt in range(3):
+                try:
+                    editor = self.page.locator('.ProseMirror').first
+                    if not editor.is_visible(timeout=3000):
+                        log(f"未找到ProseMirror编辑器")
+                        continue
+                    
+                    editor.click()
+                    self.page.wait_for_timeout(800)
+                    
+                    self.page.keyboard.press("Control+a")
+                    self.page.wait_for_timeout(300)
+                    self.page.keyboard.press("Backspace")
+                    self.page.wait_for_timeout(500)
+                    
+                    self.page.keyboard.type(content[:3000], delay=0)
+                    self.page.wait_for_timeout(2000)
+                    
+                    verify = self.page.evaluate('''() => {
+                        const ed = document.querySelector('.ProseMirror');
+                        return ed ? ed.innerText.length : 0;
+                    }''')
+                    log(f"键盘输入验证: {verify} 字符")
+                    
+                    if verify > 100:
+                        log("内容填写成功")
+                        self._take_debug_screenshot("content_filled")
+                        return True
+                        
+                except Exception as e:
+                    log(f"尝试 {attempt+1} 失败: {e}")
+                    self.page.wait_for_timeout(1000)
+            
+            log("尝试JavaScript填充")
+            js_content = json.dumps(content)
+            result = self.page.evaluate(f"""
+                () => {{
+                    const ed = document.querySelector('.ProseMirror');
+                    if (!ed) return 0;
+                    
+                    ed.focus();
+                    ed.innerText = {js_content};
+                    
+                    const inputEvent = new Event('input', {{ bubbles: true }}); 
+                    ed.dispatchEvent(inputEvent);
+                    
+                    return ed.innerText.length;
+                }}
+            """)
+            log(f"JS填充结果: {result} 字符")
+            self.page.wait_for_timeout(2000)
+            
+            log("内容填写完成")
+            return True
+            
+        except Exception as e:
+            log(f"填写内容失败: {e}")
+            return False
     
     def _insert_images_to_editor(self, images: List[str]) -> int:
         valid_images = [img for img in images if os.path.exists(img)]
@@ -722,69 +785,42 @@ class ToutiaoPublisher:
         
         log(f"插入图片，有效数量: {len(valid_images)}")
         
+        try:
+            img_btn = self.page.locator('[aria-label="插入图片"], [aria-label="添加图片"], button[aria-label*="图片"]').first
+            if not img_btn.is_visible(timeout=2000):
+                for sel in ['[class*="toolbar"] button', '[class*="editor"] button']:
+                    btns = self.page.locator(sel)
+                    for i in range(min(btns.count(), 10)):
+                        try:
+                            btn = btns.nth(i)
+                            svg = btn.locator('svg').first
+                            if svg.is_visible(timeout=500):
+                                img_btn = btn
+                                break
+                        except:
+                            pass
+            img_btn.click()
+            self.page.wait_for_timeout(1000)
+        except Exception as e:
+            log(f"点击图片按钮失败: {e}")
+        
         inserted = 0
         for i, img_path in enumerate(valid_images[:9]):
             log(f"尝试插入图片 {i+1}/{min(len(valid_images), 9)}")
-            img_inserted = False
-            
-            escaped_path = img_path.replace("\\", "\\\\").replace("'", "\\'")
-            
-            js_script = f"""
-                (function() {{
-                    var toolbarBtns = document.querySelectorAll('[class*="toolbar"] button, [class*="toolbar"] [role="button"], [class*="editor"] button, button[aria-label*="图片"], button[aria-label*="image"]');
-                    for (var i = 0; i < toolbarBtns.length; i++) {{
-                        var btn = toolbarBtns[i];
-                        var svg = btn.querySelector('svg');
-                        var ariaLabel = btn.getAttribute('aria-label') || '';
-                        var title = btn.getAttribute('title') || '';
-                        var text = btn.textContent || '';
-                        
-                        if (ariaLabel.toLowerCase().includes('image') || 
-                            ariaLabel.includes('图片') ||
-                            title.toLowerCase().includes('image') ||
-                            title.includes('图片') ||
-                            text.includes('图片') ||
-                            (svg && ariaLabel === '' && title === '')) {{
-                            btn.click();
-                            return 'toolbar_btn_' + i + '_' + ariaLabel;
-                        }}
-                    }}
-                    
-                    return 'not_found';
-                }})()
-            """
             
             try:
-                js_result = self.page.evaluate(js_script)
-                log(f"JS 上传结果: {js_result}")
-                
-                self.page.wait_for_timeout(1500)
-                
-                try:
-                    file_inputs = self.page.locator('input[type="file"]')
-                    if file_inputs.count() > 0:
-                        for j in range(file_inputs.count()):
-                            inp = file_inputs.nth(j)
-                            try:
-                                inp.set_input_files(img_path)
-                                inserted += 1
-                                img_inserted = True
-                                log(f"图片 {i+1} 上传成功 (input #{j})")
-                                self.page.wait_for_timeout(3000)
-                                break
-                            except Exception as e:
-                                log(f"input #{j} 上传失败: {e}")
-                                continue
-                except Exception as e:
-                    log(f"文件上传失败: {e}")
-                    
-                if not img_inserted:
-                    self._take_debug_screenshot(f"image_upload_failed_{i+1}")
+                file_input = self.page.locator('input[type="file"]').first
+                if file_input.is_visible(timeout=1000):
+                    file_input.set_input_files(img_path)
+                    inserted += 1
+                    log(f"图片 {i+1} 上传成功")
+                    self.page.wait_for_timeout(2000)
+                else:
+                    log(f"未找到文件输入框")
             except Exception as e:
-                log(f"JS 执行失败: {e}")
+                log(f"图片 {i+1} 上传失败: {e}")
                 self._take_debug_screenshot(f"image_upload_failed_{i+1}")
         
-        self._take_debug_screenshot("images_inserted")
         log(f"图片插入完成: {inserted} 张")
         return inserted
     
@@ -872,29 +908,16 @@ class ToutiaoPublisher:
     
     def _close_ai_assistant(self) -> None:
         try:
-            # 尝试多种方式关闭 AI 助手
-            for _ in range(3):
-                try:
-                    close_btn = self.page.locator('.close-btn, [class*="close"], [aria-label*="关闭"]').first
-                    if close_btn.is_visible(timeout=1000):
-                        close_btn.click()
-                        self.page.wait_for_timeout(500)
-                        log("AI 助手已关闭")
-                        return
-                except Exception:
-                    pass
-                
+            for _ in range(2):
                 try:
                     self.page.keyboard.press("Escape")
                     self.page.wait_for_timeout(500)
                 except Exception:
                     pass
                 
-                # 检查是否还有 AI 助手遮罩
                 try:
                     mask = self.page.locator('.byte-drawer-mask, .ai-assistant-drawer').first
                     if not mask.is_visible(timeout=500):
-                        log("AI 助手已关闭")
                         return
                 except Exception:
                     return
@@ -903,576 +926,230 @@ class ToutiaoPublisher:
         except Exception as e:
             log(f"关闭 AI 助手异常: {e}")
     
-    def _select_no_ad(self) -> bool:
-        """选择"不投放广告"选项"""
+    def _select_ad_revenue(self) -> bool:
+        """选择"广告收益"选项"""
         try:
-            no_ad = self.page.locator('text="不投放广告"').first
-            if no_ad.is_visible(timeout=1000):
-                no_ad.click(timeout=1000)
+            ad_revenue = self.page.locator('text="广告收益"').first
+            if ad_revenue.is_visible(timeout=1000):
+                ad_revenue.click(timeout=1000)
                 self.page.wait_for_timeout(300)
-                log("已选择不投放广告")
+                log("已选择广告收益")
                 return True
         except Exception:
             pass
         return False
     
-    def _select_no_cover(self) -> bool:
-        """选择"无封面"选项"""
+    def _upload_cover_image(self, cover_paths: List[str] = None) -> bool:
+        """上传封面图（使用本地图片）- 点击 + 按钮，然后点击上传本地文件"""
+        if not cover_paths or not isinstance(cover_paths, list):
+            cover_paths = [cover_paths] if cover_paths else []
+        
+        valid_paths = [p for p in cover_paths if p and os.path.exists(p)]
+        if not valid_paths:
+            log("无有效封面图片路径，跳过上传")
+            return False
+        
+        log(f"上传封面图: {valid_paths}")
+        self.page.wait_for_timeout(1000)
+        
+        for selector in [
+            '[class*="article-cover-add"]',
+            '[class*="cover-add"]',
+            '.article-cover-add',
+            '[class*="add-cover"]',
+            '[class*="upload-cover"] button',
+        ]:
+            try:
+                el = self.page.locator(selector).first
+                if el.is_visible(timeout=1000):
+                    el.click()
+                    log(f"已点击封面 + 按钮: {selector}")
+                    self.page.wait_for_timeout(2000)
+                    break
+            except Exception:
+                continue
+        else:
+            log("未找到封面 + 按钮")
+            self._take_debug_screenshot("cover_no_add_button")
+            return False
+        
+        for txt in ["上传本地文件", "本地上传", "选择本地"]:
+            try:
+                btn = self.page.locator(f'button:has-text("{txt}")').first
+                if btn.is_visible(timeout=2000):
+                    btn.click()
+                    log(f"已点击: {txt}")
+                    self.page.wait_for_timeout(1500)
+                    break
+            except Exception:
+                continue
+        
         try:
-            no_cover = self.page.locator('text="无封面"').first
-            if no_cover.is_visible(timeout=1000):
-                no_cover.click(timeout=1000)
-                self.page.wait_for_timeout(300)
-                log("已选择无封面")
-                return True
-        except Exception:
-            pass
+            file_inputs = self.page.locator('input[type="file"]')
+            count = file_inputs.count()
+            if count > 0:
+                for i in range(count):
+                    try:
+                        inp = file_inputs.nth(i)
+                        if inp.is_visible(timeout=500):
+                            inp.set_input_files(valid_paths)
+                            log(f"封面图片已上传: {len(valid_paths)} 张")
+                            self.page.wait_for_timeout(3000)
+                            return True
+                    except Exception:
+                        continue
+        except Exception as e:
+            log(f"封面上传失败: {e}")
+        
+        log("封面上传失败")
+        self._take_debug_screenshot("cover_upload_failed")
         return False
     
     def _click_publish(self) -> bool:
         log("点击发布按钮")
-        
+
         self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         self.page.wait_for_timeout(1000)
-        
+
         try:
+            for _ in range(3):
+                self.page.keyboard.press("Escape")
+                self.page.wait_for_timeout(300)
+
+            self.page.evaluate('''() => {
+                const masks = document.querySelectorAll('.preview-feed-mask, [class*="preview-mask"], [class*="feed-mask"], .byte-drawer-mask, [class*="drawer-mask"]');
+                masks.forEach(m => m.style.display = 'none');
+            }''')
+            self.page.wait_for_timeout(500)
+
+            try:
+                close_preview = self.page.locator('button:has-text("关闭预览")').first
+                if close_preview.is_visible(timeout=1000):
+                    close_preview.click()
+                    log("关闭预览面板")
+                    self.page.wait_for_timeout(1500)
+            except Exception:
+                pass
+
+            try:
+                self._close_ai_assistant()
+            except Exception:
+                pass
+
+            self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            self.page.wait_for_timeout(1000)
+
             publish_btn = self.page.locator('button:has-text("预览并发布")').first
             if not publish_btn.is_visible(timeout=3000):
                 log("未找到预览并发布按钮")
+                self._take_debug_screenshot("no_publish_btn")
                 return False
-            
+
             publish_btn.click()
             log("已点击预览并发布")
             self.page.wait_for_timeout(3000)
-            
-            # 检测"确认发布"按钮
-            for attempt in range(30):
-                self.page.wait_for_timeout(1000)
-                
-                try:
-                    confirm_btn = self.page.locator('button:has-text("确认发布")').first
-                    if confirm_btn.is_visible(timeout=500):
-                        confirm_btn.click()
-                        log("已点击确认发布")
-                        self.page.wait_for_timeout(5000)
-                        return True
-                except Exception:
-                    pass
-                
-                # 检测 dialog 元素并点击"确定"
-                try:
-                    dialog = self.page.locator('dialog').first
-                    if dialog.is_visible(timeout=200):
-                        log("检测到 dialog 弹窗")
-                        ok_btn = self.page.locator('dialog button:has-text("确定")').first
-                        if ok_btn.is_visible(timeout=500):
-                            ok_btn.click()
-                            log("已点击弹窗确定按钮")
-                            self.page.wait_for_timeout(3000)
-                            continue
-                except Exception:
-                    pass
-                
-                # 直接查找页面上的"确定"按钮（不依赖容器）
-                try:
-                    ok_btn = self.page.get_by_role("button", name="确定")
-                    if ok_btn.is_visible(timeout=200):
-                        log("检测到确定按钮（role 方式）")
-                        ok_btn.click()
-                        log("已点击确定按钮")
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                # 检测 byte-modal 弹窗
-                try:
-                    modal = self.page.locator('.byte-modal').first
-                    if modal.is_visible(timeout=200):
-                        log("检测到 byte-modal 弹窗")
-                        self.page.evaluate('''() => {
-                            const modal = document.querySelector('.byte-modal');
-                            if (!modal) return false;
-                            const btns = modal.querySelectorAll('button');
-                            for (const btn of btns) {
-                                if (btn.textContent.trim() === '确定') {
-                                    btn.click();
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                # 检测 zoomModal 弹窗
-                try:
-                    zoom_modal = self.page.locator('.zoomModal, [class*="zoomModal"]').first
-                    if zoom_modal.is_visible(timeout=200):
-                        log("检测到 zoomModal 弹窗")
-                        self.page.evaluate('''() => {
-                            const modals = document.querySelectorAll('.zoomModal, [class*="zoomModal"]');
-                            for (const modal of modals) {
-                                const btns = modal.querySelectorAll('button');
-                                for (const btn of btns) {
-                                    if (btn.textContent.trim() === '确定') {
-                                        btn.click();
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                if attempt % 5 == 0:
-                    log(f"等待中... URL: {self.page.url[:60]}")
-            
-            log("未找到确认发布按钮")
-            return False
-            
-        except Exception as e:
-            log(f"发布流程出错: {e}")
-            return False
-            
-            publish_btn.click()
-            log("已点击预览并发布")
-            self.page.wait_for_timeout(3000)
-            
-            # 截图调试
-            self.page.screenshot(path="/tmp/toutiao_publish_click.png", full_page=True)
-            log("已截图: /tmp/toutiao_publish_click.png")
-            
-            # 获取页面文本
+
+            self._take_debug_screenshot("after_preview_click")
+
             page_text = self.page.inner_text('body')
-            log(f"页面文本: {page_text[:500]}")
-            
-            # 检测"确认发布"按钮
-            for attempt in range(30):
-                self.page.wait_for_timeout(1000)
-                
+            log(f"页面预览: {page_text[:500]}")
+
+            try:
+                close_preview = self.page.locator('button:has-text("关闭预览")').first
+                if close_preview.is_visible(timeout=2000):
+                    close_preview.click()
+                    log("关闭预览")
+                    self.page.wait_for_timeout(1500)
+            except Exception:
+                pass
+
+            self.page.wait_for_timeout(1000)
+
+            for btn_text in ["确认发布", "发布"]:
                 try:
-                    confirm_btn = self.page.locator('button:has-text("确认发布")').first
-                    if confirm_btn.is_visible(timeout=500):
-                        confirm_btn.click()
-                        log("已点击确认发布")
-                        self.page.wait_for_timeout(5000)
-                        
-                        # 截图查看点击后的页面状态
-                        self.page.screenshot(path="/tmp/toutiao_after_confirm.png", full_page=True)
-                        log("已截图: /tmp/toutiao_after_confirm.png")
-                        
-                        # 获取点击后的页面文本
-                        post_text = self.page.inner_text('body')
-                        log(f"点击后页面文本: {post_text[:500]}")
-                        
-                        # 检查是否有成功消息
-                        success_keywords = ["发布成功", "发布完成", "已发布", "审核中", "文章管理", "提交成功", "内容正在审核"]
-                        for keyword in success_keywords:
-                            if keyword in post_text:
-                                log(f"检测到成功关键字: {keyword}")
+                    btns = self.page.locator(f'button:has-text("{btn_text}")')
+                    for i in range(min(btns.count(), 8)):
+                        btn = btns.nth(i)
+                        if btn.is_visible(timeout=500):
+                            bbox = btn.bounding_box()
+                            if bbox and bbox['width'] > 30 and bbox['height'] > 20:
+                                log(f"点击 {btn_text} 按钮")
+                                btn.click()
+                                self.page.wait_for_timeout(5000)
                                 return True
-                        
-                        return True
-                except Exception:
-                    pass
+                except Exception as e:
+                    log(f"查找{btn_text}按钮失败: {e}")
+
+            for attempt in range(8):
+                self.page.wait_for_timeout(1500)
                 
-                # 检测 byte-modal 弹窗
-                try:
-                    modal = self.page.locator('.byte-modal').first
-                    if modal.is_visible(timeout=200):
-                        log("检测到 byte-modal 弹窗")
-                        self.page.evaluate('''() => {
-                            const modal = document.querySelector('.byte-modal');
-                            if (!modal) return false;
-                            const btns = modal.querySelectorAll('button');
-                            for (const btn of btns) {
-                                if (btn.textContent.trim() === '确定') {
-                                    btn.click();
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
+                page_text = self.page.inner_text('body')
                 
-                # 检测 dialog 元素
-                try:
-                    dialog = self.page.locator('dialog, [role="dialog"]').first
-                    if dialog.is_visible(timeout=200):
-                        log("检测到 dialog 弹窗")
-                        self.page.evaluate('''() => {
-                            const dialogs = document.querySelectorAll('dialog, [role="dialog"]');
-                            for (const d of dialogs) {
-                                const btns = d.querySelectorAll('button');
-                                for (const btn of btns) {
-                                    if (btn.textContent.trim() === '确定') {
-                                        btn.click();
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
+                if "发布成功" in page_text or "审核中" in page_text:
+                    log("检测到发布成功")
+                    return True
+
+                for btn_text in ["确认发布", "发布", "确认"]:
+                    try:
+                        btns = self.page.locator(f'button:has-text("{btn_text}")')
+                        for i in range(min(btns.count(), 5)):
+                            btn = btns.nth(i)
+                            if btn.is_visible(timeout=300):
+                                bbox = btn.bounding_box()
+                                if bbox and bbox['width'] > 30:
+                                    btn.click()
+                                    log(f"循环中点击: {btn_text}")
+                                    self.page.wait_for_timeout(3000)
+                                    return True
+                    except:
+                        pass
                 
-                # 检测 zoomModal 弹窗
-                try:
-                    zoom_modal = self.page.locator('.zoomModal, [class*="zoomModal"]').first
-                    if zoom_modal.is_visible(timeout=200):
-                        log("检测到 zoomModal 弹窗")
-                        self.page.evaluate('''() => {
-                            const modals = document.querySelectorAll('.zoomModal, [class*="zoomModal"]');
-                            for (const modal of modals) {
-                                const btns = modal.querySelectorAll('button');
-                                for (const btn of btns) {
-                                    if (btn.textContent.trim() === '确定') {
-                                        btn.click();
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                if attempt % 5 == 0:
-                    log(f"等待中... URL: {self.page.url[:60]}")
-            
-            log("未找到确认发布按钮")
-            return False
-            
+                if attempt % 2 == 0:
+                    log(f"等待... 尝试 {attempt+1}")
+
+            log("发布流程完成")
+            return True
+
         except Exception as e:
             log(f"发布流程出错: {e}")
+            self._take_debug_screenshot("publish_error")
             return False
-            
-            publish_btn.click()
-            log("已点击预览并发布")
-            self.page.wait_for_timeout(3000)
-            
-            # 截图调试
-            self.page.screenshot(path="/tmp/toutiao_publish_click.png", full_page=True)
-            log("已截图: /tmp/toutiao_publish_click.png")
-            
-            # 获取页面文本
-            page_text = self.page.inner_text('body')
-            log(f"页面文本: {page_text[:500]}")
-            
-            # 检测"确认发布"按钮
-            for attempt in range(30):
-                self.page.wait_for_timeout(1000)
-                
-                try:
-                    confirm_btn = self.page.locator('button:has-text("确认发布")').first
-                    if confirm_btn.is_visible(timeout=500):
-                        confirm_btn.click()
-                        log("已点击确认发布")
-                        self.page.wait_for_timeout(5000)
-                        
-                        # 截图查看点击后的页面状态
-                        self.page.screenshot(path="/tmp/toutiao_after_confirm.png", full_page=True)
-                        log("已截图: /tmp/toutiao_after_confirm.png")
-                        
-                        # 获取点击后的页面文本
-                        post_text = self.page.inner_text('body')
-                        log(f"点击后页面文本: {post_text[:500]}")
-                        
-                        # 检查是否有成功消息
-                        success_keywords = ["发布成功", "发布完成", "已发布", "审核中", "文章管理", "提交成功", "内容正在审核"]
-                        for keyword in success_keywords:
-                            if keyword in post_text:
-                                log(f"检测到成功关键字: {keyword}")
-                                return True
-                        
-                        return True
-                except Exception:
-                    pass
-                
-                # 检测 byte-modal 弹窗
-                try:
-                    modal = self.page.locator('.byte-modal').first
-                    if modal.is_visible(timeout=200):
-                        log("检测到 byte-modal 弹窗")
-                        self.page.evaluate('''() => {
-                            const modal = document.querySelector('.byte-modal');
-                            if (!modal) return false;
-                            const btns = modal.querySelectorAll('button');
-                            for (const btn of btns) {
-                                if (btn.textContent.trim() === '确定') {
-                                    btn.click();
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                # 检测 dialog 元素
-                try:
-                    dialog = self.page.locator('dialog, [role="dialog"]').first
-                    if dialog.is_visible(timeout=200):
-                        log("检测到 dialog 弹窗")
-                        self.page.evaluate('''() => {
-                            const dialogs = document.querySelectorAll('dialog, [role="dialog"]');
-                            for (const d of dialogs) {
-                                const btns = d.querySelectorAll('button');
-                                for (const btn of btns) {
-                                    if (btn.textContent.trim() === '确定') {
-                                        btn.click();
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                # 检测 zoomModal 弹窗
-                try:
-                    zoom_modal = self.page.locator('.zoomModal, [class*="zoomModal"]').first
-                    if zoom_modal.is_visible(timeout=200):
-                        log("检测到 zoomModal 弹窗")
-                        self.page.evaluate('''() => {
-                            const modals = document.querySelectorAll('.zoomModal, [class*="zoomModal"]');
-                            for (const modal of modals) {
-                                const btns = modal.querySelectorAll('button');
-                                for (const btn of btns) {
-                                    if (btn.textContent.trim() === '确定') {
-                                        btn.click();
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                if attempt % 5 == 0:
-                    log(f"等待中... URL: {self.page.url[:60]}")
-            
-            log("未找到确认发布按钮")
-            return False
-            
-        except Exception as e:
-            log(f"发布流程出错: {e}")
-            return False
-            
-            publish_btn.click()
-            log("已点击预览并发布")
-            self.page.wait_for_timeout(3000)
-            
-            # 截图调试
-            self.page.screenshot(path="/tmp/toutiao_publish_click.png", full_page=True)
-            log("已截图: /tmp/toutiao_publish_click.png")
-            
-            # 获取页面文本
-            page_text = self.page.inner_text('body')
-            log(f"页面文本: {page_text[:500]}")
-            
-            # 检测"确认发布"按钮
-            for attempt in range(30):
-                self.page.wait_for_timeout(1000)
-                
-                try:
-                    confirm_btn = self.page.locator('button:has-text("确认发布")').first
-                    if confirm_btn.is_visible(timeout=500):
-                        confirm_btn.click()
-                        log("已点击确认发布")
-                        self.page.wait_for_timeout(5000)
-                        return True
-                except Exception:
-                    pass
-                
-                # 检测 byte-modal 弹窗
-                try:
-                    modal = self.page.locator('.byte-modal').first
-                    if modal.is_visible(timeout=200):
-                        log("检测到 byte-modal 弹窗")
-                        self.page.evaluate('''() => {
-                            const modal = document.querySelector('.byte-modal');
-                            if (!modal) return false;
-                            const btns = modal.querySelectorAll('button');
-                            for (const btn of btns) {
-                                if (btn.textContent.trim() === '确定') {
-                                    btn.click();
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                # 检测 dialog 元素
-                try:
-                    dialog = self.page.locator('dialog, [role="dialog"]').first
-                    if dialog.is_visible(timeout=200):
-                        log("检测到 dialog 弹窗")
-                        self.page.evaluate('''() => {
-                            const dialogs = document.querySelectorAll('dialog, [role="dialog"]');
-                            for (const d of dialogs) {
-                                const btns = d.querySelectorAll('button');
-                                for (const btn of btns) {
-                                    if (btn.textContent.trim() === '确定') {
-                                        btn.click();
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                if attempt % 5 == 0:
-                    log(f"等待中... URL: {self.page.url[:60]}")
-            
-            log("未找到确认发布按钮")
-            return False
-            
-        except Exception as e:
-            log(f"发布流程出错: {e}")
-            return False
-            
-            publish_btn.click()
-            log("已点击预览并发布")
-            self.page.wait_for_timeout(3000)
-            
-            # 截图调试
-            self.page.screenshot(path="/tmp/toutiao_publish_click.png", full_page=True)
-            log("已截图: /tmp/toutiao_publish_click.png")
-            
-            # 获取页面文本
-            page_text = self.page.inner_text('body')
-            log(f"页面文本: {page_text[:500]}")
-            
-            # 检测"确认发布"按钮
-            for attempt in range(30):
-                self.page.wait_for_timeout(1000)
-                
-                try:
-                    confirm_btn = self.page.locator('button:has-text("确认发布")').first
-                    if confirm_btn.is_visible(timeout=500):
-                        confirm_btn.click()
-                        log("已点击确认发布")
-                        self.page.wait_for_timeout(5000)
-                        return True
-                except Exception:
-                    pass
-                
-                # 检测 byte-modal 弹窗
-                try:
-                    modal = self.page.locator('.byte-modal').first
-                    if modal.is_visible(timeout=200):
-                        log("检测到 byte-modal 弹窗")
-                        self.page.evaluate('''() => {
-                            const modal = document.querySelector('.byte-modal');
-                            if (!modal) return false;
-                            const btns = modal.querySelectorAll('button');
-                            for (const btn of btns) {
-                                if (btn.textContent.trim() === '确定') {
-                                    btn.click();
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                # 检测 dialog 元素
-                try:
-                    dialog = self.page.locator('dialog, [role="dialog"]').first
-                    if dialog.is_visible(timeout=200):
-                        log("检测到 dialog 弹窗")
-                        self.page.evaluate('''() => {
-                            const dialogs = document.querySelectorAll('dialog, [role="dialog"]');
-                            for (const d of dialogs) {
-                                const btns = d.querySelectorAll('button');
-                                for (const btn of btns) {
-                                    if (btn.textContent.trim() === '确定') {
-                                        btn.click();
-                                        return true;
-                                    }
-                                }
-                            }
-                            return false;
-                        }''')
-                        self.page.wait_for_timeout(3000)
-                        continue
-                except Exception:
-                    pass
-                
-                if attempt % 5 == 0:
-                    log(f"等待中... URL: {self.page.url[:60]}")
-            
-            log("未找到确认发布按钮")
-            return False
-            
-        except Exception as e:
-            log(f"发布流程出错: {e}")
-            return False
-    
+
     def _wait_for_publish_complete(self) -> bool:
         log(f"等待发布完成，超时 {PUBLISH_TIMEOUT/1000} 秒...")
         
-        # 设置网络请求监听 - 监听所有 POST 请求
         api_responses = []
+        publish_api_found = False
+        
         def handle_response(response):
+            nonlocal publish_api_found
             url = response.url
             status = response.status
-            # 记录所有 POST 请求
             if response.request.method == "POST":
-                try:
-                    body = response.json()
-                    api_responses.append({"url": url, "status": status, "body": body, "method": "POST"})
-                    log(f"POST响应: {url} -> {status} -> {body}")
-                except:
-                    api_responses.append({"url": url, "status": status, "method": "POST"})
-                    log(f"POST响应: {url} -> {status}")
-            # 也记录包含关键字的 GET 请求
+                if any(kw in url for kw in ["publish", "article", "content", "graphic", "submit", "save", "create"]):
+                    try:
+                        body = response.json()
+                        api_responses.append({"url": url, "status": status, "body": body, "method": "POST"})
+                        log(f"发布相关POST响应: {url} -> {status}")
+                        publish_api_found = True
+                    except:
+                        api_responses.append({"url": url, "status": status, "method": "POST"})
+                        log(f"发布相关POST响应: {url} -> {status}")
+                        publish_api_found = True
             elif any(kw in url for kw in ["publish", "article", "content", "graphic", "submit", "save", "create"]):
                 try:
                     body = response.json()
                     api_responses.append({"url": url, "status": status, "body": body})
-                    log(f"API响应: {url} -> {status} -> {body}")
+                    log(f"发布相关GET响应: {url} -> {status}")
                 except:
                     api_responses.append({"url": url, "status": status})
-                    log(f"API响应: {url} -> {status}")
+                    log(f"发布相关GET响应: {url} -> {status}")
         
         self.page.on("response", handle_response)
         
         max_wait = PUBLISH_TIMEOUT // 1000
         waited = 0
+        initial_url = self.page.url
         
         while waited < max_wait:
             self.page.wait_for_timeout(2000)
@@ -1483,6 +1160,7 @@ class ToutiaoPublisher:
             
             try:
                 page_text = self.page.inner_text('body')
+                form_state = self._check_form_state()
                 
                 success_keywords = ["发布成功", "发布完成", "已发布", "审核中", "文章管理", "提交成功", "内容正在审核"]
                 for keyword in success_keywords:
@@ -1492,14 +1170,23 @@ class ToutiaoPublisher:
                         self.page.wait_for_timeout(2000)
                         return True
                 
-                # 检测错误信息
                 error_keywords = ["发布失败", "内容重复", "审核不通过", "内容违规", "提交失败"]
                 for kw in error_keywords:
                     if kw in page_text:
                         log(f"检测到错误关键字: {kw}")
                         return False
+
+                if "草稿" in page_text and form_state.get("titleLength") == 0 and form_state.get("editorLength") == 0:
+                    log("检测到草稿区且表单已清空，判定发布成功")
+                    self._take_debug_screenshot("publish_success")
+                    return True
+
+                if form_state.get("titleLength") == 0 and form_state.get("editorLength") == 0:
+                    if "请输入文章标题" in page_text or "请输入正文" in page_text:
+                        log("检测到发布后表单已重置，判定发布成功")
+                        self._take_debug_screenshot("publish_success")
+                        return True
                 
-                # 检测是否有确认弹窗
                 confirm_keywords = ["确认发布", "确认提交", "确定要发布"]
                 for kw in confirm_keywords:
                     if kw in page_text:
@@ -1535,9 +1222,8 @@ class ToutiaoPublisher:
         except Exception:
             pass
         
-        # 检查 API 响应
-        if api_responses:
-            log(f"API 响应记录: {api_responses}")
+        if publish_api_found:
+            log("检测到发布相关API调用")
             for resp in api_responses:
                 if resp.get("status") == 200:
                     body = resp.get("body", {})
@@ -1545,11 +1231,15 @@ class ToutiaoPublisher:
                         log("API 响应表明发布成功")
                         return True
         
-        # 如果没有检测到错误，且页面仍在发布页面，可能是提交成功但 UI 未更新
-        log("未检测到错误，假设发布成功")
-        return True
+        if self.page.url != initial_url:
+            log(f"URL已变化: {self.page.url}")
+            return True
+        
+        log("未检测到发布成功，页面未变化")
+        self._take_debug_screenshot("publish_timeout")
+        return False
     
-    def publish_article(self, title: str, content: str, images: List[str] = None) -> Tuple[bool, str, str]:
+    def publish_article(self, title: str, content: str, images: List[str] = None, cover_image: str = None) -> Tuple[bool, str, str]:
         if not self.page:
             raise Exception("请先调用 setup() 或 login()")
         
@@ -1560,9 +1250,10 @@ class ToutiaoPublisher:
         if len(title) < 2:
             title = title + " " * (2 - len(title))
         
-        # 添加时间戳避免重复检测
         import time
+        original_title = title
         title = f"{title}_{int(time.time()) % 10000}"
+        self._original_title = original_title
         
         try:
             print(f"\n发布文章: {title[:20]}...")
@@ -1599,40 +1290,152 @@ class ToutiaoPublisher:
             print(f"  ✓ 已嵌入 {inserted} 张图片")
             
             log("步骤6: 设置封面")
-            self._select_no_cover()
-            print("  ✓ 已选择无封面")
+            if images and len(images) >= 3:
+                cover_images = images[:3]
+                if self._upload_cover_image(cover_images):
+                    print(f"  ✓ 封面图已上传 ({len(cover_images)} 张)")
+                else:
+                    print("  ⚠ 封面图上传失败")
+            elif cover_image and os.path.exists(cover_image):
+                if self._upload_cover_image(cover_image):
+                    print("  ✓ 封面图已上传")
+                else:
+                    print("  ⚠ 封面图上传失败")
+            else:
+                print("  ⚠ 无封面图，跳过")
             
             self.page.wait_for_timeout(500)
             
-            log("步骤7: 选择不投放广告")
-            self._select_no_ad()
+            log("步骤7: 选择广告收益")
+            self._select_ad_revenue()
             
             self.page.wait_for_timeout(1000)
             self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
             self.page.wait_for_timeout(500)
             
+            # 等待草稿保存完成
+            for _ in range(10):
+                page_text = self.page.inner_text('body')
+                if "草稿保存中" not in page_text:
+                    break
+                self.page.wait_for_timeout(1000)
+            
             # 确保 AI 助手已关闭，避免遮挡发布按钮
             self._close_ai_assistant()
             
             log("步骤8: 点击发布")
-            if self._click_publish():
-                print("  ✓ 点击发布按钮成功")
-            else:
-                return False, "未找到发布按钮", None
             
+            try:
+                self._close_popups()
+            except:
+                pass
+            
+            self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            self.page.wait_for_timeout(1000)
+
+            publish_btn = self.page.locator('button:has-text("预览并发布")').first
+            if not publish_btn.is_visible(timeout=3000):
+                log("未找到预览并发布按钮")
+                return False, "未找到发布按钮", None
+
+            publish_btn.click()
+            log("已点击预览并发布")
+            self.page.wait_for_timeout(3000)
+
+            try:
+                close_preview = self.page.locator('button:has-text("关闭预览")').first
+                if close_preview.is_visible(timeout=2000):
+                    close_preview.click()
+                    log("关闭预览")
+                    self.page.wait_for_timeout(1500)
+            except:
+                pass
+
+            for _ in range(3):
+                self.page.wait_for_timeout(1000)
+                page_text = self.page.inner_text('body')
+                
+                for btn_text in ["发布", "确认发布", "确认"]:
+                    try:
+                        btns = self.page.locator(f'button:has-text("{btn_text}")')
+                        for i in range(min(btns.count(), 5)):
+                            btn = btns.nth(i)
+                            if btn.is_visible(timeout=300):
+                                bbox = btn.bounding_box()
+                                if bbox and bbox['width'] > 30:
+                                    log(f"点击: {btn_text}")
+                                    btn.click()
+                                    self.page.wait_for_timeout(3000)
+                                    break
+                    except:
+                        pass
+
             log("步骤9: 等待发布完成")
+            self.page.wait_for_timeout(5000)
+
             if self._wait_for_publish_complete():
-                print("  ✓ 文章发布成功")
-                log("发布流程完成")
-                return True, "发布成功", None
-            else:
-                return False, "发布等待超时", None
+                log("发布流程完成，验证文章是否在管理页面")
+                if self._verify_article_on_manage_page(title):
+                    print("  ✓ 文章发布成功并在管理页面验证")
+                    return True, "发布成功", None
+            
+            log("发布等待超时，尝试保存草稿")
+            if self._save_draft():
+                log("草稿保存成功，验证文章是否在管理页面")
+                if self._verify_article_on_manage_page(title):
+                    print("  ✓ 草稿发布成功并在管理页面验证")
+                    return True, "发布成功", None
+                else:
+                    print("  ⚠ 文章已保存为草稿但未在管理页面找到")
+            
+            self._take_debug_screenshot("publish_timeout")
+            return False, "发布等待超时", None
             
         except Exception as e:
             import traceback
             log(f"发布异常: {e}")
             log(traceback.format_exc())
             return False, f"发布失败: {str(e)}", None
+    
+    def _verify_article_on_manage_page(self, title: str, timeout: int = 30) -> bool:
+        original_title = getattr(self, '_original_title', None) or title
+        
+        log(f"验证文章: {original_title}")
+        
+        try:
+            self.page.goto("https://mp.toutiao.com/profile_v4/manage/content/all", timeout=30000)
+            self.page.wait_for_timeout(3000)
+            self._close_popups()
+            
+            search_box = self.page.locator('input[placeholder="搜索关键词"]').first
+            if not search_box.is_visible(timeout=5000):
+                log("未找到搜索框")
+                self._take_debug_screenshot("manage_no_search")
+                return False
+            
+            for search_title in [original_title, original_title[:20], original_title[:15]]:
+                if not search_title:
+                    continue
+                search_box.fill("")
+                search_box.fill(search_title)
+                self.page.wait_for_timeout(2000)
+                search_box.press("Enter")
+                self.page.wait_for_timeout(3000)
+                
+                page_text = self.page.inner_text("body")
+                if search_title[:10] in page_text:
+                    log(f"在管理页面找到文章: {search_title}")
+                    self._take_debug_screenshot("verify_success")
+                    return True
+            
+            log("未在管理页面找到文章")
+            self._take_debug_screenshot("verify_not_found")
+            return False
+            
+        except Exception as e:
+            log(f"验证失败: {e}")
+            self._take_debug_screenshot("verify_error")
+            return False
     
     def close(self) -> None:
         if self.browser:
@@ -1689,36 +1492,68 @@ def publish_single_file(markdown_path: str, images_dir: str = None, skip_publish
             local_images.append(save_path)
             print(f"  下载图片: {filename}")
     
+    adjacent_images = md_path.parent / "images"
+    if adjacent_images.exists():
+        for img_file in sorted(adjacent_images.iterdir()):
+            if img_file.suffix.lower() in ('.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp'):
+                if img_file not in local_images and str(img_file) not in local_images:
+                    local_images.append(str(img_file))
+        print(f"  从 images/ 目录找到 {len([i for i in local_images if 'images' in i])} 张图片")
+    
+    cover_image = local_images[0] if local_images else None
+    if cover_image:
+        print(f"  封面图: {cover_image}")
+    
     publisher = ToutiaoPublisher(headless=False)
     
-    try:
-        publisher.setup()
+    max_iterations = 5
+    iteration = 0
+    
+    while iteration < max_iterations:
+        iteration += 1
+        print(f"\n--- 尝试 {iteration}/{max_iterations} ---")
         
-        if not publisher.check_login_status():
-            print("\n需要登录...")
-            publisher.login()
+        try:
+            publisher.setup()
+            
+            if not publisher.check_login_status():
+                print("\n需要登录...")
+                publisher.login()
+            
+            if not publisher.check_login_status():
+                print("\n登录失败，程序退出")
+                return 1
+            
+            success, msg, url = publisher.publish_article(title, content, local_images, cover_image)
+            
+            if success:
+                print(f"\n{'='*60}")
+                print(f"✓ 发布成功!")
+                print("="*60)
+                status.mark_published(markdown_path, title, url)
+                publisher.close()
+                return 0
+            else:
+                print(f"  ✗ 第 {iteration} 次尝试失败: {msg}")
+                
+        except Exception as e:
+            print(f"  ✗ 第 {iteration} 次尝试异常: {e}")
         
-        if not publisher.check_login_status():
-            print("\n登录失败，程序退出")
-            return 1
+        finally:
+            try:
+                publisher.close()
+            except:
+                pass
         
-        success, msg, url = publisher.publish_article(title, content, local_images)
-        
-        if success:
-            print(f"\n{'='*60}")
-            print(f"✓ 发布成功!")
-            print("="*60)
-            status.mark_published(markdown_path, title, url)
-            return 0
-        else:
-            print(f"\n{'='*60}")
-            print(f"✗ 发布失败: {msg}")
-            print("="*60)
-            status.mark_failed(markdown_path, title, msg)
-            return 1
-        
-    finally:
-        publisher.close()
+        if iteration < max_iterations:
+            print(f"  等待 10 秒后重试...")
+            time.sleep(10)
+    
+    print(f"\n{'='*60}")
+    print(f"✗ 达到最大重试次数 ({max_iterations})，放弃发布")
+    print("="*60)
+    status.mark_failed(markdown_path, f"达到最大重试次数 {max_iterations} 次", "max_iterations_exceeded")
+    return 1
 
 
 def publish_multiple_files(file_list: List[str], images_dir: str = None) -> int:
@@ -1760,7 +1595,8 @@ def publish_multiple_files(file_list: List[str], images_dir: str = None) -> int:
             title, content, image_paths = parse_single_markdown(file_path)
             local_images = [p for p in image_paths if os.path.exists(p)]
             
-            success, msg, url = publisher.publish_article(title, content, local_images)
+            cover_image = local_images[0] if local_images else None
+            success, msg, url = publisher.publish_article(title, content, local_images, cover_image)
             
             if success:
                 print(f"  ✓ {msg}")
@@ -1786,7 +1622,7 @@ def publish_multiple_files(file_list: List[str], images_dir: str = None) -> int:
 
 
 def main():
-    default_file = "/home/jiangqian/Documents/_AllDocMap/_mineru_proj/output_path/神策埋点资产管理 -简洁版/auto/神策埋点资产管理 -简洁版.md"
+    default_file = "/Volumes/james1t/_AllDocMap/02_Project/mineru_proj/dt=2025-08-06/output_path/_LGTM_数据指标_快手--经营诊断与波动分析实践/auto/_LGTM_数据指标_快手--经营诊断与波动分析实践.md"
     
     parser = argparse.ArgumentParser(
         description="今日头条文章发布器 v3.2",
