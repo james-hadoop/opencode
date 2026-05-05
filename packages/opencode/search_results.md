@@ -1,0 +1,375 @@
+- generic [active] [ref=e1]:
+  - link "欢迎进入 OpenClaw深度研究报告 - 头条搜索,盲人用户使用操作智能引导，请按快捷键Ctrl+Alt+R；阅读详细操作说明请按快捷键Ctrl+Alt+问号键。":
+    - /url: javascript:void(0)
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - link [ref=e9] [cursor=pointer]:
+        - /url: /?dvpf=pc
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - searchbox "输入关键词进行搜索" [ref=e12]: OpenClaw深度研究报告
+          - img [ref=e14] [cursor=pointer]
+        - img [ref=e18] [cursor=pointer]
+      - link "无障碍" [ref=e20] [cursor=pointer]:
+        - /url: javascript:void(0)
+      - link "今日头条首页" [ref=e23] [cursor=pointer]:
+        - /url: https://www.toutiao.com
+      - generic [ref=e25] [cursor=pointer]:
+        - img [ref=e27]
+        - generic [ref=e29]: 数据筑梦空间
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - link "综合" [ref=e33] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=search_tab&cur_tab_title=search_tab
+        - link "资讯" [ref=e34] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=information&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=news&cur_tab_title=news
+        - link "视频" [ref=e35] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=video&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=video&cur_tab_title=video
+        - link "图片" [ref=e36] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=atlas&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=gallery&cur_tab_title=gallery
+        - link "用户" [ref=e37] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=user&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=media&cur_tab_title=media
+        - link "小视频" [ref=e38] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=xiaoshipin&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=xiaoshipin&cur_tab_title=xiaoshipin
+        - link "微头条" [ref=e39] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=weitoutiao&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=weitoutiao&cur_tab_title=weitoutiao
+        - link "音乐" [ref=e40] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=music&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=music&cur_tab_title=music
+      - link "去抖音搜" [ref=e42] [cursor=pointer]:
+        - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.douyin.com%2Fsearch%2FOpenClaw%25E6%25B7%25B1%25E5%25BA%25A6%25E7%25A0%2594%25E7%25A9%25B6%25E6%258A%25A5%25E5%2591%258A%3Fsource%3Dtoutiao_web_search&aid=4916&jtoken=
+        - text: 去抖音搜
+  - generic:
+    - generic [ref=e49]:
+      - generic [ref=e50]:
+        - generic [ref=e51]: 头条热榜
+        - generic [ref=e52] [cursor=pointer]:
+          - img [ref=e54]
+          - generic [ref=e57]: 换一换
+      - generic [ref=e58]:
+        - generic [ref=e61]:
+          - img [ref=e66]
+          - link "为美丽中国增绿添彩" [ref=e67] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Farticle%2F7623449838781039142%2F&aid=4916&jtoken=
+        - generic [ref=e70]:
+          - generic [ref=e72]: "1"
+          - link "人民日报评汽车“销冠”易主" [ref=e73] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624133928287748142%2F%3Foriginal_source%3D%26traffic_source%3D%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25226%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624133928287748142%2522%252C%2522hot_board_impr_id%2522%253A%252220260403060257D9A743CDA597B600501C%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E4%25BA%25BA%25E6%25B0%2591%25E6%2597%25A5%25E6%258A%25A5%25E8%25AF%2584%25E6%25B1%25BD%25E8%25BD%25A6%25E2%2580%259C%25E9%2594%2580%25E5%2586%25A0%25E2%2580%259D%25E6%2598%2593%25E4%25B8%25BB%2522%257D%26style_id%3D40131%26rank%3D%26topic_id%3D7624133928287748142%26category_name%3Dtopic_innerflow%26event_type%3Dhot_board&aid=4916&jtoken=
+        - generic [ref=e76]:
+          - generic [ref=e78]: "2"
+          - link "郑丽文访大陆 为何国民党内有人忧" [ref=e79] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7623387982355890202%2F%3Frank%3D%26style_id%3D40131%26category_name%3Dtopic_innerflow%26event_type%3Dhot_board%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25221%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227623387982355890202%2522%252C%2522hot_board_impr_id%2522%253A%252220260403060257D9A743CDA597B600501C%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E9%2583%2591%25E4%25B8%25BD%25E6%2596%2587%25E8%25AE%25BF%25E5%25A4%25A7%25E9%2599%2586%2B%25E4%25B8%25BA%25E4%25BD%2595%25E5%259B%25BD%25E6%25B0%2591%25E5%2585%259A%25E5%2586%2585%25E6%259C%2589%25E4%25BA%25BA%25E5%25BF%25A7%2522%257D%26topic_id%3D7623387982355890202%26original_source%3D%26traffic_source%3D&aid=4916&jtoken=
+          - generic [ref=e80]: 热
+        - generic [ref=e83]:
+          - generic [ref=e85]: "3"
+          - link "万里长江迎蓬勃新图景" [ref=e86] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Farticle%2F7624082591116771874%3Ftraffic_source%3D%26original_source%3D&aid=4916&jtoken=
+        - generic [ref=e89]:
+          - generic [ref=e91]: "4"
+          - link "有线耳机被淘汰10年翻红 销量暴涨" [ref=e92] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7622897692520726582%2F%3Flog_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25221%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227622897692520726582%2522%252C%2522hot_board_impr_id%2522%253A%252220260403060257D9A743CDA597B600501C%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E6%259C%2589%25E7%25BA%25BF%25E8%2580%25B3%25E6%259C%25BA%25E8%25A2%25AB%25E6%25B7%2598%25E6%25B1%25B010%25E5%25B9%25B4%25E7%25BF%25BB%25E7%25BA%25A2%2B%25E9%2594%2580%25E9%2587%258F%25E6%259A%25B4%25E6%25B6%25A8%2522%257D%26original_source%3D%26traffic_source%3D%26style_id%3D40131%26topic_id%3D7622897692520726582%26category_name%3Dtopic_innerflow%26event_type%3Dhot_board%26rank%3D&aid=4916&jtoken=
+        - generic [ref=e95]:
+          - generic [ref=e97]: "5"
+          - link "女子告前夫要求在前婆婆墓碑上除名" [ref=e98] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624063297957281830%2F%3Fcategory_name%3Dtopic_innerflow%26style_id%3D40131%26original_source%3D%26traffic_source%3D%26event_type%3Dhot_board%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25226%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624063297957281830%2522%252C%2522hot_board_impr_id%2522%253A%252220260403060257D9A743CDA597B600501C%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E5%25A5%25B3%25E5%25AD%2590%25E5%2591%258A%25E5%2589%258D%25E5%25A4%25AB%25E8%25A6%2581%25E6%25B1%2582%25E5%259C%25A8%25E5%2589%258D%25E5%25A9%2586%25E5%25A9%2586%25E5%25A2%2593%25E7%25A2%2591%25E4%25B8%258A%25E9%2599%25A4%25E5%2590%258D%2522%257D%26rank%3D%26topic_id%3D7624063297957281830&aid=4916&jtoken=
+        - generic [ref=e101]:
+          - generic [ref=e103]: "6"
+          - link "这个“铁疙瘩”竟然是国家一级文物" [ref=e104] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7623778896915267590%2F%3Fcategory_name%3Dtopic_innerflow%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25226%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227623778896915267590%2522%252C%2522hot_board_impr_id%2522%253A%252220260403060257D9A743CDA597B600501C%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E8%25BF%2599%25E4%25B8%25AA%25E2%2580%259C%25E9%2593%2581%25E7%2596%2599%25E7%2598%25A9%25E2%2580%259D%25E7%25AB%259F%25E7%2584%25B6%25E6%2598%25AF%25E5%259B%25BD%25E5%25AE%25B6%25E4%25B8%2580%25E7%25BA%25A7%25E6%2596%2587%25E7%2589%25A9%2522%257D%26rank%3D%26style_id%3D40131%26original_source%3D%26event_type%3Dhot_board%26topic_id%3D7623778896915267590%26traffic_source%3D&aid=4916&jtoken=
+        - generic [ref=e107]:
+          - generic [ref=e109]: "7"
+          - link "伊朗革命卫队特种部队指挥官身亡" [ref=e110] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624124358142742079%2F%3Fcategory_name%3Dtopic_innerflow%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25225%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624124358142742079%2522%252C%2522hot_board_impr_id%2522%253A%252220260403060257D9A743CDA597B600501C%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E4%25BC%258A%25E6%259C%2597%25E9%259D%25A9%25E5%2591%25BD%25E5%258D%25AB%25E9%2598%259F%25E7%2589%25B9%25E7%25A7%258D%25E9%2583%25A8%25E9%2598%259F%25E6%258C%2587%25E6%258C%25A5%25E5%25AE%2598%25E8%25BA%25AB%25E4%25BA%25A1%2522%257D%26rank%3D%26style_id%3D40131%26topic_id%3D7624124358142742079%26traffic_source%3D%26event_type%3Dhot_board%26original_source%3D&aid=4916&jtoken=
+        - generic [ref=e113]:
+          - generic [ref=e115]: "8"
+          - link "洪秀柱谈郑丽文访陆 提出三点期许" [ref=e116] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624008416050269734%2F%3Fstyle_id%3D40131%26event_type%3Dhot_board%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25221%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624008416050269734%2522%252C%2522hot_board_impr_id%2522%253A%252220260403060257D9A743CDA597B600501C%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E6%25B4%25AA%25E7%25A7%2580%25E6%259F%25B1%25E8%25B0%2588%25E9%2583%2591%25E4%25B8%25BD%25E6%2596%2587%25E8%25AE%25BF%25E9%2599%2586%2B%25E6%258F%2590%25E5%2587%25BA%25E4%25B8%2589%25E7%2582%25B9%25E6%259C%259F%25E8%25AE%25B8%2522%257D%26rank%3D%26topic_id%3D7624008416050269734%26original_source%3D%26traffic_source%3D%26category_name%3Dtopic_innerflow&aid=4916&jtoken=
+          - generic [ref=e117]: 热
+        - generic [ref=e120]:
+          - generic [ref=e122]: "9"
+          - link "“雨鑫小甜心妈妈”去世 年仅40岁" [ref=e123] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624027277528973366%2F%3Fevent_type%3Dhot_board%26rank%3D%26style_id%3D40131%26original_source%3D%26traffic_source%3D%26category_name%3Dtopic_innerflow%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25220%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624027277528973366%2522%252C%2522hot_board_impr_id%2522%253A%252220260403060257D9A743CDA597B600501C%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E2%2580%259C%25E9%259B%25A8%25E9%2591%25AB%25E5%25B0%258F%25E7%2594%259C%25E5%25BF%2583%25E5%25A6%2588%25E5%25A6%2588%25E2%2580%259D%25E5%258E%25BB%25E4%25B8%2596%2B%25E5%25B9%25B4%25E4%25BB%258540%25E5%25B2%2581%2522%257D%26topic_id%3D7624027277528973366&aid=4916&jtoken=
+    - generic [ref=e124]:
+      - generic [ref=e127]:
+        - generic [ref=e128]:
+          - generic [ref=e130] [cursor=pointer]: 全网内容
+          - generic [ref=e133] [cursor=pointer]: 只看头条
+        - generic [ref=e138]:
+          - generic [ref=e139]:
+            - generic [ref=e140]: 不限时间
+            - combobox [ref=e141]
+          - img [ref=e145]
+      - generic [ref=e150]:
+        - generic [ref=e151]:
+          - link "OpenClaw深度研究报...-视频" [ref=e154] [cursor=pointer]:
+            - /url: "/search?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&pd=video&source=aladdin&dvpf=pc&aid=4916&page_num=0&from=video_oracle&search_json={\"from_search_id\":\"20260403060257D9A743CDA597B600501C\"}"
+            - emphasis [ref=e155]: OpenClaw深度研究报...
+            - text: "-视频"
+          - generic [ref=e156]:
+            - generic [ref=e157]:
+              - generic [ref=e158]:
+                - link "08:25" [ref=e159] [cursor=pointer]:
+                  - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7619991475272106022%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+                  - img [ref=e163]
+                  - img [ref=e166]
+                  - generic [ref=e169]: 08:25
+                - link "研报解读：深度研究OpenClaw对SaaS的冲..." [ref=e172] [cursor=pointer]:
+                  - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7619991475272106022%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+                  - text: 研报解读：
+                  - emphasis [ref=e173]: 深度研究OpenClaw
+                  - text: 对SaaS的冲...
+              - generic [ref=e175]:
+                - generic [ref=e176]:
+                  - generic [ref=e178]: 西瓜视频
+                  - generic [ref=e179]: 5921次观看
+                - generic: 1周前
+            - generic [ref=e180]:
+              - generic [ref=e181]:
+                - link "01:56" [ref=e182] [cursor=pointer]:
+                  - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7615161860416881193%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+                  - img [ref=e186]
+                  - img [ref=e189]
+                  - generic [ref=e192]: 01:56
+                - link "OpenClaw深度解析:从实验到硅基员工的逆袭..." [ref=e195] [cursor=pointer]:
+                  - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7615161860416881193%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+                  - emphasis [ref=e196]: OpenClaw深度
+                  - text: 解析:从实验到硅基员工的逆袭...
+              - generic [ref=e198]:
+                - generic [ref=e199]:
+                  - generic [ref=e201]: 博学多才的白...
+                  - generic [ref=e202]: 0次观看
+                - generic: 3周前
+            - generic [ref=e203]:
+              - generic [ref=e204]:
+                - link "15:05" [ref=e205] [cursor=pointer]:
+                  - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7616360403668369954%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+                  - img [ref=e209]
+                  - img [ref=e212]
+                  - generic [ref=e215]: 15:05
+                - link "深度解读openclaw -全民养虾现象，是风口..." [ref=e218] [cursor=pointer]:
+                  - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7616360403668369954%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+                  - emphasis [ref=e219]: 深度
+                  - text: 解读
+                  - emphasis [ref=e220]: openclaw
+                  - text: "-全民养虾现象，是风口..."
+              - generic [ref=e222]:
+                - generic [ref=e223]:
+                  - generic [ref=e225]: 温柔的轻抚
+                  - generic [ref=e226]: 26次观看
+                - generic: 2周前
+        - link "查看更多视频" [ref=e227] [cursor=pointer]:
+          - /url: "/search?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&pd=video&source=aladdin&dvpf=pc&aid=4916&page_num=0&from=video_oracle&search_json={\"from_search_id\":\"20260403060257D9A743CDA597B600501C\"}"
+          - generic [ref=e231]:
+            - text: 查看更多视频
+            - img [ref=e233]
+      - generic [ref=e240]:
+        - link "OpenClaw 现象深度研究报告:一场席卷全球的 AI 智能体革命- 掘金" [ref=e243] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fjuejin.cn%2Fpost%2F7620864119613276202&aid=4916&jtoken=
+          - emphasis [ref=e244]: OpenClaw
+          - text: 现象
+          - emphasis [ref=e245]: 深度研究报告
+          - text: :一场席卷全球的 AI 智能体革命- 掘金
+        - generic [ref=e246]:
+          - generic [ref=e249]:
+            - text: 本
+            - emphasis [ref=e250]: 报告
+            - text: 旨在深入剖析
+            - emphasis [ref=e251]: OpenClaw
+            - text: 崛起的
+            - emphasis [ref=e252]: 深层
+            - text: 原因、其在中国市场获得超预期成功的独特性、其发展道路上面临的严峻挑战、广阔的商业化前景，并为不同规模...
+          - generic [ref=e254]:
+            - generic [ref=e255]:
+              - generic [ref=e257]: juejin.cn
+              - generic [ref=e258]: 3月25日
+            - img [ref=e263] [cursor=pointer]
+      - generic [ref=e269]:
+        - link "OpenClaw深度调研报告核心总结" [ref=e272] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7622650092851446298%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+          - emphasis [ref=e273]: OpenClaw深度调研报告
+          - text: 核心总结
+        - generic [ref=e274]:
+          - generic [ref=e277]:
+            - text: 2026年爆火的开源AI智能体
+            - emphasis [ref=e278]: OpenClaw
+            - text: 实现了从“对话”到“执行”的范式变革，它并非单纯的聊天助手，而是能跨终端控制、自主执行操作、管理各类工具...
+          - generic [ref=e280]:
+            - generic [ref=e281]:
+              - generic [ref=e283]: SkyCalcLAB解晓康
+              - generic [ref=e284]: 5天前
+            - img [ref=e289] [cursor=pointer]
+      - generic [ref=e296]:
+        - link "OpenClaw深度调研报告-CSDN博客" [ref=e299] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fblog.csdn.net%2Fkymdidicom%2Farticle%2Fdetails%2F159701650&aid=4916&jtoken=
+          - emphasis [ref=e300]: OpenClaw深度调研报告
+          - text: "-CSDN博客"
+        - generic [ref=e301]:
+          - generic [ref=e304]:
+            - emphasis [ref=e305]: OpenClaw
+            - text: 是2026 年爆红的开源本地优先 AI 智能体系统，核心实现从 “对话” 到 “自主执行” 的范式变革，可跨平台控制终端、调用工具、管理设备...
+          - generic [ref=e307]:
+            - generic [ref=e308]:
+              - generic [ref=e310]: blog.csdn.net
+              - generic [ref=e311]: 3天前
+            - img [ref=e316] [cursor=pointer]
+      - generic [ref=e323]:
+        - link "龙虾AI(OpenClaw)产业深度研究报告:A股核心标的、受益逻辑与营收预期" [ref=e326] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fxueqiu.com%2F5441913387%2F378636969&aid=4916&jtoken=
+          - emphasis [ref=e327]: 龙虾AI
+          - text: (
+          - emphasis [ref=e328]: OpenClaw
+          - text: )产业
+          - emphasis [ref=e329]: 深度研究报告
+          - text: :A股核心标的、受益逻辑与营收预期
+        - generic [ref=e330]:
+          - generic [ref=e333]:
+            - text: 本
+            - emphasis [ref=e334]: 报告
+            - text: 基于2026年3月最新产业数据、官方公告与机构测算，聚焦
+            - emphasis [ref=e335]: 开源AI智能体龙虾AI
+            - text: （
+            - emphasis [ref=e336]: OpenClaw
+            - text: ） 的技术本质、产业链传导路径，明确A股核心受益上市公...
+          - generic [ref=e338]:
+            - generic [ref=e339]:
+              - generic [ref=e341]: xueqiu.com
+              - generic [ref=e342]: 3月10日
+            - img [ref=e347] [cursor=pointer]
+      - generic [ref=e353]:
+        - link "清华团队首发OpenClaw研究报告!" [ref=e356] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7617794477746422312%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+          - text: 清华团队首发
+          - emphasis [ref=e357]: OpenClaw研究报告
+          - text: "!"
+        - generic [ref=e358]:
+          - generic [ref=e361]:
+            - text: 最近，清华沈阳教授团队发布了两份最新
+            - emphasis [ref=e362]: 报告
+            - text: ，对
+            - emphasis [ref=e363]: OpenClaw
+            - text: 做了
+            - emphasis [ref=e364]: 深度
+            - text: 且全面的解读。最近，清华大学新闻与传播学院与人工智能学院双聘教授沈阳教授团队...
+          - generic [ref=e366]:
+            - generic [ref=e367]:
+              - generic [ref=e368]:
+                - generic [ref=e369]: 新浪财经
+                - img [ref=e371]
+              - generic [ref=e376]: 3评论
+              - generic [ref=e377]: 3月16日
+            - img [ref=e382] [cursor=pointer]
+      - generic [ref=e389]:
+        - link "OpenClaw爆火丨清华大学揭秘:不聊天的AI，如何成为全网顶流?" [ref=e392] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=http%3A%2F%2Fm.163.com%2Fnews%2Farticle%2FKNJJ5JFA05531DFD.html&aid=4916&jtoken=
+          - emphasis [ref=e393]: OpenClaw
+          - text: 爆火丨清华大学揭秘:不聊天的AI，如何成为全网顶流?
+        - generic [ref=e394]:
+          - generic [ref=e397]:
+            - text: 2026年3月，清华大学@清新
+            - emphasis [ref=e398]: 研究
+            - text: 团队搞了个大新闻，连着发了两份关于“
+            - emphasis [ref=e399]: OpenClaw
+            - text: ”
+            - emphasis [ref=e400]: 的深度报告
+            - text: 。一份68页，讲这个开源项目怎么从一个小工具，摇身一变...
+          - generic [ref=e402]:
+            - generic [ref=e403]:
+              - generic [ref=e405]: m.163.com
+              - generic [ref=e406]: 3月9日
+            - img [ref=e411] [cursor=pointer]
+      - generic [ref=e418]:
+        - link "OpenClaw 最新 Release (v2026.2.17) 深度技术调研报告-51CTO博客" [ref=e421] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fblog.51cto.com%2Fu_6813689%2F14505378&aid=4916&jtoken=
+          - emphasis [ref=e422]: OpenClaw
+          - text: 最新 Release (v2026.2.17)
+          - emphasis [ref=e423]: 深度技术调研报告
+          - text: "-51CTO博客"
+        - generic [ref=e425]:
+          - img [ref=e431]
+          - generic [ref=e432]:
+            - generic [ref=e435]:
+              - emphasis [ref=e436]: OpenClaw
+              - text: 于 2026年2月17日发布了 v2026.2.17 版本，这是一个集成了大量新功能、性能优化和问题修复的重要版本。本
+              - emphasis [ref=e437]: 报告
+              - text: 将深入
+              - emphasis [ref=e438]: 分析
+              - text: 该版本的核心技术...
+            - generic [ref=e440]:
+              - generic [ref=e441]:
+                - generic [ref=e443]: blog.51cto.com
+                - generic [ref=e444]: 3月12日
+              - img [ref=e449] [cursor=pointer]
+      - generic [ref=e456]:
+        - link "2025OpenClaw发展研究报告:AI助手从聊天到行动...-手机网易网" [ref=e459] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=http%3A%2F%2Fwww.163.com%2Fdy%2Farticle%2FKNTLNF5I0518G5DJ.html&aid=4916&jtoken=
+          - text: "2025"
+          - emphasis [ref=e460]: OpenClaw
+          - text: 发展
+          - emphasis [ref=e461]: 研究报告
+          - text: :AI助手从聊天到行动...-手机网易网
+        - generic [ref=e462]:
+          - generic [ref=e465]:
+            - text: 从被动对话到主动执行，AI正在经历一场深刻的范式跃迁。本报告洞察基于《边缘计算社区：
+            - emphasis [ref=e466]: OpenClaw
+            - text: ：AI从聊天到行动-下一代智能助手白皮书》和《@清...
+          - generic [ref=e468]:
+            - generic [ref=e469]:
+              - generic [ref=e471]: 网易
+              - generic [ref=e472]: 3月13日
+            - img [ref=e477] [cursor=pointer]
+      - generic [ref=e483]:
+        - generic [ref=e484]:
+          - generic [ref=e486]: 相关搜索
+          - img [ref=e490] [cursor=pointer]
+        - generic [ref=e493]:
+          - link "openclaw 自动搜索下载" [ref=e497] [cursor=pointer]:
+            - /url: /search?keyword=openclaw%20%E8%87%AA%E5%8A%A8%E6%90%9C%E7%B4%A2%E4%B8%8B%E8%BD%BD&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "openclaw苹果版下载" [ref=e501] [cursor=pointer]:
+            - /url: /search?keyword=openclaw%E8%8B%B9%E6%9E%9C%E7%89%88%E4%B8%8B%E8%BD%BD&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "openclaw发抖音短视频" [ref=e505] [cursor=pointer]:
+            - /url: /search?keyword=openclaw%E5%8F%91%E6%8A%96%E9%9F%B3%E7%9F%AD%E8%A7%86%E9%A2%91&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "Openclaw官方模型更新日志" [ref=e509] [cursor=pointer]:
+            - /url: /search?keyword=Openclaw%E5%AE%98%E6%96%B9%E6%A8%A1%E5%9E%8B%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "新版openclaw更新了什么" [ref=e513] [cursor=pointer]:
+            - /url: /search?keyword=%E6%96%B0%E7%89%88openclaw%E6%9B%B4%E6%96%B0%E4%BA%86%E4%BB%80%E4%B9%88&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "怎么利用openclaw买股票" [ref=e517] [cursor=pointer]:
+            - /url: /search?keyword=%E6%80%8E%E4%B9%88%E5%88%A9%E7%94%A8openclaw%E4%B9%B0%E8%82%A1%E7%A5%A8&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "怎么养龙虾openclaw" [ref=e521] [cursor=pointer]:
+            - /url: /search?keyword=%E6%80%8E%E4%B9%88%E5%85%BB%E9%BE%99%E8%99%BEopenclaw&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "OpenClaw对AI产业链影响" [ref=e525] [cursor=pointer]:
+            - /url: /search?keyword=OpenClaw%E5%AF%B9AI%E4%BA%A7%E4%B8%9A%E9%93%BE%E5%BD%B1%E5%93%8D&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "最好的openclaw产品" [ref=e529] [cursor=pointer]:
+            - /url: /search?keyword=%E6%9C%80%E5%A5%BD%E7%9A%84openclaw%E4%BA%A7%E5%93%81&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+      - generic [ref=e532]:
+        - link "1" [ref=e533] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=0&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e535]: "1"
+        - link "2" [ref=e536] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=1&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e538]: "2"
+        - link "3" [ref=e539] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=2&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e541]: "3"
+        - link "4" [ref=e542] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=3&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e544]: "4"
+        - link "5" [ref=e545] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=4&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e547]: "5"
+        - link "6" [ref=e548] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=5&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e550]: "6"
+        - link "7" [ref=e551] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=6&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e553]: "7"
+        - link "8" [ref=e554] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=7&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e556]: "8"
+        - link "9" [ref=e557] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=8&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e559]: "9"
+        - link "10" [ref=e560] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=9&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e562]: "10"
+        - link "下一页" [ref=e563] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=OpenClaw%E6%B7%B1%E5%BA%A6%E7%A0%94%E7%A9%B6%E6%8A%A5%E5%91%8A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=1&search_id=20260403060257D9A743CDA597B600501C&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e565]: 下一页

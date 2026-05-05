@@ -1,0 +1,261 @@
+- generic [ref=e3]:
+  - generic:
+    - img
+    - generic:
+      - generic:
+        - link "注册":
+          - /url: javascript:;
+      - generic:
+        - link "登录":
+          - /url: javascript:;
+  - generic [ref=e4]:
+    - img [ref=e8]
+    - article [ref=e12]:
+      - article [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - generic [ref=e16]: 验证码登录
+            - article [ref=e18]:
+              - generic [ref=e20]:
+                - combobox "国家/地区" [ref=e23]: "+86"
+                - textbox "请输入手机号" [ref=e25]:
+                  - /placeholder: 手机号
+              - generic [ref=e27]:
+                - button "获取验证码" [ref=e28] [cursor=pointer]
+                - textbox "请输入验证码" [ref=e30]:
+                  - /placeholder: 验证码
+              - alert "警告:无" [ref=e31]
+              - generic "我已阅读并同意《用户协议》和《隐私政策》" [ref=e32]:
+                - checkbox "协议勾选框" [ref=e33] [cursor=pointer]
+                - text: 我已阅读并同意
+                - link "《用户协议》" [ref=e34] [cursor=pointer]:
+                  - /url: https://mp.toutiao.com/profile_v3_public/public/protocol/agreement
+                - text: 和
+                - link "《隐私政策》" [ref=e35] [cursor=pointer]:
+                  - /url: https://mp.toutiao.com/profile_v3_public/public/protocol/privacy
+              - button "登录" [ref=e37]
+          - generic [ref=e38]:
+            - generic [ref=e39]: 扫码登录
+            - article [ref=e40]:
+              - generic [ref=e41]:
+                - img "二维码" [ref=e43]
+                - paragraph [ref=e44]:
+                  - text: “今日头条App - 我的”
+                  - text: 左上角“扫一扫”
+        - generic [ref=e46]:
+          - list [ref=e48]:
+            - button "抖音登录" [ref=e49] [cursor=pointer]:
+              - generic [ref=e51]: 抖音登录
+            - button "QQ登录" [ref=e52] [cursor=pointer]:
+              - generic [ref=e54]: QQ登录
+            - button "微信登录" [ref=e55] [cursor=pointer]:
+              - generic [ref=e57]: 微信登录
+            - button "账密登录" [ref=e58] [cursor=pointer]:
+              - generic [ref=e60]: 密码登录
+          - list [ref=e61]:
+            - listitem [ref=e62]:
+              - button "立即注册" [ref=e63] [cursor=pointer]
+            - listitem [ref=e64]:
+              - button "登录遇到问题" [ref=e65] [cursor=pointer]
+    - img [ref=e67] [cursor=pointer]
+    - generic [ref=e71]: 滑动查看更多
+    - img [ref=e73] [cursor=pointer]
+  - generic [ref=e82]:
+    - generic [ref=e83]: 支持丰富的创作体裁
+    - generic [ref=e84]: 包括文章、视频、微头条、问答、专栏、音频等体裁
+    - generic [ref=e85]:
+      - generic [ref=e86]:
+        - img [ref=e88]
+        - generic [ref=e101]: 文章
+        - generic [ref=e102]: 图片加文字的无数种排列，向世人表达你的所思所想
+      - generic [ref=e103]:
+        - img [ref=e105]
+        - generic [ref=e115]: 视频
+        - generic [ref=e116]: 用镜头捕捉光影，剪辑构建脉络，分享你的美好生活
+      - generic [ref=e117]:
+        - img [ref=e119]
+        - generic [ref=e129]: 微头条
+        - generic [ref=e130]: 只需要短短数百字，记录新鲜事，分享你此刻的想法
+      - generic [ref=e131]:
+        - img [ref=e133]
+        - generic [ref=e166]: 问答
+        - generic [ref=e167]: 提出你想要知道的问题，或帮助别人解答他们的问题
+      - generic [ref=e168]:
+        - img [ref=e170]
+        - generic [ref=e181]: 音频
+        - generic [ref=e182]: 用饱含情感的声音，将思想和情绪传达给所有的听众
+      - generic [ref=e183]:
+        - img [ref=e185]
+        - generic [ref=e192]: 专栏
+        - generic [ref=e193]: 将图文、视频等内容组成专栏，自定价格向用户售卖
+  - generic [ref=e194]:
+    - generic [ref=e195]: 内容多平台分发
+    - generic [ref=e196]: 粉丝数据全面打通，多渠道涨粉，全平台共享
+    - generic [ref=e198]:
+      - generic [ref=e199]:
+        - generic [ref=e200]:
+          - img [ref=e201]
+          - generic [ref=e202]: 今日头条
+          - img [ref=e204]
+        - generic [ref=e207]: 今日头条是一个通用信息平台，致力于连接人与信息，让优质丰富的信息得到高效精准的分发，促使信息创造价值
+      - generic [ref=e208]:
+        - generic [ref=e209]:
+          - img [ref=e210]
+          - generic [ref=e211]: 西瓜视频
+          - img [ref=e213]
+        - generic: 西瓜视频是一个PUGC视频平台，为用户提供丰富的优质内容。同时鼓励多样化创作，帮助人们轻松地分享视频作品
+      - generic [ref=e216]:
+        - generic [ref=e217]:
+          - img [ref=e218]
+          - generic [ref=e219]: 懂车帝
+          - img [ref=e221]
+        - generic: 懂车帝是“看车、选车、买车”一站式汽车媒体和服务平台，产品基于个性化推荐引擎帮助用户发现感兴趣的汽车内容
+      - generic [ref=e224]:
+        - generic [ref=e225]:
+          - img [ref=e226]
+          - generic [ref=e227]: 悟空问答
+          - img [ref=e229]
+        - generic: 悟空问答是一款靠谱的问答社区产品，专注分享知识、经验、观念。在这里，所有人都能找到答案、参与讨论
+  - generic [ref=e243]:
+    - generic [ref=e244]: 服务包助力优质作者创作
+    - generic [ref=e245]: 多渠道流量扶持，多种签约计划，助力优质内容快速完成 0 到 1 冷启动
+    - generic [ref=e250]:
+      - generic [ref=e251] [cursor=pointer]: 粉丝推荐
+      - generic [ref=e252] [cursor=pointer]: MCN签约
+      - generic [ref=e253] [cursor=pointer]: "\b智能加权推荐"
+      - generic [ref=e254] [cursor=pointer]: 千人万元
+    - generic [ref=e257]:
+      - img [ref=e258] [cursor=pointer]
+      - img [ref=e259] [cursor=pointer]
+      - img [ref=e260] [cursor=pointer]
+      - img [ref=e261] [cursor=pointer]
+      - img [ref=e262]
+      - img [ref=e263] [cursor=pointer]
+      - img [ref=e264] [cursor=pointer]
+      - img [ref=e265] [cursor=pointer]
+      - img [ref=e266] [cursor=pointer]
+      - img [ref=e267] [cursor=pointer]
+      - img [ref=e268] [cursor=pointer]
+      - img [ref=e269] [cursor=pointer]
+  - generic [ref=e270]:
+    - generic [ref=e271]: 六大工具助力内容变现
+    - generic [ref=e272]: 未来一年，将推出“创作者收益计划”、“IP-UP计划”，让一万位创作者月薪过万，帮助创作者打造IP
+    - generic [ref=e273]:
+      - generic [ref=e274]:
+        - generic [ref=e275]:
+          - img [ref=e276]
+          - generic [ref=e279]: 流量分成
+        - generic [ref=e280]: 创作者发布文章时选择投放广告，或发布西瓜视频，即可获得创作收益分成，收益全部归创作者所有
+      - generic [ref=e281]:
+        - generic [ref=e282]:
+          - img [ref=e283]
+          - generic [ref=e286]: 现金激励
+        - generic [ref=e287]: 创作者参与平台创作活动所获的现金激励，包括不限于有奖创作活动、青云计划奖励、平台签约奖励
+      - generic [ref=e288]:
+        - generic [ref=e289]:
+          - img [ref=e290]
+          - generic [ref=e293]: 内容付费
+        - generic [ref=e294]: 创作者创建优质专栏、圈子等付费内容，经平台推荐、用户付费后的收益，按比例分成归创作者所有
+      - generic [ref=e295]:
+        - generic [ref=e296]:
+          - img [ref=e297]
+          - generic [ref=e300]: 内容电商
+        - generic [ref=e301]: 创作者可在全体裁内容中插入商品卡，用户实际购买并确认收到商品之后，作者可获得相应佣金收益
+      - generic [ref=e302]:
+        - generic [ref=e303]:
+          - img [ref=e304]
+          - generic [ref=e307]: 内容营销
+        - generic [ref=e308]: 创作者为品牌主定制创作优质推广内容，交付内容之后，即可获得来自品牌主的酬劳，实现内容变现
+      - generic [ref=e309]:
+        - generic [ref=e310]:
+          - img [ref=e311]
+          - generic [ref=e315]: 头条直播
+        - generic [ref=e316]: 创作者通过直播，可与粉丝进行深度互动，赚取直播打赏，以优质内容获得更多粉丝关注和打赏收益
+  - generic [ref=e317]:
+    - generic [ref=e318]: 180万+创作者共同创造
+    - generic [ref=e319]: 在今日头条，与你一起看见更大的世界
+    - img [ref=e321] [cursor=pointer]
+    - img [ref=e326] [cursor=pointer]
+    - generic [ref=e330]:
+      - generic:
+        - generic [ref=e331]:
+          - img [ref=e333]
+          - generic [ref=e334]: 丁香医生
+          - generic [ref=e335]: 知名健康领域创作者，专注于做有温度、有知识、有态度的优质大众健康内容。目前在头条拥有149万粉丝，青云计划多次获奖者。
+        - generic [ref=e336]:
+          - img [ref=e338]
+          - generic [ref=e339]: 美食作家王刚
+          - generic [ref=e340]: 知名美食领域创作者，因其在头条创作的视频风格利落生猛，开创了「硬核美食」流派，在头条拥有超过千万粉丝，爆红全网。
+        - generic [ref=e341]:
+          - img [ref=e343]
+          - generic [ref=e344]: 混子曰
+          - generic [ref=e345]: 优质科普领域创作者，擅长用有趣独特的漫画让复杂难懂的知识流行起来。深受大众喜爱，在头条拥有 139万粉丝。
+        - generic [ref=e346]:
+          - img [ref=e348]
+          - generic [ref=e349]: 李永乐老师
+          - generic [ref=e350]: 中国人民大学附属中学物理教师，优质科普创作者，头条系平台粉丝超千万，多条视频被央视、人民日报等转载。
+        - generic [ref=e351]:
+          - img [ref=e353]
+          - generic [ref=e354]: 巧妇9妹
+          - generic [ref=e355]: 三农领域创作者，获2018年CCTV“中国三农人物奖”，帮助村里的滞销水果找到新销路，帮助家乡农户增收，间接带动就业。
+        - generic [ref=e356]:
+          - img [ref=e358]
+          - generic [ref=e359]: 第一军情
+          - generic [ref=e360]: 优质军事领域创作者，资深军事记者和著名党史、军史专家。始终用一丝不苟的精神提供及时、独家、深度的军事报道和评论分析。
+        - generic [ref=e361]:
+          - img [ref=e363]
+          - generic [ref=e364]: 我是郭杰瑞
+          - generic [ref=e365]: 中外文化体验者，记录在中国的体验，对比中美文化，吐槽奇闻逸事，因视频风格幽默，性格有趣深受大众喜爱，全网粉丝超千万。
+        - generic [ref=e366]:
+          - img [ref=e368]
+          - generic [ref=e369]: 张之瀛大夫
+          - generic [ref=e370]: 心内科医生，今日头条健康真相官。坚持用看诊的业余时间在头条上向百万人科普心脑血管知识，专业、靠谱的医学知识。
+      - generic:
+        - generic [ref=e371]:
+          - img [ref=e373]
+          - generic [ref=e374]: 脑洞历史观
+          - generic [ref=e375]: 文史作家，历史问答专家，4 年时间图文累计阅读量达13亿，曾凭借一己之力将《DK博物大百科》这本书卖到全网断货。
+        - generic [ref=e376]:
+          - img [ref=e378]
+          - generic [ref=e379]: 黎贝卡的异想世界
+          - generic [ref=e380]: 时尚领域优质创作者，前《南方都市报》首席记者，人称“买买买教主”的她，用热爱打造自己的创作标签，在头条获赞无数。
+        - generic [ref=e381]:
+          - img [ref=e383]
+          - generic [ref=e384]: 张召忠
+          - generic [ref=e385]: 原国防大学教授、退役海军少将、著名军事专家。研究范围涉及科学技术、武器装备、军事战略、国防建设、国际法规等多个学科领域。
+        - generic [ref=e386]:
+          - img [ref=e388]
+          - generic [ref=e389]: 人民日报
+          - generic [ref=e390]: 作为人民日报的官方头条号，已于2018年9月入驻发布内容。有品质的新闻，参与、沟通、记录时代。
+        - generic [ref=e391]:
+          - img [ref=e393]
+          - generic [ref=e394]: 新华社
+          - generic [ref=e395]: 有新闻的地方就有新华社，这是来自国家通讯社的声音。作为新华通讯社的官方头条号，发布重大新闻、突发事件、重点报道。
+        - generic [ref=e396]:
+          - img [ref=e398]
+          - generic [ref=e399]: 央视新闻
+          - generic [ref=e400]: 中央电视台新闻中心通过今日头条客户端发布内容的官方渠道。在 2018 年发起的直播中，有 78 场，观看人数超过 100 万。
+        - generic [ref=e401]:
+          - img [ref=e403]
+          - generic [ref=e404]: 中国政府网
+          - generic [ref=e405]: 作为中国政府网的官方头条号，第一时间，权威发布大政方针、政策解读、便民信息。国家大事早知道。
+        - generic [ref=e406]:
+          - img [ref=e408]
+          - generic [ref=e409]: 中央政法委长安剑
+          - generic [ref=e410]: 作为中央政法委官方账号，在各类社会热点事件中理性发声，定分止争，弘扬法治精神，影响力不断攀升。
+      - generic [ref=e411]:
+        - generic [ref=e412]:
+          - link "关于今日头条" [ref=e413] [cursor=pointer]:
+            - /url: //web.toutiao.com/about/
+          - link "用户协议" [ref=e415] [cursor=pointer]:
+            - /url: //mp.toutiao.com/profile_v4_public/public/protocol/agreement
+          - link "隐私政策" [ref=e417] [cursor=pointer]:
+            - /url: //mp.toutiao.com/profile_v4_public/public/protocol/privacy
+          - link "社区规范" [ref=e419] [cursor=pointer]:
+            - /url: //mp.toutiao.com/profile_v4_public/public/protocol/opsspecs
+          - link "自律公约" [ref=e421] [cursor=pointer]:
+            - /url: //mp.toutiao.com/profile_v4_public/public/discipline-convention
+          - link "联系我们" [ref=e423] [cursor=pointer]:
+            - /url: //web.toutiao.com/contact/
+          - generic [ref=e425]: 2026 toutiao.com. All Rights Reserved
+        - generic [ref=e426]: 客服邮箱：mp@toutiao.com

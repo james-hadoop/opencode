@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LiteFlow 流程图 - 飞书风格</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+        background: linear-gradient(180deg, #f7f8fc 0%, #eef1f5 100%);
+        min-height: 100vh;
+        padding: 40px 30px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+
+      .header h1 {
+        font-size: 36px;
+        font-weight: 700;
+        color: #1a1a2e;
+        margin-bottom: 12px;
+      }
+
+      .header .subtitle {
+        font-size: 16px;
+        color: #6b7280;
+      }
+
+      .card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .card-header {
+        padding: 24px 30px;
+        border-bottom: 1px solid #f0f0f5;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .card-header .icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+      }
+
+      .card-header .icon.blue {
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      }
+      .card-header .icon.green {
+        background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+      }
+      .card-header .icon.purple {
+        background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+      }
+
+      .card-header h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a1a2e;
+      }
+
+      .card-body {
+        padding: 30px;
+        background: linear-gradient(180deg, #fafbfc 0%, #ffffff 100%);
+        overflow-x: auto;
+      }
+
+      .card-footer {
+        padding: 18px 30px;
+        background: #fafbfc;
+        border-top: 1px solid #f0f0f5;
+        font-size: 14px;
+        color: #9ca3af;
+      }
+
+      /* 流程图样式 */
+      .flowchart {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 20px;
+      }
+
+      .flow-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .flow-node {
+        padding: 14px 24px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+        min-width: 140px;
+        position: relative;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .flow-node:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .flow-node .icon {
+        font-size: 18px;
+        margin-bottom: 6px;
+      }
+
+      .flow-node .text {
+        display: block;
+        line-height: 1.4;
+      }
+
+      .node-start {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border-radius: 25px;
+      }
+
+      .node-end {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border-radius: 25px;
+      }
+
+      .node-process {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+      }
+
+      .node-decision {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        transform: rotate(0deg);
+        clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+        padding: 30px 20px;
+      }
+
+      .node-decision .text {
+        transform: rotate(0deg);
+      }
+
+      .node-error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+      }
+
+      .node-parallel {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        color: white;
+      }
+
+      .flow-arrow {
+        color: #94a3b8;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .flow-arrow-down {
+        font-size: 24px;
+        color: #94a3b8;
+      }
+
+      .flow-label {
+        font-size: 12px;
+        color: #6b7280;
+        background: #f3f4f6;
+        padding: 4px 10px;
+        border-radius: 6px;
+      }
+
+      /* 并行节点容器 */
+      .parallel-container {
+        display: flex;
+        gap: 20px;
+        position: relative;
+      }
+
+      .parallel-container::before {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 2px;
+        background: #94a3b8;
+      }
+
+      .parallel-container::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 2px;
+        height: calc(100% + 40px);
+        background: #94a3b8;
+        z-index: -1;
+      }
+
+      /* 代码区域 */
+      .code-section {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        margin-bottom: 30px;
+        overflow: hidden;
+      }
+
+      .code-header {
+        padding: 18px 30px;
+        background: linear-gradient(135deg, #1e1e2e 0%, #2d2d3f 100%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .code-dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .code-dots span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .code-dots .red {
+        background: #ff5f57;
+      }
+      .code-dots .yellow {
+        background: #febc2e;
+      }
+      .code-dots .green {
+        background: #28c840;
+      }
+
+      .code-header h3 {
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        margin-left: 16px;
+      }
+
+      .code-body pre {
+        background: #1e1e2e;
+        padding: 25px 30px;
+        overflow-x: auto;
+        margin: 0;
+        font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+        font-size: 13px;
+        line-height: 1.7;
+        color: #a6accd;
+      }
+
+      .keyword {
+        color: #c792ea;
+      }
+      .function {
+        color: #82aaff;
+      }
+      .string {
+        color: #c3e88d;
+      }
+      .comment {
+        color: #546e7a;
+        font-style: italic;
+      }
+
+      /* 特性区域 */
+      .features {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        padding: 35px;
+      }
+
+      .features h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1a1a2e;
+        text-align: center;
+        margin-bottom: 35px;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .feature {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: 14px;
+        padding: 24px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .feature:hover {
+        background: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      }
+
+      .feature .icon {
+        font-size: 28px;
+        margin-bottom: 12px;
+      }
+
+      .feature h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a2e;
+        margin-bottom: 8px;
+      }
+
+      .feature p {
+        font-size: 13px;
+        color: #6b7280;
+        line-height: 1.5;
+      }
+
+      /* 图例 */
+      .legend {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 35px;
+        flex-wrap: wrap;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .legend-color {
+        width: 18px;
+        height: 18px;
+        border-radius: 6px;
+      }
+
+      .legend-text {
+        font-size: 13px;
+        color: #4b5563;
+        font-weight: 500;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 50px;
+        padding: 30px;
+        color: #9ca3af;
+        font-size: 14px;
+      }
+
+      .footer a {
+        color: #667eea;
+        text-decoration: none;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .card,
+      .code-section,
+      .features {
+        animation: fadeIn 0.5s ease forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>LiteFlow 流程编排</h1>
+        <p class="subtitle">轻量级规则引擎 · 组件式流程编排</p>
+      </div>
+
+      <!-- SQL 数据检索流程 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="icon blue">🔍</div>
+          <h2>SQL 数据检索流程</h2>
+        </div>
+        <div class="card-body">
+          <div class="flowchart">
+            <div class="flow-row">
+              <div class="flow-node node-start">
+                <span class="icon">🚀</span>
+                <span class="text">开始</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-process">
+                <span class="icon">📝</span>
+                <span class="text">解析查询请求</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-process">
+                <span class="icon">🔧</span>
+                <span class="text">构建SQL语句</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-process">
+                <span class="icon">🔒</span>
+                <span class="text">验证SQL安全性</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div
+                class="flow-node"
+                style="
+                  background: linear-gradient(135deg, #f59e0b, #d97706);
+                  color: white;
+                  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                  padding: 25px 15px;
+                "
+              >
+                <span class="text" style="font-size: 13px"
+                  >验证通过?<br /><span class="flow-label">是</span> <span class="flow-label">否</span></span
+                >
+              </div>
+            </div>
+
+            <div class="flow-row" style="gap: 100px">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+                <span class="flow-label">是</span>
+                <div class="flow-node node-process">
+                  <span class="icon">⚡</span>
+                  <span class="text">执行SQL查询</span>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+                <span class="flow-label">否</span>
+                <div class="flow-node node-error">
+                  <span class="icon">⚠️</span>
+                  <span class="text">记录错误</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div
+                class="flow-node"
+                style="
+                  background: linear-gradient(135deg, #f59e0b, #d97706);
+                  color: white;
+                  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                  padding: 25px 15px;
+                "
+              >
+                <span class="text" style="font-size: 13px"
+                  >查询成功?<br /><span class="flow-label">是</span> <span class="flow-label">否</span></span
+                >
+              </div>
+            </div>
+
+            <div class="flow-row" style="gap: 100px">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+                <span class="flow-label">是</span>
+                <div class="flow-node node-process">
+                  <span class="icon">📊</span>
+                  <span class="text">处理查询结果</span>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+                <span class="flow-label">否</span>
+                <div class="flow-node node-error">
+                  <span class="icon">⚠️</span>
+                  <span class="text">记录错误</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-process">
+                <span class="icon">📤</span>
+                <span class="text">返回响应数据</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-end">
+                <span class="icon">✅</span>
+                <span class="text">结束</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">基于 LiteFlow 组件化设计，清晰展示 SQL 查询的完整执行流程</div>
+      </div>
+
+      <!-- 电商订单处理流程 -->
+      <div class="card">
+        <div class="card-header">
+          <div class="icon green">🛒</div>
+          <h2>电商订单处理流程</h2>
+        </div>
+        <div class="card-body">
+          <div class="flowchart">
+            <div class="flow-row">
+              <div class="flow-node node-start">
+                <span class="icon">🚀</span>
+                <span class="text">开始</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-process">
+                <span class="icon">📋</span>
+                <span class="text">验证订单信息</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-process">
+                <span class="icon">💰</span>
+                <span class="text">计算订单价格</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div
+                class="flow-node"
+                style="
+                  background: linear-gradient(135deg, #f59e0b, #d97706);
+                  color: white;
+                  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+                  padding: 25px 15px;
+                "
+              >
+                <span class="text" style="font-size: 13px"
+                  >库存充足?<br /><span class="flow-label">是</span> <span class="flow-label">否</span></span
+                >
+              </div>
+            </div>
+
+            <div class="flow-row" style="gap: 80px">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+                <span class="flow-label">是</span>
+                <div class="flow-node node-process">
+                  <span class="icon">🔒</span>
+                  <span class="text">锁定库存</span>
+                </div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+                <span class="flow-label">否</span>
+                <div class="flow-node node-error">
+                  <span class="icon">⚠️</span>
+                  <span class="text">通知用户</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-process">
+                <span class="icon">📦</span>
+                <span class="text">扣除库存</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-process">
+                <span class="icon">💾</span>
+                <span class="text">创建订单记录</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white">
+                <span class="icon">📧</span>
+                <span class="text">发送邮件</span>
+              </div>
+              <span class="flow-arrow">↔</span>
+              <div class="flow-node" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white">
+                <span class="icon">📱</span>
+                <span class="text">发送短信</span>
+              </div>
+              <span class="flow-arrow">↔</span>
+              <div class="flow-node" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white">
+                <span class="icon">🔄</span>
+                <span class="text">更新库存</span>
+              </div>
+            </div>
+
+            <div class="flow-arrow-down">↓</div>
+
+            <div class="flow-row">
+              <div class="flow-node node-end">
+                <span class="icon">✅</span>
+                <span class="text">结束</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">展示串行与并行编排的组合使用，模拟真实业务场景</div>
+      </div>
+
+      <!-- 代码示例 -->
+      <div class="code-section">
+        <div class="code-header">
+          <div class="code-dots">
+            <span class="red"></span>
+            <span class="yellow"></span>
+            <span class="green"></span>
+          </div>
+          <h3>flow.xml - LiteFlow 规则配置</h3>
+        </div>
+        <div class="code-body">
+          <pre><code><span class="comment">// 串行编排：按顺序执行</span>
+THEN(
+    <span class="function">validateOrder</span>,      <span class="comment">// 验证订单</span>
+    <span class="function">calculatePrice</span>,     <span class="comment">// 计算价格</span>
+    <span class="function">createOrder</span>        <span class="comment">// 创建订单</span>
+)
+
+<span class="comment">// 条件编排：根据条件选择分支</span>
+SWITCH(<span class="function">checkUserType</span>)
+    .TO(<span class="function">premiumFlow</span>, <span class="string">"tag:premium"</span>)
+    .TO(<span class="function">normalFlow</span>, <span class="string">"tag:normal"</span>)
+
+<span class="comment">// 并行编排：同时执行多个任务</span>
+WHEN(
+    <span class="function">sendEmail</span>,         <span class="comment">// 发送邮件</span>
+    <span class="function">sendSMS</span>,           <span class="comment">// 发送短信</span>
+    <span class="function">updateInventory</span>   <span class="comment">// 更新库存</span>
+)
+
+<span class="comment">// 循环编排：重复执行</span>
+LOOP(<span class="function">retryPayment</span>).<span class="function">MAX</span>(<span class="string">3</span>)</code></pre>
+        </div>
+      </div>
+
+      <!-- 核心特性 -->
+      <div class="features">
+        <h2>核心特性</h2>
+        <div class="features-grid">
+          <div class="feature">
+            <div class="icon">🧩</div>
+            <h4>组件化设计</h4>
+            <p>每个业务逻辑都是独立组件，可复用、可测试、易维护</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🔀</div>
+            <h4>灵活编排</h4>
+            <p>支持串行、并行、条件、循环等多种编排模式</p>
+          </div>
+          <div class="feature">
+            <div class="icon">⚡</div>
+            <h4>动态热更新</h4>
+            <p>无需重启即可实时修改业务流程，提高系统敏捷性</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🔌</div>
+            <h4>多数据源</h4>
+            <p>支持本地文件、数据库、Zookeeper、Nacos 等配置源</p>
+          </div>
+          <div class="feature">
+            <div class="icon">🌐</div>
+            <h4>多语言支持</h4>
+            <p>支持 Java、Groovy、Python、Lua 等多种脚本语言</p>
+          </div>
+          <div class="feature">
+            <div class="icon">📊</div>
+            <h4>强大监控</h4>
+            <p>提供详细的执行日志和性能监控，帮助优化流程</p>
+          </div>
+        </div>
+
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #10b981, #059669)"></div>
+            <span class="legend-text">开始/结束</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #3b82f6, #2563eb)"></div>
+            <span class="legend-text">处理节点</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #f59e0b, #d97706)"></div>
+            <span class="legend-text">条件判断</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed)"></div>
+            <span class="legend-text">并行处理</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background: linear-gradient(135deg, #ef4444, #dc2626)"></div>
+            <span class="legend-text">错误处理</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>📖 了解更多：<a href="https://liteflow.cc" target="_blank">LiteFlow 官方文档</a></p>
+      </div>
+    </div>
+  </body>
+</html>

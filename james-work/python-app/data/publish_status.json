@@ -1,0 +1,36 @@
+{
+  "published": [],
+  "failed": [
+    {
+      "file": "/Volumes/james1t/_AllDocMap/02_Project/mineru_proj/dt=2025-08-06/output_path/_LGTM_数据指标_快手--经营诊断与波动分析实践/auto/_LGTM_数据指标_快手--经营诊断与波动分析实践.md",
+      "title": "DataFunSummit 2024",
+      "error": "发布等待超时",
+      "time": "2026-04-11T11:25:29.140617"
+    },
+    {
+      "file": "/Volumes/james1t/_AllDocMap/02_Project/mineru_proj/dt=2025-08-06/output_path/_LGTM_数据指标_快手--经营诊断与波动分析实践/auto/_LGTM_数据指标_快手--经营诊断与波动分析实践.md",
+      "title": "DataFunSummit 2024",
+      "error": "发布失败: Page.wait_for_timeout: Target page, context or browser has been closed",
+      "time": "2026-04-11T11:35:08.428202"
+    },
+    {
+      "file": "/Volumes/james1t/_AllDocMap/02_Project/mineru_proj/dt=2025-08-06/output_path/_LGTM_数据指标_快手--经营诊断与波动分析实践/auto/_LGTM_数据指标_快手--经营诊断与波动分析实践.md",
+      "title": "达到最大重试次数 20 次",
+      "error": "max_iterations_exceeded",
+      "time": "2026-04-11T14:12:18.739355"
+    },
+    {
+      "file": "/Volumes/james1t/_AllDocMap/02_Project/mineru_proj/dt=2025-08-06/output_path/_LGTM_数据指标_快手--经营诊断与波动分析实践/auto/_LGTM_数据指标_快手--经营诊断与波动分析实践.md",
+      "title": "达到最大重试次数 20 次",
+      "error": "max_iterations_exceeded",
+      "time": "2026-04-12T00:27:29.088091"
+    },
+    {
+      "file": "/Volumes/james1t/_AllDocMap/02_Project/mineru_proj/dt=2025-08-06/output_path/_LGTM_数据指标_快手--经营诊断与波动分析实践/auto/_LGTM_数据指标_快手--经营诊断与波动分析实践.md",
+      "title": "达到最大重试次数 20 次",
+      "error": "max_iterations_exceeded",
+      "time": "2026-04-12T05:00:05.120646"
+    }
+  ],
+  "last_update": "2026-04-12T05:00:05.120655"
+}

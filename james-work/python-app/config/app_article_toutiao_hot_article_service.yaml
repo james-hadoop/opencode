@@ -1,0 +1,65 @@
+python_config:
+  python_home: /Users/Shared/_AllDocMap/02_Project/gitee/james-python/.conda/bin/python
+  python_path: /Users/Shared/_AllDocMap/02_Project/gitee/python-app
+
+common_config:
+  start_dt: 20230101
+  end_dt: 20250930
+
+redis_config:
+  host: localhost
+  port: 6379
+  db: 0
+  articles_ttl: 60
+  categories_ttl: 300
+
+sources_config:
+  - source_id: toutiao
+    source_name: 今日头条
+    source_icon: 🔥
+    table: t_app_article_toutiao_article_downloader
+  - source_id: weibo
+    source_name: 微博
+    source_icon: 📱
+    table: t_app_article_weibo_hot
+  - source_id: bilibili
+    source_name: B站
+    source_icon: 📺
+    table: t_app_article_zhihu_hot
+
+file_config:
+  input_path: /Volumes/james1t/_AllDocMap/04_eBook/_LGTM_神策/
+  output_path: /Volumes/james1t/proj_opencode/video/
+  # input_path: /home/jiangqian/Documents/_AllDocMap/04_eBook/_LGTM_神策
+  # output_path: /home/jiangqian/Documents/_AllDocMap/_mineru_proj
+
+db_config:
+  mysql:
+    host: localhost
+    port: 3306
+    user: dev
+    password: "dEv#1234"
+    database: app
+    charset: utf8mb4
+    driver: mysql+pymysql
+    table: t_app_article_toutiao_article_downloader
+    sql: >-
+      SELECT id, article_id, title, source, url, abstract, content, images, category, publish_time, created_at, created_by, updated_at, updated_by, source_type
+      FROM (
+        SELECT id, article_id, title, source, url, abstract, content, images, category, publish_time, created_at, created_by, updated_at, updated_by, 'toutiao' as source_type
+        FROM app.t_app_article_toutiao_article_downloader
+        UNION ALL
+        SELECT id, article_id, title, source, url, abstract, content, images, category, publish_time, created_at, created_by, updated_at, updated_by, 'weibo' as source_type
+        FROM app.t_app_article_weibo_hot
+        UNION ALL
+        SELECT id, article_id, title, source, url, abstract, content, images, category, publish_time, created_at, created_by, updated_at, updated_by, 'bilibili' as source_type
+        FROM app.t_app_article_zhihu_hot
+      ) as all_articles
+      ORDER BY created_at desc, category
+      LIMIT 100
+      ;
+
+jwt_config:
+  secret_key: "your-secret-key-change-in-production"
+  algorithm: "HS256"
+  expires_hours: 24

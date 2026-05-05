@@ -1,0 +1,330 @@
+- generic [active] [ref=e1]:
+  - link "欢迎进入 工信部 数据团队 机会 - 头条搜索,盲人用户使用操作智能引导，请按快捷键Ctrl+Alt+R；阅读详细操作说明请按快捷键Ctrl+Alt+问号键。":
+    - /url: javascript:void(0)
+  - generic [ref=e6]:
+    - generic [ref=e8]:
+      - link [ref=e9] [cursor=pointer]:
+        - /url: /?dvpf=pc
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - searchbox "输入关键词进行搜索" [ref=e12]: 工信部 数据团队 机会
+          - img [ref=e14] [cursor=pointer]
+        - img [ref=e18] [cursor=pointer]
+      - link "无障碍" [ref=e20] [cursor=pointer]:
+        - /url: javascript:void(0)
+      - link "今日头条首页" [ref=e23] [cursor=pointer]:
+        - /url: https://www.toutiao.com
+      - generic [ref=e25] [cursor=pointer]:
+        - img [ref=e27]
+        - generic [ref=e29]: 数据筑梦空间
+    - generic [ref=e31]:
+      - generic [ref=e32]:
+        - link "综合" [ref=e33] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=search_tab&cur_tab_title=search_tab
+        - link "资讯" [ref=e34] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=information&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=news&cur_tab_title=news
+        - link "视频" [ref=e35] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=video&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=video&cur_tab_title=video
+        - link "图片" [ref=e36] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=atlas&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=gallery&cur_tab_title=gallery
+        - link "用户" [ref=e37] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=user&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=media&cur_tab_title=media
+        - link "小视频" [ref=e38] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=xiaoshipin&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=xiaoshipin&cur_tab_title=xiaoshipin
+        - link "微头条" [ref=e39] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=weitoutiao&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=weitoutiao&cur_tab_title=weitoutiao
+        - link "音乐" [ref=e40] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=music&source=search_subtab_switch&action_type=search_subtab_switch&page_num=0&search_id=&from=music&cur_tab_title=music
+      - link "去抖音搜" [ref=e42] [cursor=pointer]:
+        - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.douyin.com%2Fsearch%2F%25E5%25B7%25A5%25E4%25BF%25A1%25E9%2583%25A8%2520%25E6%2595%25B0%25E6%258D%25AE%25E5%259B%25A2%25E9%2598%259F%2520%25E6%259C%25BA%25E4%25BC%259A%3Fsource%3Dtoutiao_web_search&aid=4916&jtoken=
+        - text: 去抖音搜
+  - generic:
+    - generic [ref=e49]:
+      - generic [ref=e50]:
+        - generic [ref=e51]: 头条热榜
+        - generic [ref=e52] [cursor=pointer]:
+          - img [ref=e54]
+          - generic [ref=e57]: 换一换
+      - generic [ref=e58]:
+        - generic [ref=e61]:
+          - img [ref=e66]
+          - link "为美丽中国增绿添彩" [ref=e67] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Farticle%2F7623449838781039142%2F&aid=4916&jtoken=
+        - generic [ref=e70]:
+          - generic [ref=e72]: "1"
+          - link "人民日报评汽车“销冠”易主" [ref=e73] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624133928287748142%2F%3Fevent_type%3Dhot_board%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25226%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624133928287748142%2522%252C%2522hot_board_impr_id%2522%253A%2522202604030553425103A575709A73ACD727%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E4%25BA%25BA%25E6%25B0%2591%25E6%2597%25A5%25E6%258A%25A5%25E8%25AF%2584%25E6%25B1%25BD%25E8%25BD%25A6%25E2%2580%259C%25E9%2594%2580%25E5%2586%25A0%25E2%2580%259D%25E6%2598%2593%25E4%25B8%25BB%2522%257D%26rank%3D%26topic_id%3D7624133928287748142%26original_source%3D%26traffic_source%3D%26category_name%3Dtopic_innerflow%26style_id%3D40131&aid=4916&jtoken=
+        - generic [ref=e76]:
+          - generic [ref=e78]: "2"
+          - link "郑丽文访大陆 为何国民党内有人忧" [ref=e79] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7623387982355890202%2F%3Fstyle_id%3D40131%26original_source%3D%26event_type%3Dhot_board%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25221%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227623387982355890202%2522%252C%2522hot_board_impr_id%2522%253A%2522202604030553425103A575709A73ACD727%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E9%2583%2591%25E4%25B8%25BD%25E6%2596%2587%25E8%25AE%25BF%25E5%25A4%25A7%25E9%2599%2586%2B%25E4%25B8%25BA%25E4%25BD%2595%25E5%259B%25BD%25E6%25B0%2591%25E5%2585%259A%25E5%2586%2585%25E6%259C%2589%25E4%25BA%25BA%25E5%25BF%25A7%2522%257D%26topic_id%3D7623387982355890202%26traffic_source%3D%26category_name%3Dtopic_innerflow%26rank%3D&aid=4916&jtoken=
+          - generic [ref=e80]: 热
+        - generic [ref=e83]:
+          - generic [ref=e85]: "3"
+          - link "万里长江迎蓬勃新图景" [ref=e86] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Farticle%2F7624082591116771874%3Foriginal_source%3D%26traffic_source%3D&aid=4916&jtoken=
+        - generic [ref=e89]:
+          - generic [ref=e91]: "4"
+          - link "有线耳机被淘汰10年翻红 销量暴涨" [ref=e92] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7622897692520726582%2F%3Fcategory_name%3Dtopic_innerflow%26event_type%3Dhot_board%26topic_id%3D7622897692520726582%26original_source%3D%26traffic_source%3D%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25221%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227622897692520726582%2522%252C%2522hot_board_impr_id%2522%253A%2522202604030553425103A575709A73ACD727%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E6%259C%2589%25E7%25BA%25BF%25E8%2580%25B3%25E6%259C%25BA%25E8%25A2%25AB%25E6%25B7%2598%25E6%25B1%25B010%25E5%25B9%25B4%25E7%25BF%25BB%25E7%25BA%25A2%2B%25E9%2594%2580%25E9%2587%258F%25E6%259A%25B4%25E6%25B6%25A8%2522%257D%26rank%3D%26style_id%3D40131&aid=4916&jtoken=
+        - generic [ref=e95]:
+          - generic [ref=e97]: "5"
+          - link "美国重返月球为何只绕不登" [ref=e98] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624109647061847598%2F%3Fevent_type%3Dhot_board%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%252213%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624109647061847598%2522%252C%2522hot_board_impr_id%2522%253A%2522202604030553425103A575709A73ACD727%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E7%25BE%258E%25E5%259B%25BD%25E9%2587%258D%25E8%25BF%2594%25E6%259C%2588%25E7%2590%2583%25E4%25B8%25BA%25E4%25BD%2595%25E5%258F%25AA%25E7%25BB%2595%25E4%25B8%258D%25E7%2599%25BB%2522%257D%26rank%3D%26style_id%3D40131%26category_name%3Dtopic_innerflow%26topic_id%3D7624109647061847598%26original_source%3D%26traffic_source%3D&aid=4916&jtoken=
+        - generic [ref=e101]:
+          - generic [ref=e103]: "6"
+          - link "你认为本届世界杯最大黑马是谁" [ref=e104] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7623783605831139354%2F%3Fcategory_name%3Dtopic_innerflow%26event_type%3Dhot_board%26rank%3D%26style_id%3D40131%26traffic_source%3D%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%252210%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227623783605831139354%2522%252C%2522hot_board_impr_id%2522%253A%2522202604030553425103A575709A73ACD727%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E4%25BD%25A0%25E8%25AE%25A4%25E4%25B8%25BA%25E6%259C%25AC%25E5%25B1%258A%25E4%25B8%2596%25E7%2595%258C%25E6%259D%25AF%25E6%259C%2580%25E5%25A4%25A7%25E9%25BB%2591%25E9%25A9%25AC%25E6%2598%25AF%25E8%25B0%2581%2522%257D%26topic_id%3D7623783605831139354%26original_source%3D&aid=4916&jtoken=
+        - generic [ref=e108]:
+          - generic [ref=e110]: "7"
+          - link "伊朗革命卫队特种部队指挥官身亡" [ref=e111] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624124358142742079%2F%3Flog_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25225%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624124358142742079%2522%252C%2522hot_board_impr_id%2522%253A%2522202604030553425103A575709A73ACD727%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E4%25BC%258A%25E6%259C%2597%25E9%259D%25A9%25E5%2591%25BD%25E5%258D%25AB%25E9%2598%259F%25E7%2589%25B9%25E7%25A7%258D%25E9%2583%25A8%25E9%2598%259F%25E6%258C%2587%25E6%258C%25A5%25E5%25AE%2598%25E8%25BA%25AB%25E4%25BA%25A1%2522%257D%26rank%3D%26style_id%3D40131%26traffic_source%3D%26category_name%3Dtopic_innerflow%26event_type%3Dhot_board%26topic_id%3D7624124358142742079%26original_source%3D&aid=4916&jtoken=
+        - generic [ref=e114]:
+          - generic [ref=e116]: "8"
+          - link "洪秀柱郑丽文的十年接力" [ref=e117] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7623777623227318313%2F%3Frank%3D%26style_id%3D40131%26topic_id%3D7623777623227318313%26traffic_source%3D%26category_name%3Dtopic_innerflow%26event_type%3Dhot_board%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25221%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227623777623227318313%2522%252C%2522hot_board_impr_id%2522%253A%2522202604030553425103A575709A73ACD727%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E6%25B4%25AA%25E7%25A7%2580%25E6%259F%25B1%25E9%2583%2591%25E4%25B8%25BD%25E6%2596%2587%25E7%259A%2584%25E5%258D%2581%25E5%25B9%25B4%25E6%258E%25A5%25E5%258A%259B%2522%257D%26original_source%3D&aid=4916&jtoken=
+          - generic [ref=e118]: 热
+        - generic [ref=e121]:
+          - generic [ref=e123]: "9"
+          - link "女子告前夫要求在前婆婆墓碑上除名" [ref=e124] [cursor=pointer]:
+            - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.toutiao.com%2Ftrending%2F7624063297957281830%2F%3Foriginal_source%3D%26log_pb%3D%257B%2522category_name%2522%253A%2522topic_innerflow%2522%252C%2522cluster_type%2522%253A%25226%2522%252C%2522enter_from%2522%253A%2522click_category%2522%252C%2522entrance_hotspot%2522%253A%2522search%2522%252C%2522event_type%2522%253A%2522hot_board%2522%252C%2522hot_board_cluster_id%2522%253A%25227624063297957281830%2522%252C%2522hot_board_impr_id%2522%253A%2522202604030553425103A575709A73ACD727%2522%252C%2522jump_page%2522%253A%2522hot_board_page%2522%252C%2522location%2522%253A%2522news_hot_card%2522%252C%2522page_location%2522%253A%2522hot_board_page%2522%252C%2522source%2522%253A%2522trending_tab%2522%252C%2522style_id%2522%253A%252240131%2522%252C%2522title%2522%253A%2522%25E5%25A5%25B3%25E5%25AD%2590%25E5%2591%258A%25E5%2589%258D%25E5%25A4%25AB%25E8%25A6%2581%25E6%25B1%2582%25E5%259C%25A8%25E5%2589%258D%25E5%25A9%2586%25E5%25A9%2586%25E5%25A2%2593%25E7%25A2%2591%25E4%25B8%258A%25E9%2599%25A4%25E5%2590%258D%2522%257D%26style_id%3D40131%26rank%3D%26topic_id%3D7624063297957281830%26traffic_source%3D%26category_name%3Dtopic_innerflow%26event_type%3Dhot_board&aid=4916&jtoken=
+    - generic [ref=e125]:
+      - generic [ref=e128]:
+        - generic [ref=e129]:
+          - generic [ref=e131] [cursor=pointer]: 全网内容
+          - generic [ref=e134] [cursor=pointer]: 只看头条
+        - generic [ref=e139]:
+          - generic [ref=e140]:
+            - generic [ref=e141]: 不限时间
+            - combobox [ref=e142]
+          - img [ref=e146]
+      - generic [ref=e152]:
+        - link "工信部深夜发了一条消息，很多数据团队还没意识到机会" [ref=e155] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7620199768358257186%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+          - emphasis [ref=e156]: 工信部
+          - text: 深夜发了一条消息，很多
+          - emphasis [ref=e157]: 数据团队
+          - text: 还没意识到
+          - emphasis [ref=e158]: 机会
+        - generic [ref=e159]:
+          - generic [ref=e162]:
+            - text: 缺一条，专家组现场打回，连答辩
+            - emphasis [ref=e163]: 机会
+            - text: 都不给。更细的操作手册也在同一份文件里藏着:牵头人只有四类身份证——龙头厂、平台方、
+            - emphasis [ref=e164]: 数据
+            - text: 商、高校。
+          - generic [ref=e166]:
+            - generic [ref=e167]:
+              - generic [ref=e169]: 简单点
+              - generic [ref=e170]: 1评论
+              - generic [ref=e171]: 3月23日
+            - img [ref=e176] [cursor=pointer]
+      - generic [ref=e183]:
+        - link "工信部教考中心“大数据分析师”就业发展方向_企业_行业-路径" [ref=e186] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.sohu.com%2Fa%2F863973233_122090375&aid=4916&jtoken=
+          - emphasis [ref=e187]: 工信部
+          - text: 教考中心“
+          - emphasis [ref=e188]: 大数据分析师
+          - text: ”就业发展方向_企业_行业-路径
+        - generic [ref=e189]:
+          - generic [ref=e192]:
+            - text: 这部分
+            - emphasis [ref=e193]: 数据
+            - text: 分析师可是
+            - emphasis [ref=e194]: 团队
+            - text: 里的“领头羊”！🐑 随着经验的积累，他们不仅能搞定数据分析，还能带领团队冲锋陷阵，搞定各种复杂项目。
+          - generic [ref=e196]:
+            - generic [ref=e197]:
+              - generic [ref=e199]: 搜狐网
+              - generic [ref=e200]: 2025年2月26日
+            - img [ref=e205] [cursor=pointer]
+      - generic [ref=e211]:
+        - link "工业界的“淘金热”来了:工信部“数据筑基”背后的三大新工种" [ref=e214] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7617787562682040841%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+          - text: "工业界的“淘金热”来了:"
+          - emphasis [ref=e215]: 工信部
+          - text: “
+          - emphasis [ref=e216]: 数据筑基
+          - text: ”背后的三大新工种
+        - generic [ref=e217]:
+          - generic [ref=e220]:
+            - emphasis [ref=e221]: 工业和信息化部
+            - text: 正式对外发布《关于启动工业
+            - emphasis [ref=e222]: 数据
+            - text: 筑基行动 开展面向人工智能赋能的高质量行业数据集建设先行先试的通知》。这份文件不仅是一项政策，...
+          - generic [ref=e224]:
+            - generic [ref=e225]:
+              - generic [ref=e227]: 观会OS
+              - generic [ref=e228]: 3月16日
+            - img [ref=e233] [cursor=pointer]
+      - generic [ref=e240]:
+        - link "工信部信息中心-数据要素市场生态体系研究报告(2023年)-231231" [ref=e243] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fm.hibor.com.cn%2Fwap_detail.aspx%3Fid%3D0ea2307c82b2a0ba4e156922aecc7365&aid=4916&jtoken=
+          - emphasis [ref=e244]: 工信部
+          - text: 信息中心-
+          - emphasis [ref=e245]: 数据
+          - text: 要素市场生态体系研究报告(2023年)-231231
+        - generic [ref=e246]:
+          - generic [ref=e249]:
+            - text: 编制说明本研究报告由工业和信息化部网络安全产业发展中心（
+            - emphasis [ref=e250]: 工业和信息化部信息中心
+            - text: ）
+            - emphasis [ref=e251]: 大数据团队
+            - text: 撰写，限于编写时间、团队知识局限等因素，内容恐...
+          - generic [ref=e253]:
+            - generic [ref=e254]:
+              - generic [ref=e256]: m.hibor.com.cn
+              - generic [ref=e257]: 2024年1月2日
+            - img [ref=e262] [cursor=pointer]
+      - generic [ref=e268]:
+        - link "工信部深夜发了一条消息，很多数据团队还没意识到机会" [ref=e271] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7620201260658065956%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+          - emphasis [ref=e272]: 工信部
+          - text: 深夜发了一条消息，很多
+          - emphasis [ref=e273]: 数据团队
+          - text: 还没意识到
+          - emphasis [ref=e274]: 机会
+        - generic [ref=e275]:
+          - generic [ref=e278]:
+            - emphasis [ref=e279]: 工信部
+            - text: 在2026年3月发布的新政策，明确提出要打造“
+            - emphasis [ref=e280]: 行业数据合作联合体
+            - text: ”，还要搭建“重点行业数据可信互联平台”。这是不是预示着
+            - emphasis [ref=e281]: 数据团队
+            - text: 要迎来大...
+          - generic [ref=e283]:
+            - generic [ref=e284]:
+              - generic [ref=e286]: 在溪边浣衣的洗衣者
+              - generic [ref=e287]: 3月23日
+            - img [ref=e292] [cursor=pointer]
+      - generic [ref=e298]:
+        - link "工信部发力!工业数据迎来新机遇，这些行业将迎爆发式发展" [ref=e301] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fsou.toutiao.com%2Fsearch%2Fjump%3Furl%3Dhttp%253A%252F%252Fwww.toutiao.com%252Fa7620701511915536937%252F%253Fchannel%253D%2526source%253Dsearch_tab%26aid%3D4916%26jtoken%3D&aid=4916&jtoken=
+          - emphasis [ref=e302]: 工信部
+          - text: 发力!工业
+          - emphasis [ref=e303]: 数据
+          - text: 迎来新
+          - emphasis [ref=e304]: 机遇
+          - text: ，这些行业将迎爆发式发展
+        - generic [ref=e305]:
+          - generic [ref=e308]:
+            - text: 在第九届数字中国建设峰会的新闻发布会上，
+            - emphasis [ref=e309]: 工信部
+            - text: 释放了一个重要信号:今年要重点推进工业
+            - emphasis [ref=e310]: 数据
+            - text: 发展，启动“工业数据筑基行动”，简单说就是要把工业...
+          - generic [ref=e312]:
+            - generic [ref=e313]:
+              - generic [ref=e315]: 绿色低C
+              - generic [ref=e316]: 3月24日
+            - img [ref=e321] [cursor=pointer]
+      - generic [ref=e328]:
+        - link "首席数据官:数据时代的黄金岗位，工信部人才交流中心认证" [ref=e331] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fwww.sohu.com%2Fa%2F1002021186_121775942&aid=4916&jtoken=
+          - text: "首席数据官:"
+          - emphasis [ref=e332]: 数据
+          - text: 时代的黄金岗位，
+          - emphasis [ref=e333]: 工信部
+          - text: 人才交流中心认证
+        - generic [ref=e334]:
+          - generic [ref=e337]:
+            - text: 一、时代刚需：首席
+            - emphasis [ref=e338]: 数据
+            - text: 官，百万的战略核心 数据要素市场化改革加速，企业从 “数据堆砌” 转向 “数据资产化”，懂战略、通治理、精合规、能变现...
+          - generic [ref=e340]:
+            - generic [ref=e341]:
+              - generic [ref=e343]: 搜狐网
+              - generic [ref=e344]: 7天前
+            - img [ref=e349] [cursor=pointer]
+      - generic [ref=e356]:
+        - link "PM 别再瞎决策!工信部数据证书到手，才算真・数据驱动型管理者!" [ref=e359] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Ft.cj.sina.com.cn%2Farticles%2Fview%2F2358189467%2F8c8f1d9b00101cv1y&aid=4916&jtoken=
+          - text: PM 别再瞎决策!
+          - emphasis [ref=e360]: 工信部数据
+          - text: 证书到手，才算真・数据驱动型管理者!
+        - generic [ref=e361]:
+          - generic [ref=e364]:
+            - text: 比如用同样的方法分析“项目任务延期原因”“
+            - emphasis [ref=e365]: 团队工作效率瓶颈
+            - text: ”。课程还会助力考取
+            - emphasis [ref=e366]: 工信部数据
+            - text: 分析师中级证书，这张证书由工信部人才交流中心颁发...
+          - generic [ref=e368]:
+            - generic [ref=e369]:
+              - generic [ref=e371]: 新浪网
+              - generic [ref=e372]: 2025年10月17日
+            - img [ref=e377] [cursor=pointer]
+      - generic [ref=e384]:
+        - link "工信部数据分析师_mb60efa0d0657ac的技术博客-51CTO博客" [ref=e387] [cursor=pointer]:
+          - /url: https://sou.toutiao.com/search/jump?url=https%3A%2F%2Fblog.51cto.com%2Fu_15303809%2F10926987&aid=4916&jtoken=
+          - emphasis [ref=e388]: 工信部数据
+          - text: 分析师_mb60efa0d0657ac的技术博客-51CTO博客
+        - generic [ref=e389]:
+          - generic [ref=e392]:
+            - text: 除了专业技能之外，
+            - emphasis [ref=e393]: 工信部数据
+            - text: 分析师还需要具备良好的沟通能力和
+            - emphasis [ref=e394]: 团队
+            - text: 协作能力。在数据分析项目的实施过程中，与业务部门的沟通是至关重要的。
+          - generic [ref=e396]:
+            - generic [ref=e397]:
+              - generic [ref=e399]: blog.51cto.com
+              - generic [ref=e400]: 2024年5月24日
+            - img [ref=e405] [cursor=pointer]
+      - generic [ref=e411]:
+        - generic [ref=e412]:
+          - generic [ref=e414]: 相关搜索
+          - img [ref=e418] [cursor=pointer]
+        - generic [ref=e421]:
+          - link "怎么样进入工信部官网" [ref=e425] [cursor=pointer]:
+            - /url: /search?keyword=%E6%80%8E%E4%B9%88%E6%A0%B7%E8%BF%9B%E5%85%A5%E5%B7%A5%E4%BF%A1%E9%83%A8%E5%AE%98%E7%BD%91&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "企业家及团队如何确定创业机会" [ref=e429] [cursor=pointer]:
+            - /url: /search?keyword=%E4%BC%81%E4%B8%9A%E5%AE%B6%E5%8F%8A%E5%9B%A2%E9%98%9F%E5%A6%82%E4%BD%95%E7%A1%AE%E5%AE%9A%E5%88%9B%E4%B8%9A%E6%9C%BA%E4%BC%9A&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "工信部数据分析师有用吗" [ref=e433] [cursor=pointer]:
+            - /url: /search?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E5%B8%88%E6%9C%89%E7%94%A8%E5%90%97&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "工信部 软件行业" [ref=e437] [cursor=pointer]:
+            - /url: /search?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E8%BD%AF%E4%BB%B6%E8%A1%8C%E4%B8%9A&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "工信部最新用户数据" [ref=e441] [cursor=pointer]:
+            - /url: /search?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%E6%9C%80%E6%96%B0%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "首席数据官 工信部" [ref=e445] [cursor=pointer]:
+            - /url: /search?keyword=%E9%A6%96%E5%B8%AD%E6%95%B0%E6%8D%AE%E5%AE%98%20%E5%B7%A5%E4%BF%A1%E9%83%A8&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "工信部数字精益" [ref=e449] [cursor=pointer]:
+            - /url: /search?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%E6%95%B0%E5%AD%97%E7%B2%BE%E7%9B%8A&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "新吴区工信部数据分析费用" [ref=e453] [cursor=pointer]:
+            - /url: /search?keyword=%E6%96%B0%E5%90%B4%E5%8C%BA%E5%B7%A5%E4%BF%A1%E9%83%A8%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E8%B4%B9%E7%94%A8&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+          - link "工信部平台怎么进入" [ref=e457] [cursor=pointer]:
+            - /url: /search?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%E5%B9%B3%E5%8F%B0%E6%80%8E%E4%B9%88%E8%BF%9B%E5%85%A5&pd=synthesis&source=related_search&dvpf=pc&aid=4916&page_num=0
+      - generic [ref=e460]:
+        - link "1" [ref=e461] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=0&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e463]: "1"
+        - link "2" [ref=e464] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=1&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e466]: "2"
+        - link "3" [ref=e467] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=2&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e469]: "3"
+        - link "4" [ref=e470] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=3&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e472]: "4"
+        - link "5" [ref=e473] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=4&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e475]: "5"
+        - link "6" [ref=e476] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=5&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e478]: "6"
+        - link "7" [ref=e479] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=6&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e481]: "7"
+        - link "8" [ref=e482] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=7&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e484]: "8"
+        - link "9" [ref=e485] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=8&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e487]: "9"
+        - link "10" [ref=e488] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=9&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e490]: "10"
+        - link "下一页" [ref=e491] [cursor=pointer]:
+          - /url: http://so.toutiao.com/search/?keyword=%E5%B7%A5%E4%BF%A1%E9%83%A8%20%E6%95%B0%E6%8D%AE%E5%9B%A2%E9%98%9F%20%E6%9C%BA%E4%BC%9A&dvpf=pc&pd=synthesis&source=pagination&action_type=pagination&page_num=1&search_id=202604030553425103A575709A73ACD727&from=search_tab&cur_tab_title=search_tab
+          - generic [ref=e493]: 下一页
